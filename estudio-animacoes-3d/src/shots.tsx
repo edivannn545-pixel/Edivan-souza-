@@ -148,12 +148,12 @@ const S06 = ({ t, t0, t1 }: ShotProps) => (
   </>
 );
 
-// 07. "luzes piscando e bolinhas caindo sem parar." — close na máquina.
+// 07. "luzes piscando e bolinhas caindo sem parar." — close na máquina 6 (livre, sem jogador na frente).
 const S07 = ({ t, t0, t1 }: ShotProps) => (
   <>
     <PachinkoHall t={t} semBanco={HALL_LIVRES} />
     <Jogadores t={t} />
-    <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.9, 1.5, -0.6], [-2.9, 1.35, -1.5], 32], [W(4, 'bolinhas'), [-1.4, 1.4, -1.3], [-2.9, 1.3, -1.5], 32], [t1, [-1.6, 1.35, -1.45], [-2.9, 1.3, -1.5], 32]]} />
+    <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.6, 1.6, -3.4], [-2.9, 1.35, -4.5], 32], [W(4, 'bolinhas'), [-1.1, 1.45, -4.2], [-2.9, 1.3, -4.5], 32], [t1, [-1.3, 1.4, -4.4], [-2.9, 1.3, -4.5], 32]]} />
   </>
 );
 
