@@ -390,13 +390,13 @@ const spose14 = P({ z: -0.62, hp: 0.1 });
 const S19 = ({ t, t0, t1 }: ShotProps) => {
   const s = W(14, 'separado');
   const k = seg(t, s - 0.35, s - 0.05, (x) => 1 + 2.4 * Math.pow(x - 1, 3) + 1.4 * Math.pow(x - 1, 2));
-  const rpose = track(t, P({ x: -0.85, ry: 0.55, rsx: 0.9, rel: -1.2 }), [{ at: s, v: { lsz: 1.4, lel: 0.2, hy: 0.5, hp: -0.1 } }]);
+  const rpose = track(t, P({ x: -0.6, ry: 0.55, rsx: 0.9, rel: -1.2 }), [{ at: s, v: { lsz: 1.4, lel: 0.2, hy: 0.5, hp: -0.1 } }]);
   const papers = ['JOGO', 'PRÊMIO', 'VENDA'];
   const cores = ['#c8202e', '#2f6fb3', '#2a8a3a'];
   return (
     <>
       <Stage color="#2a2448" pedestal={false} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.2, 1.7, 5.4], [0.1, 1.35, 0], 32], [t1, [0.25, 1.8, 6.0], [0.1, 1.35, 0], 32]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.1, 1.7, 5.6], [0.05, 1.35, 0], 32], [t1, [0.15, 1.8, 6.2], [0.05, 1.35, 0], 32]]} />
       <Character pose={rpose} face={faceAt(t, [{ at: t0, f: 'thinking' }, { at: s, f: 'confident' }], 21)} look={POLICIA} right={<Clipboard text={'JOGO\nPRÊMIO\nVENDA'} position={[0, -0.12, 0.05]} rotation={[-1.2, 0, 0]} />} />
       {papers.map((p, i) => (
         <Paper key={p} text={p} color={cores[i]} position={[0.55 + (i - 1) * (0.12 + 0.4 * k) + 0.1 * k, 1.35 + (i - 1) * 0.55 * (1 - k * 0.3) - 0.0, 0.1 + i * 0.03 - 0.15 * k * Math.abs(i - 1)]} rotation={[0, -0.15, (i - 1) * 0.12 * k]} scale={0.55} />
