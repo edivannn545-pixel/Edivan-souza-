@@ -246,7 +246,7 @@ const S08 = ({ t, t0, t1 }: ShotProps) => {
     { at: a, v: { rsx: 0.6, rel: -0.9, rsz: 0.12, hy: 0, hp: 0.3 } },
   ]);
   const face = faceAt(t, [{ at: t0, f: 'happy' }, { at: W(5, 'ninguem'), f: 'curious' }, { at: a, f: 'tired' }], 9);
-  const w = walkAlong(t, t0 - 0.2, t1, [-3.5, 0, 2.2], [1.5, 0, 2.2]);
+  const w = walkAlong(t, t0 - 0.2, t1, [-3.8, 0, -1.55], [0.6, 0, -1.55]);
   return (
     <>
       <Office t={t} />
