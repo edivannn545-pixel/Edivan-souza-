@@ -3,7 +3,7 @@ import { back, clamp01, rand, seg, V3 } from './anim';
 import { Look, Pose, REST } from './Character';
 import { ELENCO } from './personagens';
 import { Box, WarmLights } from './sets';
-import { canvasTex, FONT, labelTex, tileTex } from './textures';
+import { canvasTex, FONT, labelTex, tileTex, windowsTex } from './textures';
 
 // ============================================================================
 // "O cargo de não fazer nada": escritório, mesas, relógio e objetos desta história.
@@ -387,6 +387,96 @@ export const DreamCloud = ({ t, k, ...g }: G & { t: number; k: number }) => {
         <planeGeometry args={[0.36, 0.12]} />
         <meshBasicMaterial color="#5ac8f0" toneMapped={false} />
       </mesh>
+    </group>
+  );
+};
+
+// ---------- Abertura: rua de dia em frente ao prédio de escritórios ----------
+const flagTex = () =>
+  canvasTex('bandeira-jp', 384, 256, (c) => {
+    c.fillStyle = '#ffffff';
+    c.fillRect(0, 0, 384, 256);
+    c.fillStyle = '#c8102e';
+    c.beginPath();
+    c.arc(192, 128, 77, 0, Math.PI * 2);
+    c.fill();
+  });
+
+const Sakura = ({ t, seed = 0, ...g }: G & { t: number; seed?: number }) => (
+  <group {...g}>
+    <mesh position={[0, 0.9, 0]} castShadow>
+      <cylinderGeometry args={[0.1, 0.16, 1.8, 10]} />
+      <meshStandardMaterial color="#6b4a3a" roughness={0.9} />
+    </mesh>
+    {[[0, 2.1, 0, 0.75], [-0.55, 1.8, 0.1, 0.5], [0.55, 1.85, -0.1, 0.55], [0.1, 2.55, 0.1, 0.5]].map(([x, y, z, r], i) => (
+      <mesh key={i} position={[x, y + Math.sin(t * 1.5 + i + seed) * 0.015, z]} castShadow>
+        <sphereGeometry args={[r, 18, 14]} />
+        <meshStandardMaterial color={i % 2 ? '#f7b6cf' : '#f9c9da'} roughness={0.9} />
+      </mesh>
+    ))}
+  </group>
+);
+
+// Pétalas caindo (determinístico).
+const Petals = ({ t, n = 26 }: { t: number; n?: number }) => (
+  <>
+    {Array.from({ length: n }, (_, i) => {
+      const fall = (t * (0.35 + rand(i) * 0.25) + rand(i + 7)) % 1;
+      const x = (rand(i + 3) - 0.5) * 6 + Math.sin(t * 1.3 + i) * 0.3;
+      const z = (rand(i + 11) - 0.5) * 4;
+      return (
+        <mesh key={i} position={[x, 3.6 - fall * 3.6, z]} rotation={[t * 2 + i, t + i, 0]}>
+          <planeGeometry args={[0.07, 0.05]} />
+          <meshStandardMaterial color="#ffc4d8" side={THREE.DoubleSide} />
+        </mesh>
+      );
+    })}
+  </>
+);
+
+// `sobe`: tempo em que a bandeira chega ao topo do mastro.
+export const CityFront = ({ t, sobe = -99 }: { t: number; sobe?: number }) => {
+  const k = seg(t, sobe - 1.0, sobe - 0.03);
+  const wave = Math.sin(t * 4) * 0.08;
+  return (
+    <group>
+      <WarmLights sun={[-5, 8, 7]} bg="#bfe3ff" sky="#ffffff" ground="#8a8a80" fill={1.0} power={2.2} fog={[18, 50]} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <planeGeometry args={[80, 80]} />
+        <meshStandardMaterial map={tileTex('#d8d2c6', '#c8c2b6', 30)} roughness={0.9} />
+      </mesh>
+      {/* prédio de escritórios */}
+      <Box p={[0, 7, -5.5]} s={[8, 14, 2]} c="#9fb4c8" map={windowsTex('#8aa0b6', 10, 6)} />
+      <Box p={[0, 1.4, -4.45]} s={[3, 2.8, 0.1]} c="#2f3a4a" r={0.3} />
+      <mesh position={[0, 1.4, -4.39]}>
+        <planeGeometry args={[2.8, 2.6]} />
+        <meshStandardMaterial color="#a8d0e8" roughness={0.1} metalness={0.3} />
+      </mesh>
+      <Box p={[0, 3.2, -4.4]} s={[4.2, 0.7, 0.2]} c="#1f2a38" />
+      <mesh position={[0, 3.2, -4.29]}>
+        <planeGeometry args={[4.0, 0.56]} />
+        <meshStandardMaterial map={labelTex('ESCRITÓRIOS', { w: 1024, h: 144, bg: '#1f2a38', fg: '#ffffff' })} />
+      </mesh>
+      <Box p={[-9, 5, -8]} s={[6, 10, 3]} map={windowsTex('#b8a890', 6, 4)} />
+      <Box p={[9, 6, -8]} s={[6, 12, 3]} map={windowsTex('#a0a8b8', 7, 4)} />
+      <Sakura t={t} position={[-2.6, 0, -2.4]} seed={1} />
+      <Sakura t={t} position={[2.7, 0, -2.6]} seed={2} />
+      <Petals t={t} />
+      {/* mastro e bandeira */}
+      <mesh position={[1.4, 2.2, -1.2]} castShadow>
+        <cylinderGeometry args={[0.035, 0.05, 4.4, 10]} />
+        <meshStandardMaterial color="#d8d8de" metalness={0.7} roughness={0.3} />
+      </mesh>
+      <mesh position={[1.4, 4.45, -1.2]}>
+        <sphereGeometry args={[0.07, 12, 10]} />
+        <meshStandardMaterial color="#e8c240" metalness={0.7} />
+      </mesh>
+      <group position={[1.4 + 0.45, 1.6 + k * 2.5, -1.2]} rotation={[0, wave, 0]}>
+        <mesh castShadow>
+          <planeGeometry args={[0.9, 0.6]} />
+          <meshStandardMaterial map={flagTex()} side={THREE.DoubleSide} />
+        </mesh>
+      </group>
     </group>
   );
 };

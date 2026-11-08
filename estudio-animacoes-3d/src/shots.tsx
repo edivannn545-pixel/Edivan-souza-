@@ -2,10 +2,10 @@ import { JSX } from 'react';
 import { clamp01, easeInOut, lerp, seg, track, V3 } from './anim';
 import { Character, faceAt, Pose, REST } from './Character';
 import {
-  Cage, CHEFE, Cobweb, COLEGA, Desk, DESK_H, DeskPlate, DreamCloud, GABI, InTray, KAIO, Letter, MESA_CHEFE, MESA_COLEGA, MESA_GABI,
+  Cage, CHEFE, CityFront, Cobweb, COLEGA, Desk, DESK_H, DeskPlate, DreamCloud, GABI, InTray, KAIO, Letter, MESA_CHEFE, MESA_COLEGA, MESA_GABI,
   MESA_KAIO, MESA_PAULA, MESA_VOCE, Meter, Office, PAULA, pop, sentadoEm, SENTADO, WallClock, Weight,
 } from './escritorio';
-import { IdeaBulb, NeonStreet, Paper } from './historia';
+import { IdeaBulb, Paper } from './historia';
 import { Calendar, Comic, LedCounter, PaperRain, Puff, Sparkles, StampMark } from './props';
 import { Cam, Stage } from './sets';
 import { W } from './timeline';
@@ -66,7 +66,7 @@ const MesaVoce = ({ t, placa = true, extra }: { t: number; placa?: boolean; extr
 );
 const VOCE_SENTADO = (o: Partial<Pose> = {}) => sentadoEm(MESA_VOCE, { lsx: 0.6, rsx: 0.6, lel: -0.9, rel: -0.9, ...o });
 
-// 01. "No *Japão*, você descobre que" — rua de neon (mesma abertura da série).
+// 01. "No *Japão*, você descobre que" — rua de dia em frente ao prédio; a bandeira chega ao topo em "Japão".
 const S01 = ({ t, t0, t1 }: ShotProps) => {
   const jp = W(0, 'japao');
   const pose = track(t, P({ ry: 0.15, hy: 0.25, hp: -0.15 }), [
@@ -76,8 +76,8 @@ const S01 = ({ t, t0, t1 }: ShotProps) => {
   const face = faceAt(t, [{ at: t0, f: 'curious' }, { at: jp, f: 'amazed' }, { at: W(0, 'descobre'), f: 'thinking' }], 1);
   return (
     <>
-      <NeonStreet t={t} placa="JAPÃO" placaOn={jp} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.4, 5.2, 9.5], [0, 3.2, -4], 30], [jp, [0.3, 2.2, 6.2], [0, 2.4, -1], 32], [t1, [0.5, 1.75, 4.6], [0, 1.6, 0], 32]]} />
+      <CityFront t={t} sobe={jp} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.6, 3.6, 7.0], [0.6, 3.6, -1.2], 32], [jp, [-0.3, 2.6, 6.0], [0.5, 2.6, -0.6], 32], [t1, [0.1, 1.7, 4.4], [0.1, 1.55, 0], 32]]} />
       <Character pose={pose} face={face} />
     </>
   );
@@ -144,7 +144,7 @@ const S04 = ({ t, t0, t1 }: ShotProps) => {
       <DeskPlate text="CARGO: NÃO FAZER NADA" position={[MESA_VOCE[0] + 0.1, DESK_H + 0.03, MESA_VOCE[2] + 0.15]} scale={0.8 * pop(t, n)} />
       <Sparkles t={t} from={na} n={8} radius={0.5} center={[MESA_VOCE[0] + 0.1, DESK_H + 0.3, MESA_VOCE[2] + 0.2]} size={0.12} />
       <Puff t={t} at={n} position={[MESA_VOCE[0] + 0.1, DESK_H + 0.1, MESA_VOCE[2] + 0.2]} color="#fff2c0" size={0.15} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.5, 1.8, 4.9], [-1.0, 1.15, 0.7], 32], [t1, [-0.7, 1.75, 4.4], [-1.05, 1.1, 0.7], 32]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.9, 1.85, 5.6], [-0.95, 1.2, 0.7], 32], [t1, [-0.95, 1.8, 5.1], [-0.95, 1.15, 0.7], 32]]} />
       <Character pose={hpose} face={faceAt(t, [{ at: t0, f: 'smile' }, { at: na, f: 'smug' }], 5)} look={CHEFE} />
     </>
   );
@@ -167,7 +167,7 @@ const S05 = ({ t, t0, t1 }: ShotProps) => {
       <Office t={t} />
       <Colegas t={t} digitando />
       <MesaVoce t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.0, 2.2, 5.6], [-2.4, 1.2, 0.0], 32], [sen, [-0.8, 1.9, 4.6], [-1.6, 1.1, 0.5], 32], [t1, [-0.9, 1.75, 4.0], [-1.5, 1.1, 0.6], 32]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t, [espPose.x + 0.3, 1.85, espPose.z + 4.2], [espPose.x, 1.1, espPose.z + 0.3], 32]]} />
       <Character pose={espPose} face={face} />
     </>
   );
@@ -184,7 +184,7 @@ const S06 = ({ t, t0, t1 }: ShotProps) => {
       <Colegas t={t} digitando />
       <MesaVoce t={t} extra={<InTray t={t} position={trayV} label="ENTRADA" />} />
       <InTray t={t} a={t0} b={s} n={12} position={[MESA_COLEGA[0] - 0.45, DESK_H + 0.03, MESA_COLEGA[2] + 0.1]} label="ENTRADA" />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.3, 3.4, 5.4], [-0.3, 0.8, 0.3], 32], [t1, [-0.3, 3.2, 5.0], [-0.3, 0.8, 0.3], 32]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.9, 2.1, 4.6], [-1.35, 1.05, 0.5], 32], [t1, [-1.85, 2.0, 4.2], [-1.35, 1.05, 0.5], 32]]} />
       <Character pose={pose} face={faceAt(t, [{ at: t0, f: 'curious' }, { at: s, f: 'confused' }], 7)} />
       <Puff t={t} at={s} position={[trayV[0], trayV[1] + 0.08, trayV[2]]} color="#d8d0c0" size={0.12} />
     </>
@@ -232,7 +232,7 @@ const S07 = ({ t, t0, t1 }: ShotProps) => {
       ))}
       <MesaVoce t={t} />
       <Character pose={VOCE_SENTADO({ ry: 0.9, hy: 0.4, hp: -0.05 })} face={faceAt(t, [{ at: t0, f: 'curious' }, { at: d, f: 'worried' }], 8)} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-2.7, 2.4, 4.4], [0.9, 1.2, -2.0], 32], [t1, [-2.5, 2.3, 4.0], [1.0, 1.25, -2.1], 32]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-3.2, 2.6, 3.8], [1.2, 1.0, -2.0], 32], [t1, [-3.0, 2.5, 3.5], [1.2, 1.05, -2.0], 32]]} />
       <Comic t={t} at={d} text="BLÁ BLÁ" position={[2.6, 2.9, -2.8]} size={0.3} hold={0.8} />
     </>
   );
@@ -311,7 +311,7 @@ const S11 = ({ t, t0, t1 }: ShotProps) => {
 };
 
 // 12/13. Calendário de mesa virando folhas (dias → meses → anos).
-const CAL: V3 = [MESA_VOCE[0] - 0.42, DESK_H + 0.32, MESA_VOCE[2] + 0.05];
+const CAL: V3 = [MESA_VOCE[0] - 0.62, DESK_H + 0.27, MESA_VOCE[2] + 0.28];
 const S12 = ({ t, t0, t1 }: ShotProps) => {
   const m = W(8, 'meses');
   return (
@@ -319,8 +319,8 @@ const S12 = ({ t, t0, t1 }: ShotProps) => {
       <Office t={t} noite={Math.floor(t * 3) % 2} />
       <MesaVoce t={t} />
       <Character pose={VOCE_SENTADO({ rsx: 1.2, rel: -2.3, hr: 0.25 })} face={faceAt(t, [{ at: t0, f: 'bored' }], 12)} />
-      <Calendar t={t} from={t0 + 0.1} at={m} pages={['SEG', 'TER', 'QUA', 'QUI', 'SEX', '1 MÊS', '2 MESES', '4 MESES', '6 MESES']} position={CAL} rotation={[-0.15, 0.25, 0]} scale={0.55} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.3, 1.5, 3.2], [-1.7, 1.1, 0.8], 32], [t1, [-1.4, 1.45, 2.9], [-1.75, 1.1, 0.85], 32]]} />
+      <Calendar t={t} from={t0 + 0.1} at={m} pages={['SEG', 'TER', 'QUA', 'QUI', 'SEX', '1 MÊS', '2 MESES', '4 MESES', '6 MESES']} position={CAL} rotation={[-0.1, 0.55, 0]} scale={0.45} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.7, 1.55, 3.5], [-1.9, 1.1, 0.8], 32], [t1, [-1.75, 1.5, 3.2], [-1.95, 1.1, 0.85], 32]]} />
       <Sparkles t={t} from={m} n={6} radius={0.35} center={[CAL[0], CAL[1] + 0.1, CAL[2] + 0.1]} size={0.08} />
     </>
   );
@@ -333,8 +333,8 @@ const S13 = ({ t, t0, t1 }: ShotProps) => {
       <Colegas t={t} digitando />
       <MesaVoce t={t} />
       <Character pose={VOCE_SENTADO({ rsx: 1.2, rel: -2.3, hr: 0.35, hp: 0.15 })} face={faceAt(t, [{ at: t0, f: 'tired' }, { at: a, f: 'sleepy' }], 13)} />
-      <Calendar t={t} from={t0 + 0.05} at={a} pages={['6 MESES', '9 MESES', '1 ANO', '2 ANOS', '3 ANOS']} position={CAL} rotation={[-0.15, 0.25, 0]} scale={0.55} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.2, 1.5, 2.9], [-1.6, 1.1, 0.8], 32], [t1, [-0.9, 1.7, 3.7], [-1.4, 1.15, 0.6], 32]]} />
+      <Calendar t={t} from={t0 + 0.05} at={a} pages={['6 MESES', '9 MESES', '1 ANO', '2 ANOS', '3 ANOS']} position={CAL} rotation={[-0.1, 0.55, 0]} scale={0.45} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.7, 1.6, 3.4], [-1.9, 1.1, 0.8], 32], [t1, [-1.7, 1.75, 4.2], [-1.85, 1.15, 0.7], 32]]} />
     </>
   );
 };
@@ -445,7 +445,7 @@ const S19 = ({ t, t0, t1 }: ShotProps) => {
       <Letter position={lp} rotation={[0, Math.PI / 2 + 0.3, 0]} scale={1.3} />
       <Comic t={t} at={d} text="TUM!" position={[MESA_CHEFE[0] - 0.4, 2.2, MESA_CHEFE[2] + 0.4]} size={0.3} hold={0.6} />
       <Puff t={t} at={d} position={[ponto[0], ponto[1] + 0.05, ponto[2]]} color="#fff" size={0.14} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [2.9, 2.1, -0.2], [-1.4, 1.2, -2.4], 32], [t1, [2.6, 2.05, -0.4], [-1.45, 1.2, -2.4], 32]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [3.8, 2.0, -2.0], [-1.45, 1.2, -2.15], 32], [t1, [3.5, 1.95, -2.05], [-1.45, 1.2, -2.15], 32]]} />
     </>
   );
 };
@@ -479,7 +479,7 @@ const S21 = ({ t, t0, t1 }: ShotProps) => {
       <MesaVoce t={t} />
       <Character pose={P({ x: w.p[0], z: w.p[2], ry, hy, walk: w.walk, stride: w.stride })} face={faceAt(t, [{ at: t0, f: 'lookDown' }, { at: pe, f: 'thinking' }, { at: ali, f: 'content' }], 22)} />
       <Sparkles t={t} from={ali} n={6} radius={0.5} center={[MESA_VOCE[0], DESK_H + 0.4, MESA_VOCE[2]]} size={0.1} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.4, 1.6, 4.0], [-1.2, 1.1, 1.0], 32], [ali, [-0.2, 2.2, 6.0], [-1.0, 1.1, 0.8], 32], [t1 + 0.8, [0.6, 2.6, 7.2], [0.0, 1.3, -0.5], 32]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t, [w.p[0] - 0.2, 1.9, w.p[2] + 4.6], [w.p[0] - 0.4, 1.15, w.p[2] - 0.2], 32]]} />
     </>
   );
 };
