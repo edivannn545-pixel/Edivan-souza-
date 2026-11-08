@@ -1,26 +1,26 @@
 import { JSX } from 'react';
 import { clamp01, easeInOut, lerp, seg, track, V3 } from './anim';
-import { Character, faceAt, Pose, REST, VOCE } from './Character';
+import { Character, faceAt, Pose, REST } from './Character';
 import {
-  ATENDENTE, Bucket, Chocolate, FIGURANTES, GamblingTable, IdeaBulb, JANELA, MiniBuilding, NeonSign, NeonStreet, NoSign,
-  PachinkoFront, PachinkoHall, PachinkoMachine, Paper, POLICIA, pop, PrizeCounter, RecordBoard, Shampoo, Ursinho, WindowShop,
-} from './historia';
-import { Clipboard, Coin, CoinBurst, Comic, MoneyStack, Puff, Sign, Sparkles, StampMark } from './props';
+  Cage, CHEFE, Cobweb, COLEGA, Desk, DESK_H, DeskPlate, DreamCloud, GABI, InTray, KAIO, Letter, MESA_CHEFE, MESA_COLEGA, MESA_GABI,
+  MESA_KAIO, MESA_PAULA, MESA_VOCE, Meter, Office, PAULA, pop, sentadoEm, SENTADO, WallClock, Weight,
+} from './escritorio';
+import { IdeaBulb, NeonStreet, Paper } from './historia';
+import { Calendar, Comic, LedCounter, PaperRain, Puff, Sparkles, StampMark } from './props';
 import { Cam, Stage } from './sets';
-import { F, W } from './timeline';
+import { W } from './timeline';
 
 // ============================================================================
-// "O TRUQUE DO PACHINKO" — tomadas do STORYBOARD.md, tudo ancorado em palavras com W(linha, 'palavra').
+// "O CARGO DE NÃO FAZER NADA" — tomadas do STORYBOARD.md, ancoradas em palavras com W(linha, 'palavra').
+// A versão do pachinko está guardada em historias/pachinko/.
 // ============================================================================
 
 export type ShotProps = { t: number; t0: number; t1: number };
 export type Shot = { from: number; name: string; C: (p: ShotProps) => JSX.Element };
 
-// Efeitos sonoros: arquivos em public/sfx/.
 export const SFX: { at: number; file: string; vol: number }[] = [];
 
 const P = (o: Partial<Pose> = {}): Pose => ({ ...REST, ...o });
-// Caminhada: posição ao longo de um trecho entre a e b (segundos), com passos coerentes com a distância.
 const walkAlong = (t: number, a: number, b: number, from: V3, to: V3) => {
   const k = clamp01((t - a) / (b - a));
   const kk = easeInOut(k) * 0.25 + k * 0.75;
@@ -30,36 +30,50 @@ const walkAlong = (t: number, a: number, b: number, from: V3, to: V3) => {
   return { p, walk: dist / 0.24, stride: moving ? Math.min(1, (t - a) / 0.15, (b - t) / 0.15) : 0 };
 };
 
-// Os figurantes jogando nas máquinas do salão (índices de máquina e quem está em cada uma).
-const JOGADORES: { idx: number; look: number }[] = [
-  { idx: 1, look: 0 },
-  { idx: 3, look: 2 },
-  { idx: 18, look: 1 },
-  { idx: 21, look: 3 },
-  { idx: 8, look: 1 },
-  { idx: 25, look: 0 },
-];
-const Jogadores = ({ t }: { t: number }) => (
-  <>
-    {JOGADORES.map(({ idx, look }, n) => {
-      const sd = idx >= 16 ? 1 : -1;
-      const z = 1.5 - (idx % 16);
-      const arm = 0.9 + 0.08 * Math.sin(t * 2.2 + n);
-      const pose = P({ x: sd * 2.15, z, ry: sd * Math.PI / 2, rsx: arm, rel: -0.4, hp: 0.05 });
-      return <Character key={idx} pose={pose} face={faceAt(t, [{ at: 0, f: n % 2 ? 'happy' : 'curious' }], n + 10)} look={FIGURANTES[look]} />;
-    })}
-  </>
-);
-const HALL_LIVRES = [...JOGADORES.map((j) => j.idx), 5];
+// Colegas trabalhando nas mesas (digitando: braços batem no teclado). `afasta` empurra as mesas para longe.
+const Colegas = ({ t, digitando = false, afasta = 0, sem = [] as string[] }: { t: number; digitando?: boolean; afasta?: number; sem?: string[] }) => {
+  const lista: [string, V3, typeof PAULA, number][] = [
+    ['colega', MESA_COLEGA, COLEGA, 31],
+    ['paula', MESA_PAULA, PAULA, 32],
+    ['kaio', MESA_KAIO, KAIO, 33],
+    ['gabi', MESA_GABI, GABI, 34],
+  ];
+  return (
+    <>
+      {lista.map(([id, m, look, seed]) => {
+        const off: V3 = [m[0] + afasta * 3.5, 0, m[2] - afasta * 2.5];
+        const typ = digitando ? Math.abs(Math.sin(t * 9 + seed)) * 0.15 : 0;
+        return (
+          <group key={id}>
+            <Desk t={t} position={off} papeis={0.4 + (seed % 3) * 0.2} />
+            {!sem.includes(id) && (
+              <Character pose={sentadoEm(off, { lsx: 0.75 + typ, rsx: 0.9 - typ, hp: 0.12, hy: Math.sin(seed) * 0.15 })} face={faceAt(t, [{ at: 0, f: seed % 2 ? 'thinking' : 'neutral' }], seed)} look={look} />
+            )}
+          </group>
+        );
+      })}
+    </>
+  );
+};
 
-// 01. "No *Japão*, você ouve dizer que" — rua de neon, letreiro JAPÃO acende.
+// A mesa do Você (com a placa do cargo).
+const MesaVoce = ({ t, placa = true, extra }: { t: number; placa?: boolean; extra?: JSX.Element }) => (
+  <group>
+    <Desk t={t} position={MESA_VOCE} vazia />
+    {placa && <DeskPlate text="CARGO: NÃO FAZER NADA" position={[MESA_VOCE[0] + 0.1, DESK_H + 0.03, MESA_VOCE[2] + 0.15]} scale={0.8} />}
+    {extra}
+  </group>
+);
+const VOCE_SENTADO = (o: Partial<Pose> = {}) => sentadoEm(MESA_VOCE, { lsx: 0.6, rsx: 0.6, lel: -0.9, rel: -0.9, ...o });
+
+// 01. "No *Japão*, você descobre que" — rua de neon (mesma abertura da série).
 const S01 = ({ t, t0, t1 }: ShotProps) => {
   const jp = W(0, 'japao');
   const pose = track(t, P({ ry: 0.15, hy: 0.25, hp: -0.15 }), [
     { at: jp, v: { hy: -0.05, hp: -0.35, lsz: 0.5, rsz: 0.5, lel: 0.4, rel: 0.4 } },
-    { at: W(0, 'ouve'), v: { hy: 0.35, hp: 0, hr: 0.18, lsz: 0.12, rsz: 0.12, rsx: 0.9, rel: -1.9 } },
+    { at: W(0, 'descobre'), v: { hy: 0.3, hp: 0, lsz: 0.12, rsz: 0.12, rsx: 0.9, rel: -1.9 } },
   ]);
-  const face = faceAt(t, [{ at: t0, f: 'curious' }, { at: jp, f: 'amazed' }, { at: W(0, 'ouve'), f: 'thinking' }], 1);
+  const face = faceAt(t, [{ at: t0, f: 'curious' }, { at: jp, f: 'amazed' }, { at: W(0, 'descobre'), f: 'thinking' }], 1);
   return (
     <>
       <NeonStreet t={t} placa="JAPÃO" placaOn={jp} />
@@ -69,446 +83,427 @@ const S01 = ({ t, t0, t1 }: ShotProps) => {
   );
 };
 
-// 02. "jogos de azar são *proibidos*." — mesa de dados e cartas, carimbo PROIBIDO.
+// 02. "pode ser muito difícil *demitir* um funcionário." — o chefe tenta demitir o Funcionário.
 const S02 = ({ t, t0, t1 }: ShotProps) => {
-  const pr = W(0, 'proibidos');
-  const pose = track(t, P({ x: -0.75, ry: 0.5, hy: 0.4 }), [
-    { at: W(0, 'jogos'), v: { lsz: 1.3, lel: -0.2, lsx: 0.4 } },
-    { at: pr, v: { lsz: 0.2, lsx: 0, rsx: 0.5, rel: -2.2, squash: 0.15, hy: 0.2, hp: 0.1 } },
+  const d = W(0, 'demitir');
+  const hpose = track(t, P({ x: 0.15, z: 0.6, ry: 0.5, rsx: 0.9, rel: -0.6 }), [
+    { at: W(0, 'dificil'), v: { rsx: 1.3, rel: -0.2, hy: 0.4 } },
+    { at: d, v: { rsx: 0.4, rel: 0.2, lsz: 1.2, rsz: 1.2, lel: 0.3, squash: 0.08, hy: 0.2 } },
   ]);
-  const face = faceAt(t, [{ at: t0, f: 'curious' }, { at: pr, f: 'shocked', o: ['sweat'] }], 2);
-  const s = pop(t, pr);
+  const hface = faceAt(t, [{ at: t0, f: 'confident' }, { at: d, f: 'worried', o: ['sweat'] }], 2);
+  const s = pop(t, d);
   return (
     <>
-      <Stage color="#3a1f45" pedestal={false} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.6, 2.2, 5.6], [0.15, 1.3, 0], 32], [t1, [0.3, 2.0, 4.7], [0.15, 1.35, 0], 32]]} />
-      <GamblingTable position={[0.55, 0, 0]} />
-      <Sign text={'JOGOS\nDE AZAR'} w={1.3} h={0.7} position={[0.55, 2.25, -0.5]} bg="#2b1d3f" fg="#ffd23a" />
-      <StampMark text="PROIBIDO" w={1.7} position={[0.55, 2.25, -0.42]} rotation={[0, 0, 0.22]} scale={s} />
-      <Puff t={t} at={pr} position={[0.55, 2.2, -0.3]} color="#ffb0b0" />
-      <Character pose={pose} face={face} />
-    </>
-  );
-};
-
-// 03. "Mesmo assim, ao caminhar por uma rua iluminada por letreiros de *neon*," — travelling na rua.
-const S03 = ({ t, t0, t1 }: ShotProps) => {
-  const ne = W(1, 'neon');
-  const w = walkAlong(t, t0, t1 + 0.3, [0, 0, -9], [0, 0, -9 + (t1 + 0.3 - t0) * 1.15]);
-  const pose = { ...track(t, P({ hy: 0 }), [{ at: ne, v: { hy: 0.5, hp: -0.3 } }]), x: w.p[0], z: w.p[2], walk: w.walk, stride: w.stride };
-  const face = faceAt(t, [{ at: t0, f: 'content' }, { at: W(1, 'iluminada'), f: 'curious' }, { at: ne, f: 'starstruck', o: ['sparkle'] }], 3);
-  const z = w.p[2];
-  return (
-    <>
-      <NeonStreet t={t} acende={W(1, 'letreiros')} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t, [1.5, 1.9, z + 4.6], [0, 1.5, z - 0.4], 32]]} />
-      <Character pose={pose} face={face} />
-    </>
-  );
-};
-
-// 04. "você encontra uma casa de *pachinko* aberta dia e noite."
-const S04 = ({ t, t0, t1 }: ShotProps) => {
-  const pa = W(2, 'pachinko');
-  const pose = track(t, P({ x: -0.5, z: 0.6, ry: 0.35 }), [
-    { at: pa, v: { hy: 0.7, hp: -0.4, lsz: 1.1, rsz: 1.1, lel: 0.5, rel: 0.5 } },
-    { at: W(2, 'dia'), v: { lsz: 0.2, rsz: 0.2, rsx: 1.6, rel: -0.2, hy: 0.4 } },
-  ]);
-  const face = faceAt(t, [{ at: t0, f: 'curious' }, { at: pa, f: 'amazed' }, { at: W(2, 'dia'), f: 'starstruck', o: ['sparkle'] }], 4);
-  return (
-    <>
-      <PachinkoFront t={t} on={pa} h24={W(2, 'dia')} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.4, 1.8, 4.6], [-0.3, 1.7, 0], 32], [pa, [0.6, 2.4, 7.6], [0, 3.2, -2.5], 32], [t1, [0.7, 2.6, 8.6], [0, 3.4, -3], 32]]} />
-      <Character pose={pose} face={face} />
-    </>
-  );
-};
-
-// 05. "Curioso, você *entra*." — caminha até a porta iluminada.
-const S05 = ({ t, t0, t1 }: ShotProps) => {
-  const w = walkAlong(t, t0 + 0.15, t1 + 0.2, [-0.5, 0, 0.6], [0, 0, -2.9]);
-  const ry = lerp(0.35, Math.PI, seg(t, t0, t0 + 0.25));
-  const pose = P({ x: w.p[0], z: w.p[2], ry, walk: w.walk, stride: w.stride });
-  const face = faceAt(t, [{ at: t0, f: 'curious' }, { at: W(3, 'entra'), f: 'bigSmile' }], 5);
-  return (
-    <>
-      <PachinkoFront t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [1.4, 2.0, 4.8], [0, 1.6, -0.5], 32], [t1, [0.5, 2.0, 2.4], [0, 1.6, -3.2], 32]]} />
-      <Character pose={pose} face={face} />
-    </>
-  );
-};
-
-// 06. "Lá dentro, vê fileiras de *máquinas*," — corredor do salão.
-const S06 = ({ t, t0, t1 }: ShotProps) => (
-  <>
-    <PachinkoHall t={t} semBanco={HALL_LIVRES} />
-    <Jogadores t={t} />
-    <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.2, 2.6, 4.5], [0, 1.2, -8], 34], [W(4, 'maquinas'), [0.6, 1.9, 2.0], [-0.6, 1.2, -6], 32], [t1, [0.8, 1.7, 0.6], [-1.0, 1.2, -6], 32]]} />
-  </>
-);
-
-// 07. "luzes piscando e bolinhas caindo sem parar." — close na máquina 6 (livre, sem jogador na frente).
-const S07 = ({ t, t0, t1 }: ShotProps) => (
-  <>
-    <PachinkoHall t={t} semBanco={HALL_LIVRES} />
-    <Jogadores t={t} />
-    <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.6, 1.6, -3.4], [-2.9, 1.35, -4.5], 32], [W(4, 'bolinhas'), [-1.1, 1.45, -4.2], [-2.9, 1.3, -4.5], 32], [t1, [-1.3, 1.4, -4.4], [-2.9, 1.3, -4.5], 32]]} />
-  </>
-);
-
-// 08. "Você começa a jogar e, quando *ganha*," — Você na máquina 5 (x -2.9, z -3.5).
-const S08 = ({ t, t0, t1 }: ShotProps) => {
-  const g = W(5, 'ganha');
-  const pose = track(t, P({ x: -2.05, z: -3.5, ry: -0.75, hy: -0.6, rsx: 0.9, rel: -0.5 }), [
-    { at: W(5, 'jogar'), v: { rsx: 1.1, rel: -0.8, hp: 0.1 } },
-    { at: g, v: { rsx: 0.3, rel: 0.3, lsz: 2.4, rsz: 2.4, lel: 0.3, hy: 0.1, hp: -0.15, squash: 0.1 } },
-  ]);
-  const face = faceAt(t, [{ at: t0, f: 'thinking' }, { at: W(5, 'jogar'), f: 'grin' }, { at: g, f: 'starstruck', o: ['sparkle', 'blush'] }], 6);
-  return (
-    <>
-      <PachinkoHall t={t} win={g} winIndex={5} semBanco={HALL_LIVRES} />
-      <Jogadores t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.9, 2.0, 0.4], [-2.2, 1.35, -3.6], 32], [t1, [0.7, 1.9, 0.0], [-2.2, 1.4, -3.6], 32]]} />
-      <Character pose={pose} face={face} />
-      <Comic t={t} at={g} text="GANHOU!" position={[-2.4, 2.65, -3.3]} size={0.42} hold={1.2} />
-      <Sparkles t={t} from={g} n={10} radius={0.7} center={[-2.6, 1.8, -3.4]} />
-    </>
-  );
-};
-
-// 09. "recebe um *balde* cheio delas." — o balde cai nas mãos.
-const S09 = ({ t, t0, t1 }: ShotProps) => {
-  const b = W(5, 'balde');
-  const pose = track(t, P({ z: -3.2, hy: 0.1, hp: -0.2, lsx: 0.6, rsx: 0.6, lel: -0.6, rel: -0.6 }), [
-    { at: b, v: { lsx: 0.95, rsx: 0.95, lel: -0.9, rel: -0.9, lsz: 0.35, rsz: 0.35, hp: 0.15 }, lead: 0 },
-  ]);
-  const face = faceAt(t, [{ at: t0, f: 'happy' }, { at: b, f: 'bigSmile', o: ['blush'] }], 7);
-  const y = Math.max(0.94, 2.6 - 9 * Math.max(0, t - (b - 0.25)) ** 2 * 2) + (t > b ? Math.abs(Math.sin((t - b) * 14)) * 0.05 * Math.exp(-(t - b) * 6) : 0);
-  return (
-    <>
-      <PachinkoHall t={t} semBanco={HALL_LIVRES} />
-      <Jogadores t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.3, 1.6, 0.3], [0, 1.35, -3.2], 32], [t1, [0.15, 1.55, -0.2], [0, 1.3, -3.2], 32]]} />
-      <Character pose={pose} face={face} />
-      <Bucket position={[0, y, -2.72]} />
-      <Sparkles t={t} from={b} n={7} radius={0.5} center={[0, 1.45, -2.7]} size={0.12} />
-    </>
-  );
-};
-
-// 10. "Mas, ao sair, você *não* troca as bolinhas por dinheiro." — caminhando com o balde.
-const S10 = ({ t, t0, t1 }: ShotProps) => {
-  const n = W(6, 'nao');
-  const w = walkAlong(t, t0, t1 + 0.3, [0, 0, -6], [0, 0, -6 + (t1 + 0.3 - t0) * 0.9]);
-  const pose = { ...track(t, P({ lsx: 0.95, rsx: 0.95, lel: -0.9, rel: -0.9, lsz: 0.35, rsz: 0.35 }), [{ at: n, v: { hy: 0.5, hp: 0.05 } }]), x: w.p[0], z: w.p[2], walk: w.walk, stride: w.stride };
-  const face = faceAt(t, [{ at: t0, f: 'happy' }, { at: n, f: 'confused' }, { at: W(6, 'dinheiro'), f: 'unsure' }], 8);
-  const z = w.p[2];
-  const k = pop(t, n);
-  return (
-    <>
-      <PachinkoHall t={t} semBanco={HALL_LIVRES} />
-      <Jogadores t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t, [1.0, 1.75, z + 4.4], [0.35, 1.4, z], 32]]} />
-      <Character pose={pose} face={face} />
-      <Bucket position={[0, 0.94, z + 0.48]} />
-      <group position={[0.95, 1.5, z + 0.4]} scale={k}>
-        <MoneyStack n={5} symbol="¥" position={[0, -0.15, 0]} rotation={[0.5, -0.3, 0]} />
-        <NoSign position={[0, 0, 0.15]} scale={0.7} />
+      <Office t={t} />
+      <Desk t={t} position={MESA_COLEGA} papeis={0.6} />
+      <Character pose={sentadoEm(MESA_COLEGA, { hy: -0.4, hp: -0.1 })} face={faceAt(t, [{ at: t0, f: 'smile' }, { at: d, f: 'confident' }], 3)} look={COLEGA} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [1.6, 1.8, 4.4], [0.6, 1.25, 0], 32], [t1, [1.3, 1.75, 3.9], [0.6, 1.3, 0], 32]]} />
+      <Character pose={hpose} face={hface} look={CHEFE} />
+      <group position={[0.55, 2.35, 0.4]} scale={s}>
+        <Paper text="DEMISSÃO" color="#26324a" scale={0.75} />
+        <StampMark text="DIFÍCIL!" w={0.75} color="#e0262e" position={[0, -0.05, 0.02]} rotation={[0, 0, 0.25]} />
       </group>
+      <Puff t={t} at={d} position={[0.55, 2.3, 0.5]} color="#ffb0b0" size={0.18} />
     </>
   );
 };
 
-// 11. "Primeiro, entrega tudo e escolhe um *prêmio*:" — balcão de prêmios.
-const S11 = ({ t, t0, t1 }: ShotProps) => {
-  const td = W(7, 'tudo');
-  const pr = W(7, 'premio');
-  const pose = track(t, P({ x: -0.55, z: 1.05, ry: Math.PI - 0.55, lsx: 0.95, rsx: 0.95, lel: -0.9, rel: -0.9, lsz: 0.35, rsz: 0.35 }), [
-    { at: td, v: { lsx: 1.4, rsx: 1.4, lel: -0.2, rel: -0.2, lean: 0.15 } },
-    { at: pr, v: { lsx: 0, rsx: 1.5, rel: -0.1, lel: 0.15, lean: 0, hy: 0.25, hp: -0.15 } },
+// 03. "Então a empresa encontra uma solução *estranha*:" — o chefe pensa.
+const S03 = ({ t, t0, t1 }: ShotProps) => {
+  const e = W(1, 'estranha');
+  const pose = track(t, P({ x: -1.6, z: -1.2, ry: 0.25, rsx: 0.9, rel: -2.2, hp: -0.15, hy: 0.3 }), [
+    { at: W(1, 'solucao'), v: { hy: -0.2, hr: 0.15 } },
+    { at: e, v: { rsx: 2.6, rel: -0.1, hp: -0.25, hy: 0.1, hr: 0 } },
   ]);
-  const face = faceAt(t, [{ at: t0, f: 'smile' }, { at: pr, f: 'curious' }], 9);
-  const k = seg(t, td - 0.3, td - 0.05);
-  const bucketP: V3 = [lerp(-0.55 + Math.sin(Math.PI - 0.55) * 0.48, -0.2, k), lerp(0.94, 1.07, k), lerp(1.05 + Math.cos(Math.PI - 0.55) * 0.48, 0.05, k)];
-  const fpose = track(t, P({ x: 0.45, y: 0.75, z: -0.95, ry: -0.2 }), [
-    { at: td, v: { lsx: 0.9, rsx: 0.9, lel: -0.6, rel: -0.6, hp: 0.15 } },
-    { at: pr, v: { lsx: 0, rsx: 0, rsz: 1.4, rel: 0.3, hy: 0.8, hp: -0.1, twist: 0.3 } },
+  const face = faceAt(t, [{ at: t0, f: 'thinking' }, { at: W(1, 'solucao'), f: 'curious' }, { at: e, f: 'grin', o: ['sparkle'] }], 4);
+  return (
+    <>
+      <Office t={t} />
+      <Desk t={t} position={MESA_CHEFE} papeis={0.3} tela="#ffd98a" />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.8, 1.9, 2.6], [-1.6, 1.7, -1.2], 32], [t1, [-1.0, 1.85, 2.0], [-1.6, 1.8, -1.2], 32]]} />
+      <Character pose={pose} face={face} look={CHEFE} />
+      <IdeaBulb t={t} at={e} position={[-1.6, 3.05, -1.2]} scale={0.8} />
+      <Comic t={t} at={e} text="?!" position={[-0.9, 2.7, -1.0]} size={0.32} hold={0.9} />
+    </>
+  );
+};
+
+// 04. "cria um cargo em que sua única tarefa é *não* fazer *nada*." — a mesa vazia e a placa.
+const S04 = ({ t, t0, t1 }: ShotProps) => {
+  const n = W(2, 'nao');
+  const na = W(2, 'nada');
+  const hpose = track(t, P({ x: -0.45, z: 0.35, ry: -0.45, hy: -0.2 }), [
+    { at: W(2, 'cargo'), v: { lsz: 1.3, lel: 0.2, lsx: 0.4, hy: -0.5 } },
+    { at: na, v: { lsz: 1.5, rsz: 1.5, lel: 0.2, rel: 0.2, lsx: 0, hy: 0, hp: -0.1 } },
   ]);
   return (
     <>
-      <PrizeCounter t={t} acende={pr} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [1.6, 2.0, 5.4], [-0.15, 1.3, -0.1], 32], [t1, [1.3, 1.9, 4.9], [-0.1, 1.4, -0.3], 32]]} />
-      <Character pose={fpose} face={faceAt(t, [{ at: t0, f: 'smile' }, { at: pr, f: 'bigSmile' }], 19)} look={ATENDENTE} />
+      <Office t={t} />
+      <Colegas t={t} />
+      <MesaVoce t={t} placa={false} />
+      <DeskPlate text="CARGO: NÃO FAZER NADA" position={[MESA_VOCE[0] + 0.1, DESK_H + 0.03, MESA_VOCE[2] + 0.15]} scale={0.8 * pop(t, n)} />
+      <Sparkles t={t} from={na} n={8} radius={0.5} center={[MESA_VOCE[0] + 0.1, DESK_H + 0.3, MESA_VOCE[2] + 0.2]} size={0.12} />
+      <Puff t={t} at={n} position={[MESA_VOCE[0] + 0.1, DESK_H + 0.1, MESA_VOCE[2] + 0.2]} color="#fff2c0" size={0.15} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.5, 1.8, 4.9], [-1.0, 1.15, 0.7], 32], [t1, [-0.7, 1.75, 4.4], [-1.05, 1.1, 0.7], 32]]} />
+      <Character pose={hpose} face={faceAt(t, [{ at: t0, f: 'smile' }, { at: na, f: 'smug' }], 5)} look={CHEFE} />
+    </>
+  );
+};
+
+// 05. "Você chega ao *escritório*, senta à mesa e *espera*." — entra, senta, espera.
+const S05 = ({ t, t0, t1 }: ShotProps) => {
+  const sen = W(3, 'senta');
+  const esp = W(3, 'espera');
+  const w = walkAlong(t, t0, sen - 0.15, [-3.8, 0, -0.7], [MESA_VOCE[0], 0, MESA_VOCE[2] - 0.55]);
+  const sitK = seg(t, sen - 0.2, sen + 0.15);
+  const ry = lerp(1.1, 0, seg(t, sen - 0.45, sen - 0.1));
+  const walkPose = P({ x: w.p[0], z: w.p[2], ry, walk: w.walk, stride: w.stride });
+  const sitPose = VOCE_SENTADO({ lsx: 0.4, rsx: 0.4 });
+  const pose = sitK <= 0 ? walkPose : { ...sitPose, y: lerp(0, SENTADO, sitK), lsx: lerp(0, 0.6, sitK), rsx: lerp(0, 0.6, sitK) };
+  const espPose = track(t, pose, [{ at: esp, v: { lsx: 0.9, rsx: 0.9, lel: -1.4, rel: -1.4, hp: 0.1 } }]);
+  const face = faceAt(t, [{ at: t0, f: 'happy' }, { at: W(3, 'escritorio'), f: 'bigSmile' }, { at: esp, f: 'neutral' }], 6);
+  return (
+    <>
+      <Office t={t} />
+      <Colegas t={t} digitando />
+      <MesaVoce t={t} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.0, 2.2, 5.6], [-2.4, 1.2, 0.0], 32], [sen, [-0.8, 1.9, 4.6], [-1.6, 1.1, 0.5], 32], [t1, [-0.9, 1.75, 4.0], [-1.5, 1.1, 0.6], 32]]} />
+      <Character pose={espPose} face={face} />
+    </>
+  );
+};
+
+// 06. "Não recebe *serviço*," — bandeja do colega enche, a sua fica vazia.
+const S06 = ({ t, t0, t1 }: ShotProps) => {
+  const s = W(4, 'servico');
+  const pose = VOCE_SENTADO({ hy: 0.6, hp: 0.35 });
+  const trayV: V3 = [MESA_VOCE[0] + 0.45, DESK_H + 0.03, MESA_VOCE[2] + 0.05];
+  return (
+    <>
+      <Office t={t} />
+      <Colegas t={t} digitando />
+      <MesaVoce t={t} extra={<InTray t={t} position={trayV} label="ENTRADA" />} />
+      <InTray t={t} a={t0} b={s} n={12} position={[MESA_COLEGA[0] - 0.45, DESK_H + 0.03, MESA_COLEGA[2] + 0.1]} label="ENTRADA" />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.3, 3.4, 5.4], [-0.3, 0.8, 0.3], 32], [t1, [-0.3, 3.2, 5.0], [-0.3, 0.8, 0.3], 32]]} />
+      <Character pose={pose} face={faceAt(t, [{ at: t0, f: 'curious' }, { at: s, f: 'confused' }], 7)} />
+      <Puff t={t} at={s} position={[trayV[0], trayV[1] + 0.08, trayV[2]]} color="#d8d0c0" size={0.12} />
+    </>
+  );
+};
+
+// 07. "não participa das *decisões*" — reunião sem Você.
+const S07 = ({ t, t0, t1 }: ShotProps) => {
+  const d = W(4, 'decisoes');
+  const mesa: V3 = [2.6, 0, -2.6];
+  const pessoas: [typeof PAULA, V3, number][] = [
+    [CHEFE, [2.6, 0, -3.4], 0],
+    [PAULA, [1.8, 0, -2.4], 1.2],
+    [KAIO, [3.4, 0, -2.4], -1.2],
+  ];
+  return (
+    <>
+      <Office t={t} />
+      <mesh position={[mesa[0], 0.72, mesa[2]]} castShadow receiveShadow>
+        <cylinderGeometry args={[0.7, 0.7, 0.06, 32]} />
+        <meshStandardMaterial color="#c79a64" />
+      </mesh>
+      <mesh position={[mesa[0], 0.36, mesa[2]]}>
+        <cylinderGeometry args={[0.08, 0.2, 0.72, 12]} />
+        <meshStandardMaterial color="#8a6a44" />
+      </mesh>
+      <group position={[2.6, 2.3, -4.15]}>
+        <mesh>
+          <boxGeometry args={[1.8, 1.1, 0.05]} />
+          <meshStandardMaterial color="#fbfbf8" />
+        </mesh>
+        <mesh position={[0, 0, 0.03]}>
+          <planeGeometry args={[1.7, 1.0]} />
+          <meshStandardMaterial map={undefined} color="#ffffff" />
+        </mesh>
+        {[0.25, 0.45, 0.35, 0.6].map((h, i) => (
+          <mesh key={i} position={[-0.5 + i * 0.32, -0.4 + h / 2 + seg(t, d - 0.5, d) * 0.0, 0.04]}>
+            <boxGeometry args={[0.2, h * (0.4 + 0.6 * seg(t, t0, d - 0.05)), 0.01]} />
+            <meshStandardMaterial color={['#3ab54a', '#2f6fb3', '#f2b53a', '#e0262e'][i]} />
+          </mesh>
+        ))}
+      </group>
+      {pessoas.map(([look, p, ry], i) => (
+        <Character key={i} pose={track(t, P({ x: p[0], z: p[2], ry, hy: 0 }), [{ at: d, v: i === 0 ? { rsx: 1.4, rel: -0.2 } : { hp: 0.15, hy: 0.2 } }])} face={faceAt(t, [{ at: 0, f: i === 0 ? 'confident' : 'thinking' }, { at: d, f: i === 0 ? 'smug' : 'happy' }], 40 + i)} look={look} />
+      ))}
+      <MesaVoce t={t} />
+      <Character pose={VOCE_SENTADO({ ry: 0.9, hy: 0.4, hp: -0.05 })} face={faceAt(t, [{ at: t0, f: 'curious' }, { at: d, f: 'worried' }], 8)} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-2.7, 2.4, 4.4], [0.9, 1.2, -2.0], 32], [t1, [-2.5, 2.3, 4.0], [1.0, 1.25, -2.1], 32]]} />
+      <Comic t={t} at={d} text="BLÁ BLÁ" position={[2.6, 2.9, -2.8]} size={0.3} hold={0.8} />
+    </>
+  );
+};
+
+// 08. "e ninguém parece precisar da sua *ajuda*." — mão levantada, ninguém olha.
+const S08 = ({ t, t0, t1 }: ShotProps) => {
+  const a = W(5, 'ajuda');
+  const pose = track(t, VOCE_SENTADO(), [
+    { at: W(5, 'ninguem'), v: { rsx: 2.9, rel: 0, rsz: 0.3, hy: 0.3 } },
+    { at: a, v: { rsx: 0.6, rel: -0.9, rsz: 0.12, hy: 0, hp: 0.3 } },
+  ]);
+  const face = faceAt(t, [{ at: t0, f: 'happy' }, { at: W(5, 'ninguem'), f: 'curious' }, { at: a, f: 'tired' }], 9);
+  const w = walkAlong(t, t0 - 0.2, t1, [-3.5, 0, 2.2], [1.5, 0, 2.2]);
+  return (
+    <>
+      <Office t={t} />
+      <Colegas t={t} digitando sem={['paula']} />
+      <MesaVoce t={t} />
+      <Character pose={P({ x: w.p[0], z: w.p[2], ry: Math.PI / 2, walk: w.walk, stride: w.stride, lsx: 0.9, lel: -1.6, hy: 0.4 })} face={faceAt(t, [{ at: 0, f: 'neutral' }], 50)} look={PAULA} left={<Paper text="RELATÓRIO" scale={0.25} position={[0, -0.05, 0.05]} rotation={[-1.4, 0, 0]} />} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.7, 1.7, 4.4], [-1.3, 1.25, 0.6], 32], [t1, [-1.0, 1.65, 3.9], [-1.4, 1.25, 0.6], 32]]} />
       <Character pose={pose} face={face} />
-      <Bucket position={bucketP} />
     </>
   );
 };
 
-// 12. "pode ser um *chocolate*, um *xampu* ou um *brinquedo* pequeno." — prêmios pulam no balcão.
-const S12 = ({ t, t0, t1 }: ShotProps) => {
-  const c = W(8, 'chocolate');
-  const x = W(8, 'xampu');
-  const b = W(8, 'brinquedo');
-  const fpose = track(t, P({ x: 0, y: 0.75, z: -0.95 }), [
-    { at: c, v: { lsz: 1.0, lsx: 0.6, lel: -0.3, hy: 0.5, hp: 0.2 } },
-    { at: x, v: { lsz: 0.2, lsx: 0, hy: 0, hp: 0.25 } },
-    { at: b, v: { rsz: 1.0, rsx: 0.6, rel: -0.3, hy: -0.5, hp: 0.2 } },
-  ]);
-  const face = faceAt(t, [{ at: t0, f: 'smile' }, { at: c, f: 'happy' }, { at: x, f: 'wink' }, { at: b, f: 'bigSmile' }], 11);
+// 09. "O *relógio* continua andando… tic-tac, tic-tac…" — close no relógio.
+const S09 = ({ t, t0, t1 }: ShotProps) => {
+  const r = W(6, 'relogio');
+  const tics = [W(6, 4), W(6, 4) + 0.35, W(6, 5), W(6, 5) + 0.35];
   return (
     <>
-      <PrizeCounter t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.0, 1.8, 4.2], [0, 1.3, -0.3], 32], [t1, [0.25, 1.7, 3.8], [0, 1.3, -0.3], 32]]} />
-      <Character pose={fpose} face={face} look={ATENDENTE} />
-      <Chocolate position={[-0.62, 1.07, 0.15]} scale={pop(t, c) * 1.4} />
-      <Shampoo position={[0, 1.07, 0.15]} scale={pop(t, x) * 1.4} />
-      <Ursinho position={[0.62, 1.07, 0.15]} scale={pop(t, b) * 1.4} />
-      <Sparkles t={t} from={c} n={5} radius={0.25} center={[-0.62, 1.25, 0.2]} size={0.09} />
-      <Sparkles t={t} from={x} n={5} radius={0.25} center={[0, 1.35, 0.2]} size={0.09} />
-      <Sparkles t={t} from={b} n={5} radius={0.25} center={[0.62, 1.35, 0.2]} size={0.09} />
-    </>
-  );
-};
-
-// O prêmio na mão de Você (ursinho), posicionado em frente ao peito.
-const PremioNaMao = ({ p, ry }: { p: V3; ry: number }) => <Ursinho position={[p[0] + Math.sin(ry) * 0.45, 0.95, p[2] + Math.cos(ry) * 0.45]} rotation={[0, ry, 0]} scale={1.3} />;
-
-// 13. "Então você percebe uma pequena *loja* ali perto."
-const S13 = ({ t, t0, t1 }: ShotProps) => {
-  const l = W(9, 'loja');
-  const pose = track(t, P({ x: 1.3, z: 2.2, ry: 0.2, lsx: 0.9, rsx: 0.9, lel: -1.0, rel: -1.0, lsz: 0.3, rsz: 0.3 }), [
-    { at: W(9, 'percebe'), v: { hy: -0.9, hp: 0 }, lead: 2 },
-    { at: l, v: { ry: -0.5, hy: -0.7 } },
-  ]);
-  const face = faceAt(t, [{ at: t0, f: 'content' }, { at: W(9, 'percebe'), f: 'sideEye' }, { at: l, f: 'curious' }], 12);
-  return (
-    <>
-      <WindowShop t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [2.2, 1.7, 5.4], [1.3, 1.5, 2.2], 32], [l, [1.4, 2.0, 6.6], [0.4, 1.6, 0.6], 32], [t1, [1.1, 2.0, 6.0], [0.3, 1.6, 0.4], 32]]} />
-      <Character pose={pose} face={face} />
-      <PremioNaMao p={[pose.x, 0, pose.z]} ry={pose.ry} />
-    </>
-  );
-};
-
-// 14. "Na *janela*, alguém compra justamente aquele prêmio." — janelinha abre, Sombra aparece.
-const S14 = ({ t, t0, t1 }: ShotProps) => {
-  const j = W(10, 'janela');
-  const spose = track(t, P({ z: -0.62, hp: 0.15 }), [{ at: j, v: { hp: -0.05, hy: 0.15 } }, { at: W(10, 'compra'), v: { rsx: 1.3, rel: -0.3, hy: 0 } }]);
-  const face = faceAt(t, [{ at: t0, f: 'deadpan' }, { at: j, f: 'suspicious' }, { at: W(10, 'premio'), f: 'smug' }], 13);
-  return (
-    <>
-      <WindowShop t={t} abre={j} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.5, 1.55, 3.0], [0, 1.5, 0], 32], [t1, [0.3, 1.58, 2.3], [0, 1.55, 0], 32]]} />
-      <Character pose={spose} face={face} look={JANELA} />
-    </>
-  );
-};
-
-// 15. "Você entrega o objeto e recebe *dinheiro* em troca."
-const S15 = ({ t, t0, t1 }: ShotProps) => {
-  const ob = W(11, 'objeto');
-  const d = W(11, 'dinheiro');
-  const pose = track(t, P({ x: 0.3, z: 0.95, ry: Math.PI - 0.15, lsx: 0.9, rsx: 0.9, lel: -1.0, rel: -1.0, lsz: 0.3, rsz: 0.3 }), [
-    { at: ob, v: { lsx: 1.45, rsx: 1.45, lel: -0.1, rel: -0.1, lean: 0.1 } },
-    { at: d, v: { lsx: 0.2, lel: 0.15, rsx: 1.0, rel: -1.2, lean: 0, ry: Math.PI - 1.4, hy: -0.6 } },
-  ]);
-  const face = faceAt(t, [{ at: t0, f: 'smile' }, { at: d, f: 'starstruck', o: ['sparkle'] }], 14);
-  const spose = track(t, P({ z: -0.62, hp: 0.1 }), [{ at: ob, v: { rsx: 1.5, rel: -0.1, lsx: 1.5, lel: -0.1 } }, { at: d, v: { rsx: 0.2, lsx: 0.2 } }]);
-  const kIn = seg(t, ob - 0.35, ob + 0.25);
-  const prize: V3 = [lerp(0.3 + Math.sin(Math.PI - 0.15) * 0.45, 0, kIn), lerp(0.95, 1.33, kIn), lerp(0.95 + Math.cos(Math.PI - 0.15) * 0.45, -0.3, kIn)];
-  const kOut = seg(t, d - 0.35, d - 0.03);
-  return (
-    <>
-      <WindowShop t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [1.3, 2.1, 4.0], [0.1, 1.4, 0.2], 32], [d, [2.3, 1.8, 3.8], [0.25, 1.4, 0.5], 32], [t1, [2.4, 1.75, 3.9], [0.3, 1.4, 0.5], 32]]} />
-      <Character pose={spose} face={faceAt(t, [{ at: t0, f: 'suspicious' }], 15)} look={JANELA} />
-      <Character pose={pose} face={face} />
-      {kIn < 0.98 && <Ursinho position={prize} rotation={[0, Math.PI, 0]} scale={1.3} />}
-      {t > d - 0.4 && <MoneyStack n={4} symbol="¥" position={[lerp(0, 0.15, kOut), 1.32, lerp(-0.2, 0.18, kOut)]} rotation={[0, 0.3, 0]} />}
-      <CoinBurst t={t} at={d} n={6} position={[0.1, 1.4, 0.25]} />
-    </>
-  );
-};
-
-// 16. "A casa de pachinko diz que oferece *apenas* o jogo." — atendente, placa SÓ JOGO.
-const S16 = ({ t, t0, t1 }: ShotProps) => {
-  const a = W(12, 'apenas');
-  const fpose = track(t, P({ x: 0, y: 0.75, z: -0.95 }), [
-    { at: W(12, 'diz'), v: { rsx: 0.8, rel: -0.6, hy: 0.15 } },
-    { at: a, v: { rsx: 0, rel: 0.3, lsz: 1.5, rsz: 1.5, lel: 0.2, hp: -0.1, hy: 0 } },
-  ]);
-  const face = faceAt(t, [{ at: t0, f: 'smile' }, { at: a, f: 'smug' }], 16);
-  return (
-    <>
-      <PrizeCounter t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.6, 1.8, 3.9], [0, 1.6, -0.6], 32], [t1, [-0.2, 1.75, 3.3], [0, 1.6, -0.6], 32]]} />
-      <Character pose={fpose} face={face} look={ATENDENTE} />
-      <Sign text="SÓ JOGO" w={1.2} h={0.42} position={[0, 1.3, 0.3]} rotation={[-0.15, 0, 0]} scale={pop(t, a)} bg="#2b1d3f" fg="#ffd23a" />
-    </>
-  );
-};
-
-// 17. "A loja afirma que só compra *prêmios*." — Sombra, placa SÓ PRÊMIOS.
-const S17 = ({ t, t0, t1 }: ShotProps) => {
-  const p = W(13, 'premios');
-  const spose = track(t, P({ z: -0.62, hp: 0.1 }), [{ at: W(13, 'afirma'), v: { hy: -0.2, hr: 0.15 } }, { at: p, v: { hy: 0.1, hr: -0.1, hp: -0.05 } }]);
-  const face = faceAt(t, [{ at: t0, f: 'suspicious' }, { at: p, f: 'smug' }], 17);
-  return (
-    <>
-      <WindowShop t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.5, 1.6, 3.1], [0, 1.4, 0], 32], [t1, [-0.25, 1.55, 2.6], [0, 1.4, 0], 32]]} />
-      <Character pose={spose} face={face} look={JANELA} />
-      <Sign text="SÓ PRÊMIOS" w={1.3} h={0.36} position={[0, 0.98, 0.14]} scale={pop(t, p)} bg="#7a2340" fg="#ffffff" />
-    </>
-  );
-};
-
-// 18. "E, quando a *polícia* aparece, você vê que," — Sargento Ramos chega.
-const S18 = ({ t, t0, t1 }: ShotProps) => {
-  const po = W(14, 'policia');
-  const w = walkAlong(t, t0, po - 0.05, [3.4, 0, 2.2], [1.25, 0, 1.6]);
-  const rpose = track(t, P({ ry: -1.2, rsx: 0.9, rel: -1.2 }), [{ at: W(14, 'voce'), v: { ry: -0.7, hy: -0.4 } }]);
-  const rp = { ...rpose, x: w.p[0], z: w.p[2], walk: w.walk, stride: w.stride };
-  const vpose = track(t, P({ x: -0.9, z: 1.4, ry: 0.5, lsx: 0.2 }), [{ at: po, v: { hy: 0.8, squash: 0.08 } }, { at: W(14, 'voce'), v: { hy: 0.5 } }]);
-  const vface = faceAt(t, [{ at: t0, f: 'happy' }, { at: po, f: 'nervous', o: ['sweat'] }], 18);
-  return (
-    <>
-      <WindowShop t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.4, 2.0, 7.4], [0.1, 1.3, 0.8], 32], [t1, [0.3, 1.9, 6.8], [0.1, 1.35, 0.9], 32]]} />
-      <Character pose={spose14} face={faceAt(t, [{ at: t0, f: 'deadpan' }], 30)} look={JANELA} />
-      <Character pose={rp} face={faceAt(t, [{ at: t0, f: 'suspicious' }, { at: W(14, 'voce'), f: 'confident' }], 20)} look={POLICIA} right={<Clipboard text={'JOGO\nPRÊMIO\nVENDA'} position={[0, -0.12, 0.05]} rotation={[-1.2, 0, 0]} />} />
-      <Character pose={vpose} face={vface} />
-    </>
-  );
-};
-const spose14 = P({ z: -0.62, hp: 0.1 });
-
-// 19. "no papel, tudo parece *separado*." — três papéis se afastam.
-const S19 = ({ t, t0, t1 }: ShotProps) => {
-  const s = W(14, 'separado');
-  const k = seg(t, s - 0.35, s - 0.05, (x) => 1 + 2.4 * Math.pow(x - 1, 3) + 1.4 * Math.pow(x - 1, 2));
-  const rpose = track(t, P({ x: -0.6, ry: 0.55, rsx: 0.9, rel: -1.2 }), [{ at: s, v: { lsz: 1.4, lel: 0.2, hy: 0.5, hp: -0.1 } }]);
-  const papers = ['JOGO', 'PRÊMIO', 'VENDA'];
-  const cores = ['#c8202e', '#2f6fb3', '#2a8a3a'];
-  return (
-    <>
-      <Stage color="#2a2448" pedestal={false} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.1, 1.7, 5.6], [0.05, 1.35, 0], 32], [t1, [0.15, 1.8, 6.2], [0.05, 1.35, 0], 32]]} />
-      <Character pose={rpose} face={faceAt(t, [{ at: t0, f: 'thinking' }, { at: s, f: 'confident' }], 21)} look={POLICIA} right={<Clipboard text={'JOGO\nPRÊMIO\nVENDA'} position={[0, -0.12, 0.05]} rotation={[-1.2, 0, 0]} />} />
-      {papers.map((p, i) => (
-        <Paper key={p} text={p} color={cores[i]} position={[0.55 + (i - 1) * (0.12 + 0.4 * k) + 0.1 * k, 1.35 + (i - 1) * 0.55 * (1 - k * 0.3) - 0.0, 0.1 + i * 0.03 - 0.15 * k * Math.abs(i - 1)]} rotation={[0, -0.15, (i - 1) * 0.12 * k]} scale={0.55} />
+      <Office t={t} />
+      <WallClock t={t} position={[-1.4, 3.0, -4.12]} scale={0.8} balanca={tics} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.2, 2.6, -1.0], [-1.4, 2.95, -4.1], 32], [r, [-1.3, 2.85, -2.2], [-1.4, 3.0, -4.1], 32], [t1, [-1.35, 2.95, -2.6], [-1.4, 3.0, -4.1], 32]]} />
+      {tics.map((at, i) => (
+        <Comic key={i} t={t} at={at} text={i % 2 ? 'TAC!' : 'TIC!'} position={[i % 2 ? -0.95 : -1.85, 3.55 - (i % 2) * 0.1, -3.9]} size={0.22} hold={0.3} />
       ))}
     </>
   );
 };
 
-// 20. "Você olha para a janelinha e entende o *truque*:" — lâmpada de ideia.
+// 10. "e o dia *não* passa." — Você entediado, cabeça apoiada na mão.
+const S10 = ({ t, t0, t1 }: ShotProps) => {
+  const n = W(6, 'nao');
+  const pose = track(t, VOCE_SENTADO({ rsx: 1.2, rel: -2.3, hr: 0.25, hp: 0.1 }), [{ at: n, v: { hr: 0.4, hp: 0.15, squash: 0.08 } }]);
+  return (
+    <>
+      <Office t={t} />
+      <Colegas t={t} digitando />
+      <MesaVoce t={t} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.0, 1.55, 3.0], [-1.5, 1.2, 0.5], 32], [t1, [-1.15, 1.5, 2.6], [-1.5, 1.2, 0.5], 32]]} />
+      <Character pose={pose} face={faceAt(t, [{ at: t0, f: 'bored' }, { at: n, f: 'tired' }], 10)} />
+    </>
+  );
+};
+
+// 11. "No começo, talvez você até ache que conseguiu o emprego *perfeito*." — recostado, feliz.
+const S11 = ({ t, t0, t1 }: ShotProps) => {
+  const p = W(7, 'perfeito');
+  const pose = track(t, VOCE_SENTADO(), [
+    { at: W(7, 'talvez'), v: { lsx: 2.6, rsx: 2.6, lel: -2.4, rel: -2.4, lsz: 0.6, rsz: 0.6, lean: -0.15, hp: -0.1 } },
+    { at: p, v: { hp: -0.2, hr: 0.1 } },
+  ]);
+  return (
+    <>
+      <Office t={t} />
+      <Colegas t={t} digitando />
+      <MesaVoce t={t} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.6, 1.7, 3.9], [-1.4, 1.25, 0.6], 32], [t1, [-0.9, 1.65, 3.3], [-1.45, 1.3, 0.6], 32]]} />
+      <Character pose={pose} face={faceAt(t, [{ at: t0, f: 'content' }, { at: W(7, 'talvez'), f: 'closedSmile' }, { at: p, f: 'starstruck', o: ['sparkle', 'blush'] }], 11)} />
+      <Comic t={t} at={p} text="PERFEITO!" position={[-1.4, 2.45, 0.6]} size={0.38} hold={0.9} />
+      <Sparkles t={t} from={p} n={9} radius={0.65} center={[-1.5, 1.45, 0.5]} />
+    </>
+  );
+};
+
+// 12/13. Calendário de mesa virando folhas (dias → meses → anos).
+const CAL: V3 = [MESA_VOCE[0] - 0.42, DESK_H + 0.32, MESA_VOCE[2] + 0.05];
+const S12 = ({ t, t0, t1 }: ShotProps) => {
+  const m = W(8, 'meses');
+  return (
+    <>
+      <Office t={t} noite={Math.floor(t * 3) % 2} />
+      <MesaVoce t={t} />
+      <Character pose={VOCE_SENTADO({ rsx: 1.2, rel: -2.3, hr: 0.25 })} face={faceAt(t, [{ at: t0, f: 'bored' }], 12)} />
+      <Calendar t={t} from={t0 + 0.1} at={m} pages={['SEG', 'TER', 'QUA', 'QUI', 'SEX', '1 MÊS', '2 MESES', '4 MESES', '6 MESES']} position={CAL} rotation={[-0.15, 0.25, 0]} scale={0.55} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.3, 1.5, 3.2], [-1.7, 1.1, 0.8], 32], [t1, [-1.4, 1.45, 2.9], [-1.75, 1.1, 0.85], 32]]} />
+      <Sparkles t={t} from={m} n={6} radius={0.35} center={[CAL[0], CAL[1] + 0.1, CAL[2] + 0.1]} size={0.08} />
+    </>
+  );
+};
+const S13 = ({ t, t0, t1 }: ShotProps) => {
+  const a = W(9, 'anos');
+  return (
+    <>
+      <Office t={t} noite={Math.floor(t * 5) % 2} />
+      <Colegas t={t} digitando />
+      <MesaVoce t={t} />
+      <Character pose={VOCE_SENTADO({ rsx: 1.2, rel: -2.3, hr: 0.35, hp: 0.15 })} face={faceAt(t, [{ at: t0, f: 'tired' }, { at: a, f: 'sleepy' }], 13)} />
+      <Calendar t={t} from={t0 + 0.05} at={a} pages={['6 MESES', '9 MESES', '1 ANO', '2 ANOS', '3 ANOS']} position={CAL} rotation={[-0.15, 0.25, 0]} scale={0.55} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.2, 1.5, 2.9], [-1.6, 1.1, 0.8], 32], [t1, [-0.9, 1.7, 3.7], [-1.4, 1.15, 0.6], 32]]} />
+    </>
+  );
+};
+
+// 14. "Enquanto os outros *trabalham*, você continua no mesmo *lugar*, sem uma tarefa de verdade." — teia de aranha.
+const S14 = ({ t, t0, t1 }: ShotProps) => {
+  const tr = W(10, 'trabalham');
+  const l = W(10, 'lugar');
+  return (
+    <>
+      <Office t={t} />
+      <Colegas t={t} digitando />
+      <PaperRain t={t} from={tr - 0.3} n={18} area={2.4} top={3.2} title="TAREFA" footer="URGENTE" position={[1.9, 0, -1.4]} />
+      <MesaVoce t={t} />
+      <Character pose={VOCE_SENTADO({ hp: 0.05 })} face={faceAt(t, [{ at: t0, f: 'deadpan' }, { at: l, f: 'bored' }], 14)} />
+      <Cobweb t={t} at={l} position={[MESA_VOCE[0] - 0.74, DESK_H + 0.36, MESA_VOCE[2] - 0.38]} rotation={[0, Math.PI / 4, 0]} size={0.75} />
+      <Cobweb t={t} at={l + 0.25} position={[MESA_VOCE[0] + 0.74, DESK_H + 0.34, MESA_VOCE[2] + 0.38]} rotation={[0, Math.PI + Math.PI / 4, Math.PI]} size={0.6} />
+      <Puff t={t} at={l} position={[MESA_VOCE[0], DESK_H + 0.1, MESA_VOCE[2]]} color="#cfc8b8" size={0.2} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.2, 2.3, 5.0], [0.4, 1.0, -0.6], 32], [l, [-0.8, 1.8, 3.8], [-1.3, 1.05, 0.6], 32], [t1, [-1.0, 1.7, 3.3], [-1.4, 1.05, 0.6], 32]]} />
+    </>
+  );
+};
+
+// 15. "Quando percebe, já está há *oito* anos sem fazer nada." — contador 8 ANOS.
+const S15 = ({ t, t0, t1 }: ShotProps) => {
+  const o = W(11, 'oito');
+  const pose = track(t, VOCE_SENTADO({ hp: 0.05 }), [{ at: o, v: { lsz: 1.4, rsz: 1.4, lel: 0.2, rel: 0.2, lsx: 0.2, rsx: 0.2, hp: -0.2, squash: 0.05 } }]);
+  return (
+    <>
+      <Office t={t} />
+      <MesaVoce t={t} />
+      <Character pose={pose} face={faceAt(t, [{ at: t0, f: 'curious' }, { at: o, f: 'shocked', o: ['sweat'] }], 15)} />
+      <LedCounter t={t} from={W(11, 'ja')} at={o} value={8} suffix=" ANOS" position={[MESA_VOCE[0], 2.45, MESA_VOCE[2] - 0.6]} scale={0.45} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.2, 1.9, 4.2], [-1.5, 1.7, 0.4], 32], [t1, [-1.3, 1.85, 3.6], [-1.5, 1.75, 0.4], 32]]} />
+    </>
+  );
+};
+
+// 16. "E então você entende que ficar sem trabalhar também pode *pesar*." — o peso cai.
+const S16 = ({ t, t0, t1 }: ShotProps) => {
+  const p = W(12, 'pesar');
+  const y = DESK_H + 0.03 + Math.max(0, 3.2 * (1 - seg(t, p - 0.25, p, (x) => x * x))) + (t > p ? Math.abs(Math.sin((t - p) * 16)) * 0.06 * Math.exp(-(t - p) * 7) : 0);
+  const pose = track(t, VOCE_SENTADO({ hp: 0.05 }), [{ at: p, v: { squash: 0.25, hp: 0.3, lsx: 0.3, rsx: 0.3 }, lead: 0, dur: 3 }]);
+  return (
+    <>
+      <Office t={t} />
+      <Colegas t={t} />
+      <MesaVoce t={t} placa={false} />
+      <Character pose={pose} face={faceAt(t, [{ at: t0, f: 'thinking' }, { at: W(12, 'trabalhar'), f: 'worried' }, { at: p, f: 'tired', o: ['shading'] }], 16)} />
+      {t > p - 0.3 && <Weight position={[MESA_VOCE[0] - 0.1, y, MESA_VOCE[2] + 0.05]} scale={0.9} />}
+      <Puff t={t} at={p} position={[MESA_VOCE[0], DESK_H + 0.08, MESA_VOCE[2] + 0.2]} color="#d8d0c0" size={0.3} />
+      <Comic t={t} at={p} text="TUM!" position={[-0.55, 2.2, 1.1]} size={0.32} hold={0.6} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.6, 2.0, 5.0], [-1.4, 1.3, 0.6], 32], [t1, [-0.8, 1.9, 4.5], [-1.45, 1.25, 0.6], 32]]} />
+    </>
+  );
+};
+
+// 17. "Você se sente *inútil*," — medidor de utilidade cai a zero.
+const S17 = ({ t, t0, t1 }: ShotProps) => {
+  const i = W(13, 'inutil');
+  return (
+    <>
+      <Office t={t} escuro={0.3} />
+      <MesaVoce t={t} />
+      <Character pose={VOCE_SENTADO({ hp: 0.25, squash: 0.1 })} face={faceAt(t, [{ at: t0, f: 'worried' }, { at: i, f: 'worried', o: ['tears'] }], 17)} />
+      <Meter t={t} from={t0} at={i} label="UTILIDADE" position={[MESA_VOCE[0], 2.4, MESA_VOCE[2] - 0.5]} scale={0.7} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.1, 1.8, 3.6], [-1.5, 1.65, 0.4], 32], [t1, [-1.2, 1.75, 3.2], [-1.5, 1.65, 0.4], 32]]} />
+    </>
+  );
+};
+
+// 18. "*isolado* e *preso* naquele escritório." — mesas se afastam, grades descem.
+const S18 = ({ t, t0, t1 }: ShotProps) => {
+  const is = W(13, 'isolado');
+  const pr = W(13, 'preso');
+  const af = seg(t, is - 0.3, is + 0.4);
+  const ck = seg(t, pr - 0.3, pr - 0.02, (x) => x * x);
+  return (
+    <>
+      <Office t={t} escuro={0.3 + 0.6 * af} />
+      <Colegas t={t} digitando afasta={af} />
+      <MesaVoce t={t} />
+      <pointLight position={[MESA_VOCE[0], 2.6, MESA_VOCE[2] + 0.8]} color="#fff2d0" intensity={8 * af} distance={4} decay={1.5} />
+      <Character pose={track(t, VOCE_SENTADO({ hp: 0.2 }), [{ at: is, v: { hy: 0.6, hp: 0 } }, { at: pr, v: { hy: 0, hp: -0.1, lsx: 1.2, rsx: 1.2, lel: -0.3, rel: -0.3 } }])} face={faceAt(t, [{ at: t0, f: 'tired' }, { at: is, f: 'worried' }, { at: pr, f: 'scared', o: ['tears'] }], 18)} />
+      <Cage k={ck} position={[MESA_VOCE[0], 0, MESA_VOCE[2] - 0.35]} />
+      {t > pr - 0.05 && <Puff t={t} at={pr} position={[MESA_VOCE[0], 0.1, MESA_VOCE[2] + 0.6]} color="#c8c0b0" size={0.25} />}
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.9, 2.0, 4.0], [-1.4, 1.1, 0.4], 32], [pr, [-0.6, 2.3, 5.4], [-1.4, 1.2, 0.4], 32], [t1, [-0.5, 2.4, 5.8], [-1.4, 1.2, 0.4], 32]]} />
+    </>
+  );
+};
+
+// 19. "Até que, um dia, coloca um pedido de *demissão* sobre a mesa." — carta na mesa do chefe.
+const S19 = ({ t, t0, t1 }: ShotProps) => {
+  const d = W(14, 'demissao');
+  const ponto: V3 = [MESA_CHEFE[0] + 0.25, DESK_H + 0.035, MESA_CHEFE[2] + 0.2];
+  const vp = track(t, P({ x: MESA_CHEFE[0] + 0.35, z: MESA_CHEFE[2] + 1.05, ry: Math.PI - 0.35, rsx: 0.6, rel: -0.9 }), [
+    { at: W(14, 'coloca'), v: { rsx: 1.3, rel: -0.6, lean: 0.12 } },
+    { at: d, v: { rsx: 1.0, rel: -0.2, lean: 0.25, hp: 0.15 }, lead: 0, dur: 4 },
+  ]);
+  const hand = seg(t, W(14, 'coloca') - 0.2, d - 0.03);
+  const lp: V3 = [lerp(ponto[0] + 0.25, ponto[0], hand), lerp(1.05, ponto[1], hand), lerp(ponto[2] + 0.55, ponto[2], hand)];
+  return (
+    <>
+      <Office t={t} />
+      <Desk t={t} position={MESA_CHEFE} papeis={0.3} tela="#ffd98a" />
+      <Character pose={sentadoEm(MESA_CHEFE, { hy: 0.1 })} face={faceAt(t, [{ at: t0, f: 'smug' }, { at: d, f: 'shocked', o: ['sweat'] }], 19)} look={CHEFE} />
+      <Character pose={vp} face={faceAt(t, [{ at: t0, f: 'neutral' }, { at: d, f: 'confident' }], 20)} />
+      <Letter position={lp} rotation={[0, Math.PI / 2 + 0.3, 0]} scale={1.3} />
+      <Comic t={t} at={d} text="TUM!" position={[MESA_CHEFE[0] - 0.4, 2.2, MESA_CHEFE[2] + 0.4]} size={0.3} hold={0.6} />
+      <Puff t={t} at={d} position={[ponto[0], ponto[1] + 0.05, ponto[2]]} color="#fff" size={0.14} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [2.9, 2.1, -0.2], [-1.4, 1.2, -2.4], 32], [t1, [2.6, 2.05, -0.4], [-1.45, 1.2, -2.4], 32]]} />
+    </>
+  );
+};
+
+// 20. "Porque receber para não fazer nada pode parecer um *sonho*…" — nuvem de sonho.
 const S20 = ({ t, t0, t1 }: ShotProps) => {
-  const tr = W(15, 'truque');
-  const pose = track(t, P({ x: 0.9, z: 1.7, ry: 0.15, hy: -0.75, hp: -0.05 }), [
-    { at: W(15, 'entende'), v: { hy: -0.3, hp: 0.1, rsx: 0.9, rel: -2.0 } },
-    { at: tr, v: { hy: 0.15, hp: -0.15, rsx: 2.6, rel: -0.1 } },
-  ]);
-  const face = faceAt(t, [{ at: t0, f: 'sideEye' }, { at: W(15, 'entende'), f: 'thinking' }, { at: tr, f: 'amazed', o: ['sparkle'] }], 22);
+  const s = W(15, 'sonho');
+  const k = seg(t, t0 + 0.4, s - 0.03, (x) => 1 + 2.2 * Math.pow(x - 1, 3) + 1.2 * Math.pow(x - 1, 2));
   return (
     <>
-      <WindowShop t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [1.6, 1.8, 5.0], [0.85, 1.55, 1.7], 32], [t1, [1.35, 1.75, 4.4], [0.85, 1.65, 1.7], 32]]} />
-      <Character pose={pose} face={face} />
-      <IdeaBulb t={t} at={tr} position={[0.9, 2.75, 1.7]} scale={0.9} />
+      <Stage color="#3a3460" pedestal={false} />
+      <Character pose={P({ ry: 0.2, hp: -0.15, lsx: 2.6, rsx: 2.6, lel: -2.4, rel: -2.4, lsz: 0.6, rsz: 0.6 })} face={faceAt(t, [{ at: t0, f: 'content' }, { at: s, f: 'closedSmile', o: ['blush'] }], 21)} />
+      <DreamCloud t={t} k={k} position={[0.5, 2.75, 0]} scale={1} />
+      <Sparkles t={t} from={s} n={10} radius={0.9} center={[0.5, 2.8, 0]} size={0.14} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.4, 1.9, 4.6], [0.2, 1.9, 0], 32], [t1, [0.3, 1.95, 4.1], [0.25, 2.0, 0], 32]]} />
     </>
   );
 };
 
-// 21. "o dinheiro está ali, mas cada etapa acontece em um lugar *diferente*." — três mini-prédios se afastam.
+// 21. "até você perceber que passou anos sem saber para que está *ali*." — nuvem estoura; mesa vazia (loop).
 const S21 = ({ t, t0, t1 }: ShotProps) => {
-  const d = W(16, 'diferente');
-  const k = seg(t, d - 0.35, d - 0.05, (x) => 1 + 2.4 * Math.pow(x - 1, 3) + 1.4 * Math.pow(x - 1, 2));
-  const gap = 0.85 + 0.75 * k;
-  const pos: V3[] = [[-0.45, 0, -gap * 1.1], [0.45, 0, 0], [-0.45, 0, gap * 1.1]];
-  // moeda pula de prédio em prédio desde "dinheiro"
-  const ph = Math.max(0, t - W(16, 'dinheiro')) * 1.4;
-  const i0 = Math.floor(ph) % 3;
-  const i1 = (i0 + 1) % 3;
-  const f = ph % 1;
-  const a = pos[i0];
-  const b = pos[i1];
-  const coin: V3 = [lerp(a[0], b[0], f), 1.45 + Math.sin(f * Math.PI) * 0.9, lerp(a[2], b[2], f)];
+  const pe = W(16, 'perceber');
+  const ali = W(16, 'ali');
+  const w = walkAlong(t, pe + 0.3, t1 + 0.4, [MESA_VOCE[0] + 0.9, 0, MESA_VOCE[2] + 0.9], [MESA_VOCE[0] + 3.4, 0, MESA_VOCE[2] + 2.6]);
+  const ry = lerp(-2.3, 0.9, seg(t, pe + 0.1, pe + 0.4));
+  const hy = track(t, { hy: -0.9 } as Record<string, number>, [{ at: ali, v: { hy: -1.4 } }]).hy;
   return (
     <>
-      <Stage color="#241a3e" pedestal={false} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [3.4, 5.6, 7.0], [0, 0.5, 0.3], 32], [t1, [3.7, 6.0, 7.6], [0, 0.5, 0.3], 32]]} />
-      <MiniBuilding t={t} text="PACHINKO" color="#ffd23a" position={pos[0]} rotation={[0, 0.5, 0]} />
-      <MiniBuilding t={t} text="PRÊMIOS" color="#ff3d8b" wall="#5a1a35" position={pos[1]} rotation={[0, 0.5, 0]} />
-      <MiniBuilding t={t} text="LOJA" color="#3df2ff" wall="#3a3a4a" position={pos[2]} rotation={[0, 0.5, 0]} />
-      {t > W(16, 'dinheiro') && <Coin position={coin} rotation={[Math.PI / 2, 0, t * 6]} scale={1.6} />}
-      <Sparkles t={t} from={d} n={8} radius={1.6} center={[0, 1.6, 0]} size={0.12} />
-    </>
-  );
-};
-
-// 22. "No registro, você só *jogou*, ganhou um *prêmio* e o *vendeu*."
-const S22 = ({ t, t0, t1 }: ShotProps) => (
-  <>
-    <Stage color="#2a2448" pedestal={false} />
-    <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.3, 1.7, 5.2], [0, 1.45, 0], 32], [t1, [0.1, 1.65, 4.7], [0, 1.45, 0], 32]]} />
-    <mesh position={[0, 0.7, -0.05]} castShadow>
-      <boxGeometry args={[0.08, 1.4, 0.08]} />
-      <meshStandardMaterial color="#5a3a22" />
-    </mesh>
-    <RecordBoard t={t} position={[0, 1.6, 0]} rows={[{ text: 'JOGOU', at: W(17, 'jogou') }, { text: 'PRÊMIO', at: W(17, 'premio') }, { text: 'VENDEU', at: W(17, 'vendeu') }]} />
-  </>
-);
-
-// 23. "No papel, *ninguém* apostou em nada." — volta para a rua de neon (loop com o início).
-const S23 = ({ t, t0, t1 }: ShotProps) => {
-  const n = W(18, 'ninguem');
-  const pose = track(t, P({ ry: 0.15, hy: 0.25, hp: -0.1 }), [
-    { at: n, v: { hy: 0.5, rsz: 1.2, rel: 0.4, rsx: 0.4 } },
-    { at: W(18, 'nada'), v: { hy: 0.1, rsz: 0.12, rsx: 0.9, rel: -1.9, hr: 0.15 } },
-  ]);
-  const face = faceAt(t, [{ at: t0, f: 'smug' }, { at: n, f: 'sideEye' }, { at: W(18, 'nada'), f: 'wink' }], 23);
-  const s = pop(t, n);
-  return (
-    <>
-      <NeonStreet t={t} placa="JAPÃO" />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.5, 1.75, 4.6], [0.25, 1.6, 0], 32], [n, [0.5, 1.9, 5.2], [0.3, 1.7, 0], 32], [t1 + 0.8, [0.4, 5.2, 9.5], [0, 3.2, -4], 30]]} />
-      <Character pose={pose} face={face} />
-      <Paper text="APOSTAS" color="#26324a" position={[0.95, 1.55, 0.3]} rotation={[0, -0.35, 0]} scale={0.8} />
-      <StampMark text="ZERO" w={0.8} color="#e0262e" position={[0.97, 1.42, 0.34]} rotation={[0, -0.35, 0.25]} scale={s} />
-      <Puff t={t} at={n} position={[0.97, 1.42, 0.45]} color="#ffb0b0" size={0.18} />
+      <Office t={t} />
+      <Colegas t={t} digitando />
+      <MesaVoce t={t} />
+      <Character pose={P({ x: w.p[0], z: w.p[2], ry, hy, walk: w.walk, stride: w.stride })} face={faceAt(t, [{ at: t0, f: 'lookDown' }, { at: pe, f: 'thinking' }, { at: ali, f: 'content' }], 22)} />
+      <Sparkles t={t} from={ali} n={6} radius={0.5} center={[MESA_VOCE[0], DESK_H + 0.4, MESA_VOCE[2]]} size={0.1} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.4, 1.6, 4.0], [-1.2, 1.1, 1.0], 32], [ali, [-0.2, 2.2, 6.0], [-1.0, 1.1, 0.8], 32], [t1 + 0.8, [0.6, 2.6, 7.2], [0.0, 1.3, -0.5], 32]]} />
     </>
   );
 };
 
 export const SHOTS: Shot[] = [
   { from: 0, name: '01 japao', C: S01 },
-  { from: W(0, 'jogos'), name: '02 proibidos', C: S02 },
-  { from: W(1, 0), name: '03 neon', C: S03 },
-  { from: W(2, 0), name: '04 pachinko', C: S04 },
-  { from: W(3, 0), name: '05 entra', C: S05 },
-  { from: W(4, 0), name: '06 maquinas', C: S06 },
-  { from: W(4, 'luzes'), name: '07 bolinhas', C: S07 },
-  { from: W(5, 0), name: '08 ganha', C: S08 },
-  { from: W(5, 'recebe'), name: '09 balde', C: S09 },
-  { from: W(6, 0), name: '10 nao', C: S10 },
-  { from: W(7, 0), name: '11 premio', C: S11 },
-  { from: W(8, 0), name: '12 premios', C: S12 },
-  { from: W(9, 0), name: '13 loja', C: S13 },
-  { from: W(10, 0), name: '14 janela', C: S14 },
-  { from: W(11, 0), name: '15 dinheiro', C: S15 },
-  { from: W(12, 0), name: '16 apenas', C: S16 },
-  { from: W(13, 0), name: '17 so premios', C: S17 },
-  { from: W(14, 0), name: '18 policia', C: S18 },
-  { from: W(14, 'no'), name: '19 separado', C: S19 },
-  { from: W(15, 0), name: '20 truque', C: S20 },
-  { from: W(16, 0), name: '21 diferente', C: S21 },
-  { from: W(17, 0), name: '22 registro', C: S22 },
-  { from: W(18, 0), name: '23 ninguem', C: S23 },
+  { from: W(0, 'pode'), name: '02 demitir', C: S02 },
+  { from: W(1, 0), name: '03 estranha', C: S03 },
+  { from: W(2, 0), name: '04 nada', C: S04 },
+  { from: W(3, 0), name: '05 escritorio', C: S05 },
+  { from: W(4, 0), name: '06 servico', C: S06 },
+  { from: W(4, 3), name: '07 decisoes', C: S07 },
+  { from: W(5, 0), name: '08 ajuda', C: S08 },
+  { from: W(6, 0), name: '09 relogio', C: S09 },
+  { from: W(6, 6), name: '10 nao passa', C: S10 },
+  { from: W(7, 0), name: '11 perfeito', C: S11 },
+  { from: W(8, 0), name: '12 meses', C: S12 },
+  { from: W(9, 0), name: '13 anos', C: S13 },
+  { from: W(10, 0), name: '14 lugar', C: S14 },
+  { from: W(11, 0), name: '15 oito', C: S15 },
+  { from: W(12, 0), name: '16 pesar', C: S16 },
+  { from: W(13, 0), name: '17 inutil', C: S17 },
+  { from: W(13, 'isolado'), name: '18 preso', C: S18 },
+  { from: W(14, 0), name: '19 demissao', C: S19 },
+  { from: W(15, 0), name: '20 sonho', C: S20 },
+  { from: W(16, 0), name: '21 ali', C: S21 },
 ];
-
-// evita aviso de importação não usada quando alguma tomada é desligada
-void [VOCE, PachinkoMachine, NeonSign, Shampoo, F];

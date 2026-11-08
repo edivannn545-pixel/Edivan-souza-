@@ -1,33 +1,32 @@
-# Storyboard — "O truque do pachinko"
+# Storyboard — "O cargo de não fazer nada"
 
-Vertical 1080×1920, 30 fps, **sem legenda**, narração gravada pelo autor (`public/voz.mp3`).
-Elenco aprovado: **Você** (protagonista), **Funcionário** (atendente do pachinko, colete vermelho),
-**Sombra** (pessoa da janelinha), **Sargento Ramos** (polícia). Figurantes: **Tonhão, Kaio, Paula, Seu Bento**.
-Cenários novos (src/historia.tsx): rua de neon à noite, fachada do pachinko, salão com fileiras de máquinas,
-balcão de prêmios, lojinha com janelinha, palco "no papel".
+Vertical 1080×1920, 30 fps, **sem legenda**, narração gravada pelo autor (`public/voz.mp3`, ~64 s).
+Elenco aprovado: **Você** (protagonista), **Dr. Henrique** (o chefe), **Funcionário** (colega ao lado),
+figurantes **Paula, Kaio e Gabi**. Cenário novo (src/escritorio.tsx): escritório com mesas, relógio de parede,
+janelas para a cidade. Reaproveita a rua de neon da história anterior na abertura.
+Efeitos visuais: objetos que surgem com "pop" e brilho, quadrinhos (TIC! TAC! TUM!), poeira, carimbo,
+calendário que vira as folhas, peso que cai, grades que descem.
 
-| # | Começa em | Frase | Ação | Objeto de informação | Câmera | Rosto (Você) |
+| # | Começa em | Frase | Ação | Objeto / efeito | Câmera | Rosto |
 |---|---|---|---|---|---|---|
-| 01 | "No" | No *Japão*… | Você parado numa rua de neon à noite | Letreiro "JAPÃO" acende em "Japão" | Grua descendo da rua até Você | curious → amazed |
-| 02 | "jogos" | …jogos de azar são *proibidos*. | Você ao lado de uma mesa com dados e cartas | Carimbo gigante bate "PROIBIDO" em "proibidos" | Empurra para a mesa | worried → shocked |
-| 03 | "Mesmo" | Mesmo assim, ao caminhar… letreiros de *neon*, | Você caminha pela rua | Letreiros verticais acendem em "neon" | Travelling ao lado | content → amazed |
-| 04 | "você" (L2) | …uma casa de *pachinko* aberta dia e noite. | Você para diante da fachada | Letreiro "PACHINKO" acende em "pachinko"; placa "24H" em "dia" | Recua mostrando a fachada | lookUp → starstruck |
-| 05 | "Curioso" | Curioso, você *entra*. | Você caminha até a porta iluminada | — | De trás, segue Você | curious |
-| 06 | "Lá" | Lá dentro, vê fileiras de *máquinas*, | Corredor com duas fileiras de máquinas; figurantes jogando | Fileiras de máquinas | Travelling pelo corredor | — |
-| 07 | "luzes" | …luzes piscando e bolinhas caindo sem parar. | Close de uma máquina | Lâmpadas piscando, bolinhas caindo | Empurra na máquina | — |
-| 08 | "Você" (L5) | Você começa a jogar e, quando *ganha*, | Você gira a alavanca da máquina | Explosão "GANHOU!" + brilhos em "ganha" | 3/4 de frente | thinking → starstruck |
-| 09 | "recebe" | …recebe um *balde* cheio delas. | Balde cheio cai nas mãos de Você | Balde de bolinhas em "balde" | Close | bigSmile |
-| 10 | "Mas" | Mas, ao sair, você *não* troca… por dinheiro. | Você caminha com o balde; maço de dinheiro some | Dinheiro com placa "✗" em "não" | Lateral | confused |
-| 11 | "Primeiro" | Primeiro, entrega tudo e escolhe um *prêmio*: | Você entrega o balde no balcão; Funcionário recebe | Prateleira de prêmios acende em "prêmio" | Plano médio do balcão | smile |
-| 12 | "pode" | …*chocolate*, *xampu* ou *brinquedo* pequeno. | Prêmios pulam no balcão um por um | Chocolate, xampu, ursinho (cada um na sua palavra) | Close no balcão | curious → happy |
-| 13 | "Então" | Então você percebe uma pequena *loja* ali perto. | Você na rua com o prêmio, vira a cabeça | Lojinha com placa "COMPRA DE PRÊMIOS" | Empurra para a lojinha | sideEye |
-| 14 | "Na" | Na *janela*, alguém compra… | Janelinha abre; Sombra aparece | Janelinha abrindo em "janela" | Close na janelinha | suspicious (Sombra) |
-| 15 | "Você" (L11) | Você entrega o objeto e recebe *dinheiro* em troca. | Prêmio entra, dinheiro sai | Maço de dinheiro + moedas em "dinheiro" | Por cima do ombro | starstruck |
-| 16 | "A" (L12) | A casa de pachinko diz que oferece *apenas* o jogo. | Funcionário de braços abertos | Placa "SÓ JOGO" em "apenas" | Plano médio | — (Funcionário smug) |
-| 17 | "A" (L13) | A loja afirma que só compra *prêmios*. | Sombra na janelinha | Placa "SÓ PRÊMIOS" em "prêmios" | Close | — (Sombra smug) |
-| 18 | "E" (L14) | E, quando a *polícia* aparece… | Sargento Ramos chega com prancheta | Prancheta | Plano médio | — (Ramos suspicious) |
-| 19 | "no" (L14) | …no papel, tudo parece *separado*. | Três papéis "JOGO / PRÊMIO / VENDA" se afastam | Papéis se separam em "separado" | Recua | — (Ramos confident) |
-| 20 | "Você" (L15) | Você olha para a janelinha e entende o *truque*: | Close de Você olhando | Lâmpada de ideia/brilho em "truque" | Empurra no rosto | sideEye → amazed |
-| 21 | "o" (L16) | …cada etapa acontece em um lugar *diferente*. | Três mini-prédios (pachinko, prêmios, loja) se afastam; moeda pula entre eles | Mini-prédios | Grua de cima | — |
-| 22 | "No" (L17) | No registro, você só *jogou*, ganhou um *prêmio* e o *vendeu*. | Quadro de registro | Linhas "JOGOU / PRÊMIO / VENDEU" com ✓ em cada palavra | Empurra no quadro | — |
-| 23 | "No" (L18) | No papel, *ninguém* apostou em nada. | Volta à rua de neon; carimbo "0 APOSTAS" | Carimbo em "ninguém" | Recua até o plano do início (loop) | wink |
+| 01 | "No" | No *Japão*, você descobre que | Você na rua de neon | Letreiro "JAPÃO" acende | Grua descendo | curious → amazed |
+| 02 | "pode" | …muito difícil *demitir* um funcionário. | Dr. Henrique tenta demitir o Funcionário | Papel "DEMISSÃO" + carimbo "DIFÍCIL!" | Plano médio | Henrique worried + suor |
+| 03 | "Então" | …uma solução *estranha*: | Henrique pensa | Lâmpada de ideia + "?!" | Empurra no rosto | thinking → grin |
+| 04 | "cria" | …tarefa é *não* fazer *nada*. | Mesa vazia; Henrique apresenta | Placa "CARGO: NÃO FAZER NADA" em "não", brilho em "nada" | Close na mesa | smug |
+| 05 | "Você" (L3) | Você chega ao *escritório*, senta à mesa e *espera*. | Você entra, senta e espera | Relógio de parede | Segue Você | happy → neutral |
+| 06 | "Não" | Não recebe *serviço*, | Bandeja do colega enche; a sua vazia | Papéis caindo na bandeja do colega, poeira na sua | Close nas bandejas | confused |
+| 07 | "não" (2º) | …não participa das *decisões* | Reunião com Henrique, Paula e Kaio; Você fora | Quadro "REUNIÃO" | Por cima do ombro | sad |
+| 08 | "e" (L5) | e ninguém parece precisar da sua *ajuda*. | Você levanta a mão; ninguém olha | — | Plano médio | hopeful → sad |
+| 09 | "O" (L6) | O *relógio* continua andando… tic-tac… | Close no relógio balançando | "TIC!" "TAC!" a cada palavra | Empurra | — |
+| 10 | "e" (L6) | e o dia *não* passa. | Você entediado, cabeça na mão | Ponteiro quase parado | Close | bored |
+| 11 | "No" (L7) | …o emprego *perfeito*. | Você recosta com as mãos na nuca | "PERFEITO!" + brilhos | Plano médio | starstruck |
+| 12 | "Mas" | Mas os dias viram *meses*. | Calendário de mesa vira folhas | Folhas até "6 MESES" | Close no calendário | — |
+| 13 | "Os" | Os meses viram *anos*. | Calendário continua; janela dia/noite | Folhas até "3 ANOS" | Recua | tired |
+| 14 | "Enquanto" | Enquanto os outros *trabalham*… mesmo *lugar*… | Colegas digitando, papéis voando; Você parado | Teia de aranha na mesa em "lugar" | Lateral | deadpan |
+| 15 | "Quando" | …já está há *oito* anos… | Contador rola até "8 ANOS" | Contador | Empurra | shocked |
+| 16 | "E" (L12) | …também pode *pesar*. | Peso "8 ANOS" cai na mesa | Peso + poeira + "TUM!" | Plano médio | sad |
+| 17 | "Você" (L13) | Você se sente *inútil*, | Medidor "UTILIDADE" cai para zero | Medidor | Close | sad |
+| 18 | "isolado" | *isolado* e *preso*… | Mesas dos colegas se afastam; grades descem | Grades em volta da mesa | Recua | scared → tears |
+| 19 | "Até" | …um pedido de *demissão* sobre a mesa. | Você bate a carta na mesa do chefe | Carta "DEMISSÃO" + "TUM!" | Plano médio | confident; Henrique shocked |
+| 20 | "Porque" | …parecer um *sonho*… | Nuvem de sonho sobre Você | Nuvem com estrelas | Close | closedSmile |
+| 21 | "até" | …para que está *ali*. | Nuvem estoura; Você olha a mesa vazia e sai | Mesa vazia com a placa | Recua (loop) | lookDown → content |
