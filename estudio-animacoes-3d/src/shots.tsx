@@ -144,7 +144,7 @@ const S04 = ({ t, t0, t1 }: ShotProps) => {
       <DeskPlate text="CARGO: NÃO FAZER NADA" position={[MESA_VOCE[0] + 0.1, DESK_H + 0.03, MESA_VOCE[2] + 0.15]} scale={0.8 * pop(t, n)} />
       <Sparkles t={t} from={na} n={8} radius={0.5} center={[MESA_VOCE[0] + 0.1, DESK_H + 0.3, MESA_VOCE[2] + 0.2]} size={0.12} />
       <Puff t={t} at={n} position={[MESA_VOCE[0] + 0.1, DESK_H + 0.1, MESA_VOCE[2] + 0.2]} color="#fff2c0" size={0.15} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.9, 1.85, 5.6], [-0.95, 1.2, 0.7], 32], [t1, [-0.95, 1.8, 5.1], [-0.95, 1.15, 0.7], 32]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.7, 1.85, 5.9], [-0.75, 1.2, 0.7], 32], [t1, [-0.75, 1.8, 5.4], [-0.75, 1.15, 0.7], 32]]} />
       <Character pose={hpose} face={faceAt(t, [{ at: t0, f: 'smile' }, { at: na, f: 'smug' }], 5)} look={CHEFE} />
     </>
   );
@@ -445,7 +445,7 @@ const S19 = ({ t, t0, t1 }: ShotProps) => {
       <Letter position={lp} rotation={[0, Math.PI / 2 + 0.3, 0]} scale={1.3} />
       <Comic t={t} at={d} text="TUM!" position={[MESA_CHEFE[0] - 0.4, 2.2, MESA_CHEFE[2] + 0.4]} size={0.3} hold={0.6} />
       <Puff t={t} at={d} position={[ponto[0], ponto[1] + 0.05, ponto[2]]} color="#fff" size={0.14} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [3.8, 2.0, -2.0], [-1.45, 1.2, -2.15], 32], [t1, [3.5, 1.95, -2.05], [-1.45, 1.2, -2.15], 32]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [5.2, 2.1, -2.05], [-1.45, 1.2, -2.1], 32], [t1, [4.9, 2.05, -2.1], [-1.45, 1.2, -2.1], 32]]} />
     </>
   );
 };
