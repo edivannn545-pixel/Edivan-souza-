@@ -138,6 +138,10 @@ estas regras. Quando uma regra não puder ser cumprida, avise antes de seguir.
 - Uma imagem nova a cada ~1–2 s (nova tomada ou mudança clara de enquadramento).
 - Tomadas se ligam com dissolução de 6 quadros começando na primeira palavra da frase nova.
 - O enquadramento mostra o que a narração diz **naquele momento**. Personagem ocupa de 1/3 a 2/3 da altura do quadro.
+- **Regra do foco (pedido do dono do estúdio):** tudo o que a narração mostra fica **sempre no centro da tela**, como foco.
+  O alvo da câmera é o próprio objeto ou personagem citado (não um ponto entre ele e outra coisa). Se o assunto muda
+  dentro da tomada (ex.: do vulcão para a banheira), a câmera se move até o novo assunto e o deixa no centro.
+  Nada importante pode ficar cortado na borda. Confira isso em cada prévia.
 
 ## Narração e tempos
 - Roteiro em segunda pessoa, gancho na primeira frase, uma ideia visual por frase, ênfase com `*palavra*`.

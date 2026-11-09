@@ -37,14 +37,17 @@ export const SkyStage = ({ bg = '#9fd4ff', chao = '#d8e8f0' }: { bg?: string; ch
 // Comprimento em x (oeste = -x, leste/Peru = +x). Superfície da água em y = 0.85.
 // warm: 0 = água quente no oeste, 1 = no leste. wind: força do vento (0..1). upwell: água fria subindo (0..1).
 // fish: tamanho do cardume (0..1). nutri: nutrientes (0..1). peru: terra do Peru (0..1).
-export const WATER_Y = 0.85;
+export const TUB_S = 0.7; // banheira menor: tudo dentro dela é multiplicado por isto
+export const WATER_Y = 0.85 * TUB_S;
+const WY = 0.85;
 export const Tub = ({ t, warm = 0, wind = 0, upwell = 0, fish = 0, nutri = 0, peru = 1, glow = 0 }: { t: number; warm?: number; wind?: number; upwell?: number; fish?: number; nutri?: number; peru?: number; glow?: number }) => {
   const L = 4.2;
   const Wd = 1.8;
   const H = 1.0;
   const wx = lerp(-1.15, 1.05, warm);
+  const WATER_Y = WY;
   return (
-    <group>
+    <group scale={TUB_S}>
       {/* casco */}
       <Box p={[0, 0.06, 0]} s={[L, 0.12, Wd]} c="#f4f4f2" r={0.3} />
       <Box p={[0, H / 2, Wd / 2]} s={[L, H, 0.1]} c="#f4f4f2" r={0.3} />
@@ -108,16 +111,25 @@ export const Tub = ({ t, warm = 0, wind = 0, upwell = 0, fish = 0, nutri = 0, pe
           return <WindArrow key={i} position={[1.9 - ph * 3.8, 1.25 + (i % 3) * 0.28, -0.55 + (i % 2) * 1.1]} scale={wind * Math.sin(ph * Math.PI)} />;
         })}
       {/* Peru (leste) e Indonésia (oeste) */}
-      <group position={[L / 2 + 0.55, 0, 0]} scale={peru}>
-        <mesh position={[0, 0.6, 0]} castShadow>
-          <coneGeometry args={[0.6, 1.2, 6]} />
-          <meshStandardMaterial color="#8a7a4a" roughness={0.9} />
+      <group position={[L / 2 + 1.05, 0, 0]} scale={peru}>
+        <mesh position={[0, 1.2, 0]} castShadow>
+          <coneGeometry args={[1.0, 2.4, 7]} />
+          <meshStandardMaterial color="#8a6a4a" roughness={0.9} />
         </mesh>
-        <mesh position={[0, 1.05, 0]}>
-          <coneGeometry args={[0.2, 0.3, 6]} />
+        <mesh position={[0, 2.12, 0]}>
+          <coneGeometry args={[0.36, 0.56, 7]} />
           <meshStandardMaterial color="#f4f4f2" />
         </mesh>
-        <Sign text="PERU" w={0.8} h={0.28} position={[0, 0.35, 0.62]} bg="#c8102e" fg="#ffffff" />
+        {[0, 1, 2, 3].map((i) => {
+          const ph = (t * 0.3 + i / 4) % 1;
+          return (
+            <mesh key={i} position={[0.1 * Math.sin(i + t), 2.5 + ph * 1.2, 0]} scale={0.18 + ph * 0.3}>
+              <sphereGeometry args={[1, 12, 10]} />
+              <meshStandardMaterial color="#c8c8cc" transparent opacity={0.7 * (1 - ph)} />
+            </mesh>
+          );
+        })}
+        <Sign text="PERU" w={1.1} h={0.38} position={[0, 0.45, 1.0]} bg="#c8102e" fg="#ffffff" />
       </group>
       <group position={[-L / 2 - 0.5, 0, 0]}>
         <mesh position={[0, 0.3, 0]} castShadow>
@@ -319,15 +331,15 @@ export const Net = ({ t, n = 0, ...g }: G & { t: number; n?: number }) => (
 );
 
 // ---------- Mapa do Pacífico no chão ----------
-// x de -4 (90°E) a +4 (60°W); z de -1.8 (45°N) a +1.8 (50°S).
+// x de -4 (90°E) a +4 (30°W); z de -1.8 (45°N) a +1.8 (50°S).
 export const MAP_W = 8;
 export const MAP_D = 3.6;
 export const mapXZ = (lon: number, lat: number): [number, number] => {
   const l = lon < 0 ? 360 + lon : lon;
-  return [-MAP_W / 2 + (MAP_W * (l - 90)) / 210, -MAP_D / 2 + (MAP_D * (45 - lat)) / 95];
+  return [-MAP_W / 2 + (MAP_W * (l - 90)) / 240, -MAP_D / 2 + (MAP_D * (45 - lat)) / 95];
 };
 const LANDS: Record<string, [number, number][]> = {
-  americas: [[-125, 45], [-123, 40], [-117, 33], [-110, 25], [-105, 20], [-95, 16], [-88, 14], [-83, 8], [-78, 8], [-60, 10], [-60, -50], [-74, -50], [-73, -40], [-71, -25], [-76, -15], [-81, -5], [-80, 0], [-78, 7], [-83, 8], [-60, 10], [-60, 45]],
+  americas: [[-125, 45], [-123, 40], [-117, 33], [-110, 25], [-105, 20], [-95, 16], [-88, 14], [-83, 8], [-78, 7], [-80, 0], [-81, -5], [-76, -15], [-71, -25], [-73, -40], [-74, -50], [-68, -52], [-65, -42], [-58, -38], [-53, -34], [-48, -26], [-41, -22], [-39, -15], [-35, -6], [-50, 0], [-60, 10], [-72, 11], [-77, 9], [-83, 15], [-88, 16], [-90, 21], [-97, 22], [-97, 28], [-90, 30], [-82, 27], [-80, 25], [-81, 31], [-75, 35], [-70, 42], [-66, 45]],
   asia: [[90, 22], [100, 15], [105, 9], [109, 12], [108, 20], [120, 25], [122, 31], [121, 40], [127, 45], [90, 45]],
   australia: [[114, -22], [114, -34], [118, -35], [130, -32], [138, -35], [146, -39], [150, -37], [153, -28], [153, -25], [146, -19], [142, -11], [136, -12], [130, -12], [122, -17]],
 };
@@ -340,7 +352,7 @@ const mapTex = () =>
     const H = 922;
     const px = (lon: number, lat: number) => {
       const l = lon < 0 ? 360 + lon : lon;
-      return [(W * (l - 90)) / 210, (H * (45 - lat)) / 95];
+      return [(W * (l - 90)) / 240, (H * (45 - lat)) / 95];
     };
     const g = c.createLinearGradient(0, 0, 0, H);
     g.addColorStop(0, '#2f78c0');
@@ -374,7 +386,7 @@ const mapTex = () =>
     for (const [lo, la, rl, rt] of ISLANDS) {
       const [x, y] = px(lo, la);
       c.beginPath();
-      c.ellipse(x, y, (W * rl) / 210, (H * rt) / 95, 0.3, 0, Math.PI * 2);
+      c.ellipse(x, y, (W * rl) / 240, (H * rt) / 95, 0.3, 0, Math.PI * 2);
       c.fill();
       c.stroke();
     }
@@ -386,9 +398,9 @@ const mapTex = () =>
       const [x, y] = px(lo, la);
       c.fillText(txt, x, y);
     };
-    lbl('OCEANO PACÍFICO', 205, 15, 72);
+    lbl('OCEANO PACÍFICO', 195, 15, 72);
     c.fillStyle = '#1f3a12';
-    lbl('AMÉRICA DO SUL', -66, -18, 44);
+    lbl('AMÉRICA DO SUL', -58, -15, 44);
     lbl('INDONÉSIA', 115, -11, 44);
     lbl('AUSTRÁLIA', 134, -25, 48);
   });
