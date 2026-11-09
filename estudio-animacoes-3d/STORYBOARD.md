@@ -1,32 +1,33 @@
-# Storyboard — "O cargo de não fazer nada"
+# Storyboard — "El Niño: a banheira do Pacífico"
 
-Vertical 1080×1920, 30 fps, **sem legenda**, narração gravada pelo autor (`public/voz.mp3`, ~64 s).
-Elenco aprovado: **Você** (protagonista), **Dr. Henrique** (o chefe), **Funcionário** (colega ao lado),
-figurantes **Paula, Kaio e Gabi**. Cenário novo (src/escritorio.tsx): escritório com mesas, relógio de parede,
-janelas para a cidade. Reaproveita a rua de neon da história anterior na abertura.
-Efeitos visuais: objetos que surgem com "pop" e brilho, quadrinhos (TIC! TAC! TUM!), poeira, carimbo,
-calendário que vira as folhas, peso que cai, grades que descem.
+Vertical 1080×1920, 30 fps, **sem legenda**, narração gravada pelo autor (`public/voz.mp3`, ~98 s).
+Elenco: **Você**, **Doutor Teo** (cientista), **Tonhão** com roupa de marinheiro (pescador do Peru),
+**Paula** (enchente), **Seu Bento** (seca). Cenários novos em `src/elnino.tsx`: banheira-oceano, mar do Peru,
+mapa do Pacífico no chão, mapa do Brasil, rua alagada, rio seco, laboratório do clima, rua da cidade.
+Efeitos: setas de vento, água quente (laranja) e fria (azul) se movendo, peixes, nutrientes, nuvens com chuva,
+água subindo, terra rachada, sol crescendo, termômetro, fogo, placas que surgem com "pop".
 
-| # | Começa em | Frase | Ação | Objeto / efeito | Câmera | Rosto |
-|---|---|---|---|---|---|---|
-| 01 | "No" | No *Japão*, você descobre que | Você na rua de neon | Letreiro "JAPÃO" acende | Grua descendo | curious → amazed |
-| 02 | "pode" | …muito difícil *demitir* um funcionário. | Dr. Henrique tenta demitir o Funcionário | Papel "DEMISSÃO" + carimbo "DIFÍCIL!" | Plano médio | Henrique worried + suor |
-| 03 | "Então" | …uma solução *estranha*: | Henrique pensa | Lâmpada de ideia + "?!" | Empurra no rosto | thinking → grin |
-| 04 | "cria" | …tarefa é *não* fazer *nada*. | Mesa vazia; Henrique apresenta | Placa "CARGO: NÃO FAZER NADA" em "não", brilho em "nada" | Close na mesa | smug |
-| 05 | "Você" (L3) | Você chega ao *escritório*, senta à mesa e *espera*. | Você entra, senta e espera | Relógio de parede | Segue Você | happy → neutral |
-| 06 | "Não" | Não recebe *serviço*, | Bandeja do colega enche; a sua vazia | Papéis caindo na bandeja do colega, poeira na sua | Close nas bandejas | confused |
-| 07 | "não" (2º) | …não participa das *decisões* | Reunião com Henrique, Paula e Kaio; Você fora | Quadro "REUNIÃO" | Por cima do ombro | sad |
-| 08 | "e" (L5) | e ninguém parece precisar da sua *ajuda*. | Você levanta a mão; ninguém olha | — | Plano médio | hopeful → sad |
-| 09 | "O" (L6) | O *relógio* continua andando… tic-tac… | Close no relógio balançando | "TIC!" "TAC!" a cada palavra | Empurra | — |
-| 10 | "e" (L6) | e o dia *não* passa. | Você entediado, cabeça na mão | Ponteiro quase parado | Close | bored |
-| 11 | "No" (L7) | …o emprego *perfeito*. | Você recosta com as mãos na nuca | "PERFEITO!" + brilhos | Plano médio | starstruck |
-| 12 | "Mas" | Mas os dias viram *meses*. | Calendário de mesa vira folhas | Folhas até "6 MESES" | Close no calendário | — |
-| 13 | "Os" | Os meses viram *anos*. | Calendário continua; janela dia/noite | Folhas até "3 ANOS" | Recua | tired |
-| 14 | "Enquanto" | Enquanto os outros *trabalham*… mesmo *lugar*… | Colegas digitando, papéis voando; Você parado | Teia de aranha na mesa em "lugar" | Lateral | deadpan |
-| 15 | "Quando" | …já está há *oito* anos… | Contador rola até "8 ANOS" | Contador | Empurra | shocked |
-| 16 | "E" (L12) | …também pode *pesar*. | Peso "8 ANOS" cai na mesa | Peso + poeira + "TUM!" | Plano médio | sad |
-| 17 | "Você" (L13) | Você se sente *inútil*, | Medidor "UTILIDADE" cai para zero | Medidor | Close | sad |
-| 18 | "isolado" | *isolado* e *preso*… | Mesas dos colegas se afastam; grades descem | Grades em volta da mesa | Recua | scared → tears |
-| 19 | "Até" | …um pedido de *demissão* sobre a mesa. | Você bate a carta na mesa do chefe | Carta "DEMISSÃO" + "TUM!" | Plano médio | confident; Henrique shocked |
-| 20 | "Porque" | …parecer um *sonho*… | Nuvem de sonho sobre Você | Nuvem com estrelas | Close | closedSmile |
-| 21 | "até" | …para que está *ali*. | Nuvem estoura; Você olha a mesa vazia e sai | Mesa vazia com a placa | Recua (loop) | lookDown → content |
+| # | Começa em | Frase (trecho) | Ação / efeito | Câmera |
+|---|---|---|---|---|
+| 01 | "Imagine" | oceano *Pacífico*… *banheira* | Banheira gigante; placa "OCEANO PACÍFICO"; patinho cai na água | Grua descendo |
+| 02 | "Normalmente" | *ventos*… água *quente*… | Setas de vento surgem; água quente desliza para o oeste | Lateral alta |
+| 03 | "Perto" | costa do *Peru*… água *fria* | Terra "PERU" surge; bolhas frias sobem do fundo | Empurra no lado leste |
+| 04 | "Ela" | *nutrientes*… *peixes* | Pontinhos verdes sobem; cardume aparece | Close |
+| 05 | "naquela" | naquela região | Tonhão no barco com a rede cheia | Plano médio |
+| 06 | "Mas" | ventos *enfraquecem*… *mudar* | Medidor "VENTO" cai; setas encolhem; "?!" | Lateral |
+| 07 | "A" (L5) | água quente se *desloca* | Água quente volta para o leste | Lateral |
+| 08 | "Com" | peixes podem *desaparecer* | Peixes somem com "puf" | Close |
+| 09 | "e" (L7) | depende da *pesca* | Tonhão com a rede vazia | Plano médio |
+| 10 | "A" (L8) | não fica só no *mar* | Nuvens se formam sobre a água quente | Grua subindo |
+| 11 | "O" (L9) | caminho das *chuvas* | Mapa no chão; nuvens viajam pelo Pacífico | Por cima |
+| 12 | "Em" (L10) | causar *enchentes* | Paula na rua com chuva; água sobe | Plano médio |
+| 13 | "Em" (L11) | *seca*… calor *aumentar* | Seu Bento no rio seco; rio encolhe; sol cresce; termômetro sobe | Plano médio |
+| 14 | "Enquanto" | *América* do Sul… chuvas fortes | Mapa: nuvens de chuva sobre a América do Sul | Por cima, lado leste |
+| 15 | "regiões" | *Indonésia*… *Austrália*… *incêndios* | Mapa: sóis e terra seca; fogo surge | Travelling para o oeste |
+| 16 | "No" (L14) | No *Brasil* | Mapa do Brasil sobe do chão | Por cima |
+| 17 | "você" (L15) | mais *chuva*… falta de *água* | Nuvem com chuva no sul; sol e gota vazia no norte | Por cima |
+| 18 | "Por" | *cientistas*… *ventos* | Doutor Teo no laboratório; anemômetro gira; termômetro do oceano | Plano médio |
+| 19 | "O" (L17) | *previsão*… *alerta* | Tela "PREVISÃO"; placa "ALERTA" piscando | Close |
+| 20 | "mas" (L17) | depende de onde você *mora* | Mapa do Brasil; alfinete "VOCÊ" cai | Por cima |
+| 21 | "Então" | quando o *El Niño* chega | Banheira; placa "EL NIÑO" surge; água quente brilha | Lateral |
+| 22 | "É" (L19) | *seca*, *enchente* ou *calorão*? | Você na cidade; três placas surgem, uma em cada palavra | Plano médio |

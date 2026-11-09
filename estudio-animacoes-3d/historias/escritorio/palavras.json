@@ -1,0 +1,817 @@
+[
+{
+"text": "No",
+"start": 0.02,
+"end": 0.231
+},
+{
+"text": "Japão,",
+"start": 0.251,
+"end": 0.68
+},
+{
+"text": "você",
+"start": 0.86,
+"end": 1.111
+},
+{
+"text": "descobre",
+"start": 1.131,
+"end": 1.591
+},
+{
+"text": "que",
+"start": 1.611,
+"end": 1.809
+},
+{
+"text": "pode",
+"start": 1.829,
+"end": 2.08
+},
+{
+"text": "ser",
+"start": 2.1,
+"end": 2.299
+},
+{
+"text": "muito",
+"start": 2.319,
+"end": 2.623
+},
+{
+"text": "difícil",
+"start": 2.643,
+"end": 3.05
+},
+{
+"text": "demitir",
+"start": 3.07,
+"end": 3.477
+},
+{
+"text": "um",
+"start": 3.497,
+"end": 3.644
+},
+{
+"text": "funcionário.",
+"start": 3.664,
+"end": 4.28
+},
+{
+"text": "Então",
+"start": 4.61,
+"end": 4.933
+},
+{
+"text": "a",
+"start": 4.953,
+"end": 5.054
+},
+{
+"text": "empresa",
+"start": 5.074,
+"end": 5.508
+},
+{
+"text": "encontra",
+"start": 5.528,
+"end": 6.016
+},
+{
+"text": "uma",
+"start": 6.036,
+"end": 6.248
+},
+{
+"text": "solução",
+"start": 6.268,
+"end": 6.701
+},
+{
+"text": "estranha:",
+"start": 6.721,
+"end": 7.21
+},
+{
+"text": "cria",
+"start": 7.52,
+"end": 7.813
+},
+{
+"text": "um",
+"start": 7.833,
+"end": 8.005
+},
+{
+"text": "cargo",
+"start": 8.025,
+"end": 8.378
+},
+{
+"text": "em",
+"start": 8.398,
+"end": 8.57
+},
+{
+"text": "que",
+"start": 8.59,
+"end": 8.822
+},
+{
+"text": "sua",
+"start": 8.842,
+"end": 9.075
+},
+{
+"text": "única",
+"start": 9.095,
+"end": 9.447
+},
+{
+"text": "tarefa",
+"start": 9.467,
+"end": 9.88
+},
+{
+"text": "é",
+"start": 9.9,
+"end": 10.012
+},
+{
+"text": "não",
+"start": 10.032,
+"end": 10.265
+},
+{
+"text": "fazer",
+"start": 10.285,
+"end": 10.637
+},
+{
+"text": "nada.",
+"start": 10.657,
+"end": 10.95
+},
+{
+"text": "Você",
+"start": 11.3,
+"end": 11.57
+},
+{
+"text": "chega",
+"start": 11.59,
+"end": 11.916
+},
+{
+"text": "ao",
+"start": 11.936,
+"end": 12.095
+},
+{
+"text": "escritório,",
+"start": 12.115,
+"end": 12.72
+},
+{
+"text": "senta",
+"start": 12.89,
+"end": 13.323
+},
+{
+"text": "à",
+"start": 13.343,
+"end": 13.484
+},
+{
+"text": "mesa",
+"start": 13.504,
+"end": 13.863
+},
+{
+"text": "e",
+"start": 13.883,
+"end": 14.024
+},
+{
+"text": "espera.",
+"start": 14.044,
+"end": 14.55
+},
+{
+"text": "Não",
+"start": 15.02,
+"end": 15.266
+},
+{
+"text": "recebe",
+"start": 15.286,
+"end": 15.721
+},
+{
+"text": "serviço,",
+"start": 15.741,
+"end": 16.24
+},
+{
+"text": "não",
+"start": 16.44,
+"end": 16.656
+},
+{
+"text": "participa",
+"start": 16.676,
+"end": 17.231
+},
+{
+"text": "das",
+"start": 17.251,
+"end": 17.467
+},
+{
+"text": "decisões",
+"start": 17.487,
+"end": 17.985
+},
+{
+"text": "e",
+"start": 18.005,
+"end": 18.109
+},
+{
+"text": "ninguém",
+"start": 18.129,
+"end": 18.571
+},
+{
+"text": "parece",
+"start": 18.591,
+"end": 18.976
+},
+{
+"text": "precisar",
+"start": 18.996,
+"end": 19.494
+},
+{
+"text": "da",
+"start": 19.514,
+"end": 19.674
+},
+{
+"text": "sua",
+"start": 19.694,
+"end": 19.911
+},
+{
+"text": "ajuda.",
+"start": 19.931,
+"end": 20.26
+},
+{
+"text": "O",
+"start": 20.71,
+"end": 20.817
+},
+{
+"text": "relógio",
+"start": 20.837,
+"end": 21.289
+},
+{
+"text": "continua",
+"start": 21.309,
+"end": 21.818
+},
+{
+"text": "andando…",
+"start": 21.838,
+"end": 22.29
+},
+{
+"text": "tic-tac,",
+"start": 22.72,
+"end": 23.285
+},
+{
+"text": "tic-tac…",
+"start": 23.305,
+"end": 23.87
+},
+{
+"text": "e",
+"start": 24.22,
+"end": 24.32
+},
+{
+"text": "o",
+"start": 24.34,
+"end": 24.441
+},
+{
+"text": "dia",
+"start": 24.461,
+"end": 24.671
+},
+{
+"text": "não",
+"start": 24.691,
+"end": 24.901
+},
+{
+"text": "passa.",
+"start": 24.921,
+"end": 25.24
+},
+{
+"text": "No",
+"start": 25.62,
+"end": 25.809
+},
+{
+"text": "começo,",
+"start": 25.829,
+"end": 26.28
+},
+{
+"text": "talvez",
+"start": 26.53,
+"end": 26.874
+},
+{
+"text": "você",
+"start": 26.894,
+"end": 27.137
+},
+{
+"text": "até",
+"start": 27.157,
+"end": 27.349
+},
+{
+"text": "ache",
+"start": 27.369,
+"end": 27.612
+},
+{
+"text": "que",
+"start": 27.632,
+"end": 27.824
+},
+{
+"text": "conseguiu",
+"start": 27.844,
+"end": 28.339
+},
+{
+"text": "o",
+"start": 28.359,
+"end": 28.451
+},
+{
+"text": "emprego",
+"start": 28.471,
+"end": 28.865
+},
+{
+"text": "perfeito.",
+"start": 28.885,
+"end": 29.33
+},
+{
+"text": "Mas",
+"start": 29.75,
+"end": 29.987
+},
+{
+"text": "os",
+"start": 30.007,
+"end": 30.183
+},
+{
+"text": "dias",
+"start": 30.203,
+"end": 30.501
+},
+{
+"text": "viram",
+"start": 30.521,
+"end": 30.881
+},
+{
+"text": "meses.",
+"start": 30.901,
+"end": 31.26
+},
+{
+"text": "Os",
+"start": 31.53,
+"end": 31.727
+},
+{
+"text": "meses",
+"start": 31.747,
+"end": 32.147
+},
+{
+"text": "viram",
+"start": 32.167,
+"end": 32.567
+},
+{
+"text": "anos.",
+"start": 32.587,
+"end": 32.92
+},
+{
+"text": "Enquanto",
+"start": 33.32,
+"end": 33.797
+},
+{
+"text": "os",
+"start": 33.817,
+"end": 33.97
+},
+{
+"text": "outros",
+"start": 33.99,
+"end": 34.359
+},
+{
+"text": "trabalham,",
+"start": 34.379,
+"end": 34.91
+},
+{
+"text": "você",
+"start": 35.18,
+"end": 35.469
+},
+{
+"text": "continua",
+"start": 35.489,
+"end": 36.014
+},
+{
+"text": "no",
+"start": 36.034,
+"end": 36.204
+},
+{
+"text": "mesmo",
+"start": 36.224,
+"end": 36.572
+},
+{
+"text": "lugar,",
+"start": 36.592,
+"end": 36.94
+},
+{
+"text": "sem",
+"start": 37.24,
+"end": 37.486
+},
+{
+"text": "uma",
+"start": 37.506,
+"end": 37.752
+},
+{
+"text": "tarefa",
+"start": 37.772,
+"end": 38.208
+},
+{
+"text": "de",
+"start": 38.228,
+"end": 38.411
+},
+{
+"text": "verdade.",
+"start": 38.431,
+"end": 38.93
+},
+{
+"text": "Quando",
+"start": 39.38,
+"end": 39.781
+},
+{
+"text": "percebe,",
+"start": 39.801,
+"end": 40.26
+},
+{
+"text": "já",
+"start": 40.47,
+"end": 40.653
+},
+{
+"text": "está",
+"start": 40.673,
+"end": 40.984
+},
+{
+"text": "há",
+"start": 41.004,
+"end": 41.187
+},
+{
+"text": "oito",
+"start": 41.207,
+"end": 41.518
+},
+{
+"text": "anos",
+"start": 41.538,
+"end": 41.848
+},
+{
+"text": "sem",
+"start": 41.868,
+"end": 42.115
+},
+{
+"text": "fazer",
+"start": 42.135,
+"end": 42.509
+},
+{
+"text": "nada.",
+"start": 42.529,
+"end": 42.84
+},
+{
+"text": "E",
+"start": 43.21,
+"end": 43.316
+},
+{
+"text": "então",
+"start": 43.336,
+"end": 43.671
+},
+{
+"text": "você",
+"start": 43.691,
+"end": 43.968
+},
+{
+"text": "entende",
+"start": 43.988,
+"end": 44.437
+},
+{
+"text": "que",
+"start": 44.457,
+"end": 44.677
+},
+{
+"text": "ficar",
+"start": 44.697,
+"end": 45.032
+},
+{
+"text": "sem",
+"start": 45.052,
+"end": 45.272
+},
+{
+"text": "trabalhar",
+"start": 45.292,
+"end": 45.856
+},
+{
+"text": "também",
+"start": 45.876,
+"end": 46.268
+},
+{
+"text": "pode",
+"start": 46.288,
+"end": 46.565
+},
+{
+"text": "pesar.",
+"start": 46.585,
+"end": 46.92
+},
+{
+"text": "Você",
+"start": 47.44,
+"end": 47.747
+},
+{
+"text": "se",
+"start": 47.767,
+"end": 47.948
+},
+{
+"text": "sente",
+"start": 47.968,
+"end": 48.338
+},
+{
+"text": "inútil,",
+"start": 48.358,
+"end": 48.79
+},
+{
+"text": "isolado",
+"start": 49.01,
+"end": 49.553
+},
+{
+"text": "e",
+"start": 49.573,
+"end": 49.704
+},
+{
+"text": "preso",
+"start": 49.724,
+"end": 50.129
+},
+{
+"text": "naquele",
+"start": 50.149,
+"end": 50.692
+},
+{
+"text": "escritório.",
+"start": 50.712,
+"end": 51.46
+},
+{
+"text": "Até",
+"start": 51.99,
+"end": 52.226
+},
+{
+"text": "que,",
+"start": 52.246,
+"end": 52.482
+},
+{
+"text": "um",
+"start": 52.502,
+"end": 52.732
+},
+{
+"text": "dia,",
+"start": 52.752,
+"end": 53.06
+},
+{
+"text": "coloca",
+"start": 53.2,
+"end": 53.578
+},
+{
+"text": "um",
+"start": 53.598,
+"end": 53.755
+},
+{
+"text": "pedido",
+"start": 53.775,
+"end": 54.153
+},
+{
+"text": "de",
+"start": 54.173,
+"end": 54.33
+},
+{
+"text": "demissão",
+"start": 54.35,
+"end": 54.838
+},
+{
+"text": "sobre",
+"start": 54.858,
+"end": 55.181
+},
+{
+"text": "a",
+"start": 55.201,
+"end": 55.303
+},
+{
+"text": "mesa.",
+"start": 55.323,
+"end": 55.59
+},
+{
+"text": "Porque",
+"start": 56.01,
+"end": 56.384
+},
+{
+"text": "receber",
+"start": 56.404,
+"end": 56.833
+},
+{
+"text": "para",
+"start": 56.853,
+"end": 57.118
+},
+{
+"text": "não",
+"start": 57.138,
+"end": 57.348
+},
+{
+"text": "fazer",
+"start": 57.368,
+"end": 57.687
+},
+{
+"text": "nada",
+"start": 57.707,
+"end": 57.972
+},
+{
+"text": "pode",
+"start": 57.992,
+"end": 58.256
+},
+{
+"text": "parecer",
+"start": 58.276,
+"end": 58.705
+},
+{
+"text": "um",
+"start": 58.725,
+"end": 58.881
+},
+{
+"text": "sonho…",
+"start": 58.901,
+"end": 59.22
+},
+{
+"text": "até",
+"start": 59.71,
+"end": 59.927
+},
+{
+"text": "você",
+"start": 59.947,
+"end": 60.22
+},
+{
+"text": "perceber",
+"start": 60.24,
+"end": 60.738
+},
+{
+"text": "que",
+"start": 60.758,
+"end": 60.975
+},
+{
+"text": "passou",
+"start": 60.995,
+"end": 61.381
+},
+{
+"text": "anos",
+"start": 61.401,
+"end": 61.674
+},
+{
+"text": "sem",
+"start": 61.694,
+"end": 61.911
+},
+{
+"text": "saber",
+"start": 61.931,
+"end": 62.26
+},
+{
+"text": "para",
+"start": 62.28,
+"end": 62.553
+},
+{
+"text": "que",
+"start": 62.573,
+"end": 62.79
+},
+{
+"text": "está",
+"start": 62.81,
+"end": 63.083
+},
+{
+"text": "ali.",
+"start": 63.103,
+"end": 63.32
+}
+]

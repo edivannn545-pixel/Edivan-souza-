@@ -6,25 +6,28 @@ import { VOZ } from './voz.ts';
 export const FPS = 30;
 export const F = 1 / FPS;
 
-// Roteiro: "O cargo de não fazer nada" (narração gravada pelo próprio autor, igual a este texto).
+// Roteiro: "El Niño: a banheira do Pacífico" (narração gravada pelo próprio autor, igual a este texto).
 export const LINES = [
-  'No *Japão*, você descobre que pode ser muito difícil *demitir* um funcionário.',
-  'Então a empresa encontra uma solução *estranha*:',
-  'cria um cargo em que sua única tarefa é *não* fazer *nada*.',
-  'Você chega ao *escritório*, senta à mesa e *espera*.',
-  'Não recebe *serviço*, não participa das *decisões*',
-  'e ninguém parece precisar da sua *ajuda*.',
-  'O *relógio* continua andando… tic-tac, tic-tac… e o dia *não* passa.',
-  'No começo, talvez você até ache que conseguiu o emprego *perfeito*.',
-  'Mas os dias viram *meses*.',
-  'Os meses viram *anos*.',
-  'Enquanto os outros *trabalham*, você continua no mesmo *lugar*, sem uma tarefa de verdade.',
-  'Quando percebe, já está há *oito* anos sem fazer nada.',
-  'E então você entende que ficar sem trabalhar também pode *pesar*.',
-  'Você se sente *inútil*, *isolado* e *preso* naquele escritório.',
-  'Até que, um dia, coloca um pedido de *demissão* sobre a mesa.',
-  'Porque receber para não fazer nada pode parecer um *sonho*…',
-  'até você perceber que passou anos sem saber para que está *ali*.',
+  'Imagine o oceano *Pacífico* como uma imensa *banheira*.',
+  'Normalmente, os *ventos* empurram a água *quente* pela superfície, levando-a para o outro lado do oceano.',
+  'Perto da costa do *Peru*, a água *fria* que vem do fundo sobe até a superfície.',
+  'Ela traz *nutrientes* e ajuda a manter muitos *peixes* naquela região.',
+  'Mas, quando os ventos *enfraquecem*, esse equilíbrio pode *mudar*.',
+  'A água quente se *desloca* e o oceano já não funciona do mesmo jeito.',
+  'Com menos água fria subindo, os peixes podem *desaparecer* de algumas áreas,',
+  'e a vida de quem depende da *pesca* também pode ser afetada.',
+  'A mudança não fica só no *mar*.',
+  'O calor e a umidade alteram o caminho das *chuvas*.',
+  'Em alguns lugares, pode chover mais e causar *enchentes*.',
+  'Em outros, a *seca* pode se prolongar, os rios baixar e o calor *aumentar*.',
+  'Enquanto certas áreas da *América* do Sul enfrentam chuvas fortes,',
+  'regiões como a *Indonésia* e a *Austrália* podem passar por períodos mais secos, com maior risco de *incêndios*.',
+  'No *Brasil*, os efeitos podem variar de uma região para outra:',
+  'você pode ver mais *chuva* em alguns lugares e falta de *água* em outros.',
+  'Por isso, *cientistas* acompanham as temperaturas do oceano e os *ventos*.',
+  'O vídeo mostra uma *previsão* e um *alerta*, mas o impacto depende de onde você mora e de como o fenômeno se desenvolve.',
+  'Então, quando o *El Niño* chega, a pergunta não é apenas o que acontece no oceano.',
+  'É também: na sua cidade, você vai enfrentar *seca*, *enchente* ou *calorão*?',
 ];
 
 export type Word = { text: string; key: string; stressed: boolean; t0: number; t1: number; line: number; i: number };
