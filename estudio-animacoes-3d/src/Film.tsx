@@ -65,11 +65,17 @@ export const Film = ({ legendas, voz, musica }: FilmProps) => {
       {legendas && <Captions />}
       {voz && <Audio src={staticFile('voz.mp3')} />}
       {musica && <Audio src={staticFile('musica.mp3')} volume={(f) => 0.11 * Math.min(1, f / (0.8 * fps), (durationInFrames - f) / (1.2 * fps))} />}
-      {SFX.map((s, i) => (
-        <Sequence key={`sfx${i}`} from={Math.max(0, Math.round(s.at * fps))} durationInFrames={Math.round(3.5 * fps)} layout="none">
-          <Audio src={staticFile(`sfx/${s.file}`)} volume={s.vol} />
-        </Sequence>
-      ))}
+      {SFX.map((s, i) => {
+        // Sons curtos: 3,5 s. Ambientes (vento, chuva...): `dur` segundos, em loop, com entrada e saída suaves (`fade`).
+        const n = Math.round((s.dur ?? 3.5) * fps);
+        const fd = Math.max(1, Math.round((s.fade ?? 0) * fps));
+        const vol = s.fade ? (f: number) => s.vol * Math.min(1, f / fd, (n - f) / fd) : s.vol;
+        return (
+          <Sequence key={`sfx${i}`} from={Math.max(0, Math.round(s.at * fps))} durationInFrames={n} layout="none">
+            <Audio src={staticFile(`sfx/${s.file}`)} volume={vol} loop={!!s.loop} />
+          </Sequence>
+        );
+      })}
     </AbsoluteFill>
   );
 };

@@ -143,6 +143,28 @@ estas regras. Quando uma regra não puder ser cumprida, avise antes de seguir.
   dentro da tomada (ex.: do vulcão para a banheira), a câmera se move até o novo assunto e o deixa no centro.
   Nada importante pode ficar cortado na borda. Confira isso em cada prévia.
 
+## 7 — Som (pedido do dono do estúdio)
+- **Todo vídeo tem efeitos sonoros** ligados ao que aparece na cena, sempre **abaixo da voz**:
+  passos quando alguém anda (`passos(de, ate)`), tic-tac quando há relógio (`tictac`), queda/impacto quando algo cai
+  ou bate (`som('queda' | 'tum' | 'carimbo', W(...))`), splash na água, moedas, pop quando um objeto surge, whoosh em
+  movimento rápido, e **ambiente em loop** conforme o lugar: vento em lugar aberto, chuva quando chove, pássaros de dia
+  ao ar livre, mar, cidade, escritório (`ambiente('vento', de, ate)`).
+- Biblioteca em `public/sfx/` (gerada em código por `python3 tools/sfx.py`, só numpy). Funções em `src/sfx.ts`.
+  Cada som de impacto cai **exatamente no quadro** da ação (mesmo tempo do `lead: 0`/`dropY`).
+- Volumes padrão em `VOL` (impacto 0,55, passos 0,35, ambiente 0,16). A voz sempre entendível por cima de tudo.
+
+## Preferências fixas do dono do estúdio
+- **Antes de montar qualquer cena:** mostrar a imagem dos personagens (folha do elenco e/ou como aparecem nas cenas)
+  e **esperar o "aprovado"**. Mesmo que o áudio chegue antes, não começar sem a aprovação.
+- A narração é **gravada pelo dono** (ele manda o áudio); o texto do áudio é igual ao roteiro. Alinhar pelas pausas
+  quando a transcrição do ElevenLabs não estiver disponível.
+- **Sem legenda** no render final: `--props='{"legendas":false,"voz":true,"musica":false}'`.
+- **Efeitos visuais** nas cenas (pop, brilhos, poeira, quadrinhos) **e efeitos sonoros** (seção 7).
+- **Regra do foco** (seção 6): o que a narração mostra fica no centro da tela.
+- Cada vídeo começa com uma **abertura diferente** dos anteriores (não repetir cenário de abertura).
+- Antes de entregar: olhar o vídeo inteiro a cada meio segundo (com uma linha no centro) procurando câmera
+  atravessando coisas, personagem cortado ou fora do centro.
+
 ## Narração e tempos
 - Roteiro em segunda pessoa, gancho na primeira frase, uma ideia visual por frase, ênfase com `*palavra*`.
 - No render final os tempos vêm da voz real (`src/voz.ts`, gerado por `tools/voz.mjs`).

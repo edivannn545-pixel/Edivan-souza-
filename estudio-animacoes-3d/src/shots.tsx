@@ -8,6 +8,7 @@ import {
 import { Comic, Puff, Sign, Sparkles } from './props';
 import { Box, Cam, Room, Street } from './sets';
 import { W } from './timeline';
+import type { Som } from './sfx';
 
 // ============================================================================
 // "EL NIÑO: A BANHEIRA DO PACÍFICO" — tomadas do STORYBOARD.md, ancoradas em palavras com W(linha, 'palavra').
@@ -17,7 +18,7 @@ import { W } from './timeline';
 export type ShotProps = { t: number; t0: number; t1: number };
 export type Shot = { from: number; name: string; C: (p: ShotProps) => JSX.Element };
 
-export const SFX: { at: number; file: string; vol: number }[] = [];
+export const SFX: Som[] = [];
 
 const P = (o: Partial<Pose> = {}): Pose => ({ ...REST, ...o });
 const k01 = (t: number, a: number, b: number) => seg(t, a, b);
