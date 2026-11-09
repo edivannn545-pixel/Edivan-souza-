@@ -154,6 +154,12 @@ estas regras. Quando uma regra não puder ser cumprida, avise antes de seguir.
 - Volumes padrão em `VOL` (impacto 0,55, passos 0,35, ambiente 0,16). A voz sempre entendível por cima de tudo.
 
 ## Preferências fixas do dono do estúdio
+- **Fluxo de cada vídeo:** (1) o dono manda um **vídeo de referência** → extrair quadros a cada ~0,5 s
+  (`ffmpeg -i ref.mp4 -vf fps=2,scale=160:-1,tile=8x6 ...`), olhar todos e devolver um resumo cena por cena
+  (tempo, enquadramento, objetos, ritmo, transições, efeitos) — usar só como **inspiração**, com nossos personagens
+  e cenários, nunca copiar personagens/logos/imagens de terceiros; o áudio do vídeo não dá para ouvir (transcrever pelo
+  ElevenLabs se a fala importar); (2) o dono manda o **texto**; (3) mostrar **personagens e cenários** e esperar o
+  "aprovado"; (4) o dono manda o **áudio**; (5) montar, revisar e entregar.
 - **Antes de montar qualquer cena:** mostrar a imagem dos personagens (folha do elenco e/ou como aparecem nas cenas)
   e **esperar o "aprovado"**. Mesmo que o áudio chegue antes, não começar sem a aprovação.
 - A narração é **gravada pelo dono** (ele manda o áudio); o texto do áudio é igual ao roteiro. Alinhar pelas pausas
