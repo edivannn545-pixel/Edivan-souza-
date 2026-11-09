@@ -119,7 +119,9 @@ estas regras. Quando uma regra não puder ser cumprida, avise antes de seguir.
 ## 2 — Cenário
 - Nenhuma cena começa num chão vazio: sempre há fundo, objetos e luz com sombra (`WarmLights`).
 - Luz quente e suave, cores saturadas, névoa ao fundo; o assunto principal sempre nítido.
-- Um componente por lugar, reutilizado em várias tomadas.
+- Um componente por lugar, reutilizado em tomadas **seguidas**. Preferência do dono: **não repetir cenários** —
+  a mesma fachada/lugar não volta em pontos diferentes do vídeo e cada vídeo ganha cenários próprios (crie um novo
+  em `src/cenarios.tsx` em vez de reaproveitar o de outra cena: avenida, parque, pista, quarto, palco de outra cor...).
 
 ## 3 — Informação vira objeto
 - Todo número, data ou fato falado aparece **dentro da cena** como objeto (placa, calendário, contador, medidor,

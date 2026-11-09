@@ -1,7 +1,7 @@
 import { JSX } from 'react';
 import { lerp, seg, track, V3 } from './anim';
 import { CAM, Efeito } from './camera';
-import { Escritorio } from './cenarios';
+import { Avenida, Escritorio, Parque, Pista } from './cenarios';
 import { Character, faceAt, Pose, REST } from './Character';
 import {
   BotaoInscreva, Cama, Cerebro, CicloDiaNoite, Contador, Cronometro, DEITADO, Despertador, IconeCoracao, IconeFoto, IconeOlho, Jaula, Onibus, Palco,
@@ -10,7 +10,7 @@ import {
 import { BalaoPensamento, BarraProgresso, Caneca, JanelaPersiana, Monitor } from './objetos';
 import { NOVOS } from './personagens';
 import { Calendar, Clipboard, Comic, dropY, Puff, Sparkles } from './props';
-import { Cam, Street } from './sets';
+import { Cam } from './sets';
 import { W } from './timeline';
 
 // ============================================================================
@@ -69,14 +69,14 @@ const S02 = ({ t, t0, t1 }: ShotProps) => {
 const S03 = ({ t, t0, t1 }: ShotProps) => {
   const pa = W(2, 'passou');
   const corre = seg(t, t0, pa);
-  const x = lerp(-2.6, -1.0, corre);
+  const x = lerp(-2.4, -0.9, corre);
   return (
     <>
-      <Street placa="MERCADO" />
-      <Cam t={t} t0={t0} t1={t1} keys={CAM.pousa(t0, t1, [-0.6, 1.5, 0.3], { dist: 6.4, de: 'longe' })} />
-      <PontoOnibus position={[-2.0, 0, -2.0]} />
-      <Onibus x={lerp(1.8, 8, seg(t, t0, t1 + 0.6, (k) => k * k))} z={-0.2} />
-      <Character pose={track(t, P({ x, z: 0.2, ry: 1.1, walk: (x + 2.6) / 0.24, stride: corre < 1 ? 1 : 0, lean: 0.2 }), [{ at: pa, v: { lsz: 2.4, rsz: 2.4, lel: 0.3, rel: 0.3, lean: 0 } }])} face={faceAt(t, [{ at: t0, f: 'panic', o: ['sweat'] }, { at: pa, f: 'frustrated', o: ['sweat3'] }], 5)} look={LEO} />
+      <Avenida t={t} />
+      <Cam t={t} t0={t0} t1={t1} keys={CAM.pousa(t0, t1, [-0.8, 1.5, 0.2], { dist: 6.4, de: 'longe' })} />
+      <PontoOnibus position={[-3.3, 0, 0.1]} />
+      <Onibus x={lerp(1.0, 8, seg(t, t0, t1 + 0.6, (k) => k * k))} z={-2.6} />
+      <Character pose={track(t, P({ x, z: 0.2, ry: 1.1, walk: (x + 2.4) / 0.24, stride: corre < 1 ? 1 : 0, lean: 0.2, z: 0.7 }), [{ at: pa, v: { lsz: 2.4, rsz: 2.4, lel: 0.3, rel: 0.3, lean: 0 } }])} face={faceAt(t, [{ at: t0, f: 'panic', o: ['sweat'] }, { at: pa, f: 'frustrated', o: ['sweat3'] }], 5)} look={LEO} />
       <Puff t={t} at={t0 + 0.3} position={[3.5, 0.3, 1.6]} color="#c8c0b0" />
     </>
   );
@@ -261,8 +261,8 @@ const S19 = ({ t, t0, t1 }: ShotProps) => {
   const x = lerp(-1.5, 0.6, seg(t, t0, t1, (k) => k));
   return (
     <>
-      <Street placa="MERCADO" />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t, [x * 0.7 + 0.3, 2.0, 5.6], [x * 0.8, 1.7, 0.2], 34]]} />
+      <Parque />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t, [x * 0.7 + 0.6, 2.0, 5.6], [x * 0.8 + 0.3, 1.7, 0.2], 34]]} />
       <Character pose={P({ x, z: 0.2, ry: 1.2, walk: (x + 1.5) / 0.24, stride: 1 })} face={faceAt(t, [{ at: t0, f: 'confident' }], 19)} look={LEO} />
       <BalaoPensamento t={t} at={W(13, 'calcula')} texto={'QUASE\nLÁ!'} hold={9} size={0.95} position={[x + 0.8, 2.9, 0.2]} />
       <BarraProgresso t={t} from={W(13, 'calcula')} at={W(13, 'falta')} valor={0.3} cor="#ff8a2a" position={[x * 0.8, 3.75, -0.2]} scale={0.7} />
@@ -357,7 +357,7 @@ const S27 = ({ t, t0, t1 }: ShotProps) => {
   const xl = lerp(-2.6, 1.4, k);
   return (
     <>
-      <Street placa="MERCADO" />
+      <Pista />
       <Cam t={t} t0={t0} t1={t1} keys={[[t, [xl + 1.6, 2.0, 7.2], [xl + 1.4, 1.5, 0.3], 34]]} />
       <RelogioGrande minutos={(t - t0) * 30} horas={(t - t0) * 3} tamanho={0.95} position={[xr, 0.95, 0.3]} rotation={[0, 0, -(xr - 0.2) / 0.95]} />
       <Character pose={P({ x: xl, z: 0.3, ry: Math.PI / 2 - 0.3, walk: (xl + 2.6) / 0.2, stride: 1, lean: 0.3, lsx: 0.9, rsx: -0.5, lel: 1.2, rel: 1.2 })} face={faceAt(t, [{ at: t0, f: 'panic', o: ['sweat3'] }], 26)} look={LEO} />

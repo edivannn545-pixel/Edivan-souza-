@@ -472,3 +472,195 @@ const grama = () =>
   }, [20, 20]);
 
 
+
+// ============================================================================
+// AVENIDA COM PONTO DE ÔNIBUS — calçada na frente (z -0.6 a 1.6), rua atrás (faixa central em z = -3,
+// o ônibus anda em z ≈ -2.6), prédios ao fundo. Semáforo, faixa de pedestre, árvores.
+// ============================================================================
+export const Avenida = ({ t = 0 }: { t?: number }) => (
+  <group>
+    <Luz bg="#a9d6f2" ceu="#fff6e0" chao="#6a6a6a" fill={1.05} sol="#ffe8c8" forca={2.4} fog={[22, 70]} />
+    {/* calçada */}
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.06, 2]} receiveShadow>
+      <planeGeometry args={[60, 5.2]} />
+      <meshStandardMaterial map={pisoCalcada()} roughness={0.9} />
+    </mesh>
+    <Box p={[0, 0.06, -0.62]} s={[60, 0.14, 0.2]} c="#c9c4ba" />
+    {/* asfalto */}
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -3.2]} receiveShadow>
+      <planeGeometry args={[60, 5.2]} />
+      <meshStandardMaterial color="#4a4d55" roughness={0.95} />
+    </mesh>
+    {Array.from({ length: 16 }, (_, i) => (
+      <Box key={i} p={[-24 + i * 3.2, 0.01, -3.2]} s={[1.6, 0.01, 0.14]} c="#f2e9c8" />
+    ))}
+    {Array.from({ length: 6 }, (_, i) => (
+      <Box key={`fp${i}`} p={[4.6, 0.012, -1.2 - i * 0.8]} s={[2.0, 0.01, 0.4]} c="#f4f4f2" />
+    ))}
+    {/* calçada do outro lado e prédios */}
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.06, -7.2]}>
+      <planeGeometry args={[60, 3]} />
+      <meshStandardMaterial color="#cfc8bb" />
+    </mesh>
+    {[[-11, 7, '#d98c5f'], [-5.5, 9, '#7fa8c8'], [0, 6, '#e8b85a'], [5.5, 10, '#c7765a'], [11, 7.5, '#9fc08a']].map(([x, h, c], i) => (
+      <Box key={i} p={[x as number, (h as number) / 2, -10]} s={[5.2, h as number, 4]} map={janelasPredio(c as string)} />
+    ))}
+    {/* semáforo */}
+    <group position={[3.2, 0, -0.9]}>
+      <Box p={[0, 1.6, 0]} s={[0.1, 3.2, 0.1]} c="#2a2c32" />
+      <Box p={[0, 3.3, 0.05]} s={[0.36, 0.9, 0.26]} c="#2a2c32" />
+      {['#ff4a3a', '#ffd23a', '#5ce07a'].map((c, i) => (
+        <mesh key={c} position={[0, 3.6 - i * 0.28, 0.19]}>
+          <circleGeometry args={[0.1, 20]} />
+          <meshStandardMaterial color={c} emissive={c} emissiveIntensity={(Math.floor(t / 2) % 3) === i ? 2.2 : 0.15} toneMapped={false} />
+        </mesh>
+      ))}
+    </group>
+    {/* árvores na calçada */}
+    {[-5.5, 6.5].map((x) => (
+      <group key={x} position={[x, 0, -0.1]}>
+        <mesh position={[0, 1.0, 0]}>
+          <cylinderGeometry args={[0.1, 0.14, 2.0, 10]} />
+          <meshStandardMaterial color="#7a4a26" />
+        </mesh>
+        <mesh position={[0, 2.5, 0]} castShadow>
+          <sphereGeometry args={[1.0, 18, 14]} />
+          <meshStandardMaterial color="#4f9a42" roughness={0.9} />
+        </mesh>
+      </group>
+    ))}
+    <Box p={[-3.6, 0.45, 1.2]} s={[0.5, 0.9, 0.5]} c="#3a7a4a" />
+  </group>
+);
+
+const pisoCalcada = () =>
+  canvasTex('calcada', 512, 512, (c) => {
+    c.fillStyle = '#d9d2c4';
+    c.fillRect(0, 0, 512, 512);
+    c.strokeStyle = 'rgba(90,80,70,0.3)';
+    c.lineWidth = 4;
+    for (let i = 0; i <= 4; i++) {
+      c.beginPath();
+      c.moveTo(i * 128, 0);
+      c.lineTo(i * 128, 512);
+      c.moveTo(0, i * 128);
+      c.lineTo(512, i * 128);
+      c.stroke();
+    }
+  }, [20, 2]);
+
+const janelasPredio = (cor: string) =>
+  canvasTex(`predio|${cor}`, 256, 512, (c) => {
+    c.fillStyle = cor;
+    c.fillRect(0, 0, 256, 512);
+    c.fillStyle = '#cfe6f4';
+    for (let y = 30; y < 500; y += 60) for (let x = 24; x < 230; x += 56) c.fillRect(x, y, 34, 40);
+  });
+
+// ============================================================================
+// PARQUE — caminho de terra ao longo de X (personagem anda em z ≈ 0.2), árvores, postes, banco, lago,
+// e uma placa ao fundo indicando o destino (placa: texto).
+// ============================================================================
+export const Parque = ({ placa = 'TRABALHO →\n5 KM' }: { placa?: string }) => (
+  <group>
+    <Luz bg="#bfe3f2" ceu="#fffbe8" chao="#5a8a3a" fill={1.05} sol="#fff0d0" forca={2.4} fog={[20, 60]} />
+    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+      <planeGeometry args={[120, 120]} />
+      <meshStandardMaterial color="#8cc65a" roughness={1} />
+    </mesh>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0.2]} receiveShadow>
+      <planeGeometry args={[60, 1.8]} />
+      <meshStandardMaterial color="#d8b47a" roughness={1} />
+    </mesh>
+    {/* lago */}
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-3, 0.02, -5]} scale={[1.6, 1, 1]}>
+      <circleGeometry args={[2.4, 40]} />
+      <meshStandardMaterial color="#5ab0e0" roughness={0.15} metalness={0.2} />
+    </mesh>
+    {/* árvores */}
+    {[[-6, -2.5], [-1.5, -3.5], [3.5, -2.8], [7, -4], [10, -2.2], [-9, -4.5], [5.5, 3.5], [-4.5, 3.8]].map(([x, z], i) => (
+      <group key={i} position={[x, 0, z]}>
+        <mesh position={[0, 0.9, 0]}>
+          <cylinderGeometry args={[0.12, 0.16, 1.8, 10]} />
+          <meshStandardMaterial color="#7a4a26" />
+        </mesh>
+        <mesh position={[0, 2.4, 0]} castShadow>
+          <sphereGeometry args={[1.0 + rand(i) * 0.4, 18, 14]} />
+          <meshStandardMaterial color={i % 2 ? '#3f8a3a' : '#5aa846'} roughness={0.9} />
+        </mesh>
+      </group>
+    ))}
+    {/* postes */}
+    {[-4, 2, 8].map((x) => (
+      <group key={x} position={[x, 0, -0.9]}>
+        <Box p={[0, 1.4, 0]} s={[0.08, 2.8, 0.08]} c="#2a3a2a" />
+        <mesh position={[0, 2.9, 0]}>
+          <sphereGeometry args={[0.18, 14, 10]} />
+          <meshStandardMaterial color="#fff6d8" emissive="#ffe6a0" emissiveIntensity={0.6} />
+        </mesh>
+      </group>
+    ))}
+    <Banco position={[-1.2, 0, -1.4]} />
+    <PlacaMadeira texto={placa} w={1.6} h={0.75} poste={1.4} position={[9, 0, -1.2]} rotation={[0, -0.25, 0]} />
+    {Array.from({ length: 10 }, (_, i) => (
+      <mesh key={`f${i}`} position={[(rand(i + 20) - 0.5) * 16, 0.08, -1.4 - rand(i + 21) * 2]}>
+        <sphereGeometry args={[0.07, 8, 6]} />
+        <meshStandardMaterial color={['#ff6aa0', '#ffd23a', '#ffffff'][i % 3]} />
+      </mesh>
+    ))}
+  </group>
+);
+
+// ============================================================================
+// PISTA DE CORRIDA — raias vermelhas ao longo de X (raia do personagem em z ≈ 0.3), gramado e arquibancada
+// colorida ao fundo, faixa de chegada.
+// ============================================================================
+export const Pista = () => (
+  <group>
+    <Luz bg="#9fd3f5" ceu="#fff8e8" chao="#7a4a3a" fill={1.05} sol="#fff0d0" forca={2.5} fog={[24, 80]} />
+    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+      <planeGeometry args={[120, 120]} />
+      <meshStandardMaterial color="#6fb84a" roughness={1} />
+    </mesh>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0.3]} receiveShadow>
+      <planeGeometry args={[80, 5]} />
+      <meshStandardMaterial color="#c8503a" roughness={0.9} />
+    </mesh>
+    {[-1.9, -0.9, 0.1, 1.1, 2.1].map((z) => (
+      <Box key={z} p={[0, 0.02, z + 0.3]} s={[80, 0.01, 0.06]} c="#ffffff" />
+    ))}
+    {/* faixa de chegada */}
+    {Array.from({ length: 10 }, (_, i) => (
+      <Box key={`c${i}`} p={[14, 0.021, -1.95 + i * 0.5]} s={[0.5, 0.01, 0.5]} c={i % 2 ? '#ffffff' : '#1e1f24'} />
+    ))}
+    {/* arquibancada */}
+    {Array.from({ length: 5 }, (_, r) => (
+      <Box key={r} p={[0, 0.35 + r * 0.55, -5 - r * 0.7]} s={[40, 0.7 + r * 0.0, 0.7]} c={r % 2 ? '#d9d6cc' : '#c9c4ba'} />
+    ))}
+    {Array.from({ length: 70 }, (_, i) => (
+      <mesh key={`p${i}`} position={[-18 + (i % 35) * 1.05 + (rand(i) - 0.5) * 0.3, 1.05 + Math.floor(i / 35) * 1.1 + 0.25, -5.2 - Math.floor(i / 35) * 1.4]}>
+        <sphereGeometry args={[0.22, 10, 8]} />
+        <meshStandardMaterial color={['#e8402f', '#2f6fb3', '#ffd23a', '#3aa14a', '#ff8ad0'][i % 5]} />
+      </mesh>
+    ))}
+    <Box p={[0, 4.5, -8.8]} s={[40, 0.3, 2.6]} c="#2f6fb3" />
+    {/* faixa CHEGADA */}
+    <group position={[14, 0, 0.3]}>
+      {[-2.6, 2.6].map((z) => (
+        <Box key={z} p={[0, 1.6, z]} s={[0.12, 3.2, 0.12]} c="#2a2c32" />
+      ))}
+      <mesh position={[0, 3.0, 0]} rotation={[0, -Math.PI / 2, 0]}>
+        <planeGeometry args={[5.2, 0.6]} />
+        <meshStandardMaterial map={canvasTex('chegada', 1024, 128, (c) => {
+          c.fillStyle = '#ffd23a';
+          c.fillRect(0, 0, 1024, 128);
+          c.fillStyle = '#1e1f24';
+          c.font = '900 90px "Arial Black", Arial';
+          c.textAlign = 'center';
+          c.textBaseline = 'middle';
+          c.fillText('CHEGADA', 512, 66);
+        })} side={THREE.DoubleSide} />
+      </mesh>
+    </group>
+  </group>
+);
