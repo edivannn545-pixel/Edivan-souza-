@@ -41,7 +41,7 @@ const Captions = () => {
     <AbsoluteFill style={{ justifyContent: 'flex-end', alignItems: 'center', paddingBottom: ALTURA }}>
       <div style={{ textAlign: 'center', maxWidth: 900, fontFamily: '"Arial Black", Arial, sans-serif', fontSize: 86, lineHeight: 1.1 }}>
         {chunk.map((w) => (
-          <span key={w.i} style={{ color: w.stressed ? '#ffd23a' : '#fff', WebkitTextStroke: '14px #1a1208', paintOrder: 'stroke fill', marginRight: 18, display: 'inline-block', transform: w === cur ? 'scale(1.08)' : 'none' }}>
+          <span key={w.i} style={{ color: w.stressed ? '#ffd23a' : '#fff', WebkitTextStroke: '14px #1a1208', paintOrder: 'stroke fill', margin: '0 16px', display: 'inline-block', transform: w === cur ? 'scale(1.08)' : 'none' }}>
             {w.text.toUpperCase()}
           </span>
         ))}

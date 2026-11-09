@@ -189,12 +189,12 @@ const H = ({ t, t0, t1 }: ShotProps) => {
 // I. "Para ele, você não está fazendo *nada*." — por cima do ombro do chefe, que aponta para você.
 const I = ({ t, t0, t1 }: ShotProps) => {
   const voce = W(4, 'voce'), nada = W(4, 'nada');
-  const chefe = track(t, P({ ...chefeBase, ry: -0.45 }), [{ at: voce, v: { rsx: 1.45, rsz: 0.15, rel: -0.05, lean: 0.1 } }]);
+  const chefe = track(t, P({ ...chefeBase, x: 1.55, z: -3.3, ry: -0.5 }), [{ at: voce, v: { rsx: 1.45, rsz: 0.15, rel: -0.05, lean: 0.1 } }]);
   const vc = track(t, P({ ...voceG, ry: Math.PI - 0.55, hy: 0.1 }), [{ at: nada, v: { hy: 0.3, hr: 0.18, lsz: 0.7, lel: -0.8 } }]);
   return (
     <>
       <Tunel t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={CAM.empurra(t0, t1, [-0.4, 1.35, -0.3], { de: 6.0, para: 5.2, yaw: Math.PI - 0.72, pitch: 0.1, fov: 30 })} />
+      <Cam t={t} t0={t0} t1={t1} keys={CAM.empurra(t0, t1, [-0.4, 1.35, -0.3], { de: 5.3, para: 4.7, yaw: Math.PI - 0.42, pitch: 0.1, fov: 32 })} />
       <Character pose={chefe} face={faceAt(t, [{ at: t0, f: 'furious' }], 15)} look={CHEFE} />
       <Character pose={vc} face={faceAt(t, [{ at: t0, f: 'content' }, { at: nada, f: 'confused' }], 16)} look={MINEIRO} />
       <Gaiola topo={ganchoDe(vc)} ave={{ canta: 0.1 }} />
