@@ -8,7 +8,7 @@ import { ELENCO, Membro, ROUPAS } from './personagens';
 import { tileTex } from './textures';
 
 // Folha do elenco (1920x1760): mostra todos os personagens e roupas prontos para usar.
-const PAGE = '#ecebe6';
+export const PAGE = '#ecebe6';
 const ESP = 1.2; // distância entre personagens no mundo 3D
 
 const OrthoCam = ({ n }: { n: number }) => {
@@ -51,7 +51,7 @@ const Fileira = ({ membros, w, h }: { membros: Membro[]; w: number; h: number })
   );
 };
 
-const Cartoes = ({ membros, w, h }: { membros: Membro[]; w: number; h: number }) => {
+export const Cartoes = ({ membros, w, h }: { membros: Membro[]; w: number; h: number }) => {
   const n = membros.length;
   const cw = w / n;
   return (

@@ -182,32 +182,45 @@ export const Gaiola = ({ ave, topo, balanco = 0, escala = 1 }: { ave?: AveEstado
   return (
     <group position={topo} rotation={[balanco * 0.3, 0, balanco]} scale={escala}>
       <group position={[0, -0.59, 0]}>
-        <mesh position={[0, 0.02, 0]} castShadow>
-          <cylinderGeometry args={[0.19, 0.2, 0.05, 28]} />
-          <meshStandardMaterial color={ouro} metalness={0.8} roughness={0.3} />
+        {/* base: bacia dourada grossa com fundo de palha (fechada, não dá para ver o chão através) */}
+        <mesh position={[0, 0.0, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.2, 0.15, 0.1, 32]} />
+          <meshStandardMaterial color={ouro} metalness={0.35} roughness={0.35} />
+        </mesh>
+        <mesh position={[0, 0.05, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[0.2, 0.014, 8, 32]} />
+          <meshStandardMaterial color="#f2c84a" metalness={0.35} roughness={0.3} />
+        </mesh>
+        <mesh position={[0, 0.051, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+          <circleGeometry args={[0.19, 32]} />
+          <meshStandardMaterial color="#e6cf8a" roughness={0.9} />
+        </mesh>
+        <mesh position={[0, -0.06, 0]}>
+          <cylinderGeometry args={[0.11, 0.13, 0.03, 24]} />
+          <meshStandardMaterial color={ouro} metalness={0.35} roughness={0.35} />
         </mesh>
         {Array.from({ length: 14 }, (_, i) => {
           const a = (i / 14) * Math.PI * 2;
           return (
-            <mesh key={i} position={[Math.cos(a) * 0.17, 0.04 + H / 2, Math.sin(a) * 0.17]}>
+            <mesh key={i} position={[Math.cos(a) * 0.17, 0.05 + H / 2, Math.sin(a) * 0.17]}>
               <cylinderGeometry args={[0.005, 0.005, H, 4]} />
-              <meshStandardMaterial color={ouro} metalness={0.8} roughness={0.3} />
+              <meshStandardMaterial color={ouro} metalness={0.35} roughness={0.35} />
             </mesh>
           );
         })}
         {[0, 1, 2, 3].map((i) => (
           <mesh key={`a${i}`} position={[0, 0.04 + H, 0]} rotation={[0, (i * Math.PI) / 4, 0]}>
             <torusGeometry args={[0.17, 0.005, 6, 24, Math.PI]} />
-            <meshStandardMaterial color={ouro} metalness={0.8} roughness={0.3} />
+            <meshStandardMaterial color={ouro} metalness={0.35} roughness={0.35} />
           </mesh>
         ))}
         <mesh position={[0, 0.04 + H, 0]} rotation={[Math.PI / 2, 0, 0]}>
           <torusGeometry args={[0.17, 0.006, 6, 28]} />
-          <meshStandardMaterial color={ouro} metalness={0.8} roughness={0.3} />
+          <meshStandardMaterial color={ouro} metalness={0.35} roughness={0.35} />
         </mesh>
         <mesh position={[0, 0.25 + H, 0]}>
           <torusGeometry args={[0.035, 0.007, 6, 16]} />
-          <meshStandardMaterial color={ouro} metalness={0.8} roughness={0.3} />
+          <meshStandardMaterial color={ouro} metalness={0.35} roughness={0.35} />
         </mesh>
         {/* poleiro e potinho */}
         <mesh position={[0, 0.15, 0]} rotation={[0, 0, Math.PI / 2]}>
