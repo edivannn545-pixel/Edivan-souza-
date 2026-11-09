@@ -127,17 +127,20 @@ const drawEye = (c: CanvasRenderingContext2D, kind: Eyes, x: number, y: number, 
       return side < 0 ? open(26, 32, 12) : drawEye(c, 'happy', x, y, side, skin);
     case 'half':
     case 'angry': {
-      open(26, 32, 12, 0, 6);
-      c.fillStyle = skin;
+      // Desenha só a parte do olho abaixo da pálpebra (recorte), sem pintar cor de pele por cima:
+      // assim não aparece um retângulo de outra cor sobre o rosto.
+      c.save();
       c.beginPath();
-      if (kind === 'half') c.rect(x - 32, y - 40, 64, 38);
+      if (kind === 'half') c.rect(x - 40, y - 2, 80, 60);
       else {
-        c.moveTo(x - 34, y - 40 + (side < 0 ? 0 : 22));
-        c.lineTo(x + 34, y - 40 + (side < 0 ? 22 : 0));
-        c.lineTo(x + 34, y - 44);
-        c.lineTo(x - 34, y - 44);
+        c.moveTo(x - 40, y - 34 + (side < 0 ? 4 : 22) + (side < 0 ? -2 : 0));
+        c.lineTo(x + 40, y - 34 + (side < 0 ? 22 : 4));
+        c.lineTo(x + 40, y + 60);
+        c.lineTo(x - 40, y + 60);
       }
-      c.fill();
+      c.clip();
+      open(26, 32, 12, 0, 6);
+      c.restore();
       line(c, 9);
       c.beginPath();
       if (kind === 'half') {
@@ -387,7 +390,18 @@ export const useFacesReady = () => {
 };
 
 // Desenha o rosto no canvas. blink: 0 aberto, 0.5 meio fechado, 1 fechado.
-export function drawFace(c: CanvasRenderingContext2D, face: FaceName, blink: number, overlays: OverlayName[], skin: string) {
+// escala > 1 = olhos, sobrancelhas e boca maiores (estilo dos Shorts de referência), olhos um pouco mais baixos e afastados.
+const olhos = (escala: number): [number, number][] =>
+  escala > 1 ? EYES.map(([x, y], i) => [x + (i === 0 ? -14 : 14), y + 30] as [number, number]) : EYES;
+const emVolta = (c: CanvasRenderingContext2D, x: number, y: number, k: number, draw: () => void) => {
+  c.save();
+  c.translate(x, y);
+  c.scale(k, k);
+  c.translate(-x, -y);
+  draw();
+  c.restore();
+};
+export function drawFace(c: CanvasRenderingContext2D, face: FaceName, blink: number, overlays: OverlayName[], skin: string, escala = 1) {
   c.clearRect(0, 0, 512, 512);
   if (overlays.includes('shading')) {
     const s = imgs[OVERLAYS.shading];
@@ -398,14 +412,19 @@ export function drawFace(c: CanvasRenderingContext2D, face: FaceName, blink: num
   if (kit) c.drawImage(kit, 0, 0);
   else {
     const [e, b, m] = RECEITA[face];
-    EYES.forEach(([x, y], i) => {
-      drawBrow(c, b, x, y, i === 0 ? -1 : 1);
-      drawEye(c, e, x, y, i === 0 ? -1 : 1, skin);
+    olhos(escala).forEach(([x, y], i) =>
+      emVolta(c, x, y, escala, () => {
+        drawBrow(c, b, x, y, i === 0 ? -1 : 1);
+        drawEye(c, e, x, y, i === 0 ? -1 : 1, skin);
+      }),
+    );
+    emVolta(c, 256, escala > 1 ? 345 : 335, 1 + (escala - 1) * 0.6, () => {
+      if (escala > 1) c.translate(0, 18);
+      drawMouth(c, m);
     });
-    drawMouth(c, m);
   }
   if (blink > 0) {
-    for (const [x, y] of EYES) {
+    for (const [x, y] of olhos(escala)) emVolta(c, x, y, escala, () => {
       c.fillStyle = skin;
       c.beginPath();
       if (blink >= 1) c.ellipse(x, y, 42, 46, 0, 0, Math.PI * 2);
@@ -419,7 +438,7 @@ export function drawFace(c: CanvasRenderingContext2D, face: FaceName, blink: num
         c.lineTo(x + 30, y + 2);
       }
       c.stroke();
-    }
+    });
   }
   for (const o of overlays) {
     if (o === 'shading') continue;

@@ -81,6 +81,7 @@ export type Look = {
   metal?: boolean; // armadura
   backpack?: string; // mochila / tanque
   faixa?: string; // faixa colorida na cintura (macacão de astronauta, armadura em gomos)
+  estilo?: 'video'; // 'video' = corpo e rosto dos Shorts de referência (tronco-ovo, pernas longas, olhos grandes, contorno)
 };
 
 export const VOCE: Look = {
@@ -108,7 +109,7 @@ const Mat = ({ color, metal, ...p }: { color: string; metal?: boolean; map?: THR
   <meshStandardMaterial color={color} metalness={metal ? 0.85 : 0} roughness={metal ? 0.25 : p.roughness ?? 0.7} {...p} />
 );
 
-const FaceDecal = ({ face, skin }: { face: FaceState; skin: string }) => {
+const FaceDecal = ({ face, skin, escala = 1 }: { face: FaceState; skin: string; escala?: number }) => {
   const canvas = useMemo(() => {
     const c = document.createElement('canvas');
     c.width = c.height = 512;
@@ -120,9 +121,9 @@ const FaceDecal = ({ face, skin }: { face: FaceState; skin: string }) => {
     t.anisotropy = 8;
     return t;
   }, [canvas]);
-  const key = `${face.f}|${face.blink}|${face.o.join(',')}|${skin}`;
+  const key = `${face.f}|${face.blink}|${face.o.join(',')}|${skin}|${escala}`;
   useMemo(() => {
-    drawFace(canvas.getContext('2d')!, face.f, face.blink, face.o, skin);
+    drawFace(canvas.getContext('2d')!, face.f, face.blink, face.o, skin, escala);
     tex.needsUpdate = true;
   }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
   const L = 1.95;
@@ -141,19 +142,61 @@ const Limb = ({ len, r, color, metal }: { len: number; r: number; color: string;
   </mesh>
 );
 
-const Arm = ({ side, sz, sx, el, look, sh, hand }: { side: 1 | -1; sz: number; sx: number; el: number; look: Look; sh: number; hand?: ReactNode }) => (
-  <group position={[side * sh, 1.0, 0]} rotation={new THREE.Euler(-sx, 0, side * sz, 'ZXY')}>
-    <Limb len={0.3} r={0.032} color={look.jacket} metal={look.metal} />
-    <group position={[0, -0.3, 0]} rotation={[-el, 0, 0]}>
-      <Limb len={0.27} r={0.028} color={look.coat ?? look.jacket} metal={look.metal} />
-      <group position={[0, -0.3, 0]}>
-        <mesh castShadow scale={[1, 1.1, 0.9]}>
-          <sphereGeometry args={[0.07, 16, 12]} />
-          <Mat color={look.gloves} roughness={0.5} />
+const Arm = ({ side, sz, sx, el, look, sh, hand }: { side: 1 | -1; sz: number; sx: number; el: number; look: Look; sh: number; hand?: ReactNode }) => {
+  // Estilo vídeo: braço cor de pele com manguinha curta e mão pequena clara (exceto armadura/macacão).
+  const V = look.estilo === 'video';
+  const nu = V && !look.metal && !look.coat && look.gloves !== look.jacket;
+  const braco = nu ? look.skin : look.jacket;
+  const mao = V && !look.metal ? (nu ? look.skin : look.gloves) : look.gloves;
+  return (
+    <group position={[side * sh, 1.0, 0]} rotation={new THREE.Euler(-sx, 0, side * sz, 'ZXY')}>
+      <Limb len={0.3} r={V ? 0.026 : 0.032} color={braco} metal={look.metal} />
+      {nu && (
+        <mesh position={[0, -0.06, 0]} castShadow>
+          <capsuleGeometry args={[0.05, 0.08, 4, 10]} />
+          <Mat color={look.jacket} />
         </mesh>
-        {hand}
+      )}
+      <group position={[0, -0.3, 0]} rotation={[-el, 0, 0]}>
+        <Limb len={0.27} r={V ? 0.024 : 0.028} color={nu ? look.skin : look.coat ?? look.jacket} metal={look.metal} />
+        <group position={[0, -0.3, 0]}>
+          <mesh castShadow scale={[1, 1.1, 0.9]}>
+            <sphereGeometry args={[V ? 0.05 : 0.07, 16, 12]} />
+            <Mat color={mao} roughness={0.5} />
+          </mesh>
+          {hand}
+        </group>
       </group>
     </group>
+  );
+};
+
+// Tronco em forma de ovo (estilo vídeo): mais largo embaixo; em cima a camisa, embaixo a calça.
+const ovoPontos = (de: number, ate: number) => {
+  const pts: THREE.Vector2[] = [];
+  for (let i = 0; i <= 20; i++) {
+    const th = de + ((ate - de) * i) / 20;
+    const R = 0.285 - 0.045 * Math.sin(th);
+    pts.push(new THREE.Vector2(Math.max(0.0001, R * Math.cos(th)), 0.3 * Math.sin(th)));
+  }
+  return pts;
+};
+const CORTE = -0.32; // onde a camisa encontra a calça (ângulo)
+const GEO_CAMISA = new THREE.LatheGeometry(ovoPontos(CORTE, Math.PI / 2), 40);
+const GEO_CALCA = new THREE.LatheGeometry(ovoPontos(-Math.PI / 2, CORTE + 0.02), 40);
+const GEO_OVO = new THREE.LatheGeometry(ovoPontos(-Math.PI / 2, Math.PI / 2), 40);
+const CONTORNO = '#1f1712';
+const TroncoOvo = ({ look, scale, map }: { look: Look; scale: [number, number, number]; map?: THREE.Texture }) => (
+  <group position={[0, 0.84, 0]} scale={scale}>
+    <mesh geometry={GEO_CAMISA} castShadow>
+      <Mat color={map ? '#ffffff' : look.jacket} map={map} metal={look.metal} side={THREE.DoubleSide} />
+    </mesh>
+    <mesh geometry={GEO_CALCA} castShadow>
+      <Mat color={look.skirt ? look.skirt.color : look.pants} metal={look.metal} side={THREE.DoubleSide} />
+    </mesh>
+    <mesh geometry={GEO_OVO} scale={1.045}>
+      <meshBasicMaterial color={CONTORNO} side={THREE.BackSide} />
+    </mesh>
   </group>
 );
 
@@ -553,50 +596,59 @@ export const Character = ({
   const swing = Math.sin(ph) * 0.55 * p.stride;
   const bob = Math.abs(Math.sin(ph)) * 0.07 * p.stride;
   const sq = 1 - p.squash * 0.18;
-  const dy = 0.55 * (b.legs - 1);
+  const V = look.estilo === 'video';
+  const pernas = b.legs * (V ? 1.35 : 1);
+  // Estilo vídeo: tronco maior em relação à cabeça, ombros mais abertos.
+  const torso: [number, number, number] = V ? [b.torso[0] * 1.18, b.torso[1] * 1.08, b.torso[2] * 1.18] : b.torso;
+  const ombro = V ? b.sh * 1.15 : b.sh;
+  const dy = 0.55 * (pernas - 1);
   const torsoMap = look.pattern && look.pattern !== 'liso' ? patternTex(look.pattern, look.jacket, look.pattern2 ?? '#f4f0e8', look.patternH) : undefined;
   return (
     <group position={[p.x, p.y + bob, p.z]} rotation={[0, p.ry, 0]} scale={b.s}>
-      <group scale={[1, b.legs, 1]}>
+      <group scale={[1, pernas, 1]}>
         <Leg side={1} swing={swing} tap={p.ltap} look={look} />
         <Leg side={-1} swing={-swing} tap={p.rtap} look={look} />
       </group>
       <group position={[0, 0.55 + dy, 0]} scale={[2 - sq, sq, 2 - sq]}>
         <group rotation={[p.lean + b.lean, p.twist, p.side]} position={[0, -0.55, 0]}>
           {/* Tronco arredondado */}
-          <mesh position={[0, 0.84, 0]} scale={b.torso} castShadow>
-            <sphereGeometry args={[0.3, 32, 24]} />
-            <Mat color={torsoMap ? '#ffffff' : look.jacket} map={torsoMap} metal={look.metal} />
-          </mesh>
+          {V ? (
+            <TroncoOvo look={look} scale={torso} map={torsoMap} />
+          ) : (
+            <mesh position={[0, 0.84, 0]} scale={b.torso} castShadow>
+              <sphereGeometry args={[0.3, 32, 24]} />
+              <Mat color={torsoMap ? '#ffffff' : look.jacket} map={torsoMap} metal={look.metal} />
+            </mesh>
+          )}
           {look.faixa && (
-            <mesh position={[0, 0.84, 0]} scale={b.torso} rotation={[Math.PI / 2, 0, 0]}>
+            <mesh position={[0, 0.84, 0]} scale={torso} rotation={[Math.PI / 2, 0, 0]}>
               <torusGeometry args={[0.298, 0.028, 10, 40]} />
               <Mat color={look.faixa} />
             </mesh>
           )}
           {look.backpack && (
-            <mesh position={[0, 0.88, -0.3 * b.torso[2]]} castShadow>
+            <mesh position={[0, 0.88, -0.3 * torso[2]]} castShadow>
               <boxGeometry args={[0.42, 0.5, 0.2]} />
               <Mat color={look.backpack} />
             </mesh>
           )}
-          {look.coat && <OpenShell color={look.coat} scale={[b.torso[0] * 1.05, b.torso[1] * 1.05, b.torso[2] * 1.06]} />}
+          {look.coat && <OpenShell color={look.coat} scale={[torso[0] * 1.05, torso[1] * 1.05, torso[2] * 1.06]} />}
           {look.coat && (
             <mesh position={[0, 0.55, 0]} castShadow>
-              <cylinderGeometry args={[0.29 * b.torso[0], 0.34 * b.torso[0], 0.5, 32, 1, true, Math.PI / 2 + 0.45, Math.PI * 2 - 0.9]} />
+              <cylinderGeometry args={[0.29 * torso[0], 0.34 * torso[0], 0.5, 32, 1, true, Math.PI / 2 + 0.45, Math.PI * 2 - 0.9]} />
               <Mat color={look.coat} side={THREE.DoubleSide} />
             </mesh>
           )}
-          {look.vest && <OpenShell color={look.vest} scale={[b.torso[0] * 1.04, b.torso[1] * 0.96, b.torso[2] * 1.05]} gap={0.35} y={0.86} />}
+          {look.vest && <OpenShell color={look.vest} scale={[torso[0] * 1.04, torso[1] * 0.96, torso[2] * 1.05]} gap={0.35} y={0.86} />}
           {look.skirt && (
             <mesh position={[0, look.skirt.long ? 0.42 : 0.62, 0]} castShadow>
-              <cylinderGeometry args={[0.24 * b.torso[0], (look.skirt.long ? 0.38 : 0.32) * b.torso[0], look.skirt.long ? 0.7 : 0.3, 32]} />
+              <cylinderGeometry args={[0.24 * torso[0], (look.skirt.long ? 0.38 : 0.32) * torso[0], look.skirt.long ? 0.7 : 0.3, 32]} />
               <Mat color={look.skirt.color} />
             </mesh>
           )}
           {look.apron && (
-            <mesh position={[0, 0.7, 0.27 * b.torso[2]]} rotation={[0.08, 0, 0]}>
-              <planeGeometry args={[0.36 * b.torso[0], 0.62]} />
+            <mesh position={[0, 0.7, 0.27 * torso[2]]} rotation={[0.08, 0, 0]}>
+              <planeGeometry args={[0.36 * torso[0], 0.62]} />
               <Mat color={look.apron} side={THREE.DoubleSide} />
             </mesh>
           )}
@@ -607,7 +659,7 @@ export const Character = ({
             </mesh>
           )}
           {look.tie && (
-            <mesh position={[0, 0.9, 0.255 * b.torso[2] / 0.85]} rotation={[0.25, 0, Math.PI]}>
+            <mesh position={[0, 0.9, 0.255 * torso[2] / 0.85]} rotation={[0.25, 0, Math.PI]}>
               <coneGeometry args={[0.05, 0.26, 4]} />
               <Mat color={look.tie} roughness={0.5} />
             </mesh>
@@ -631,8 +683,8 @@ export const Character = ({
                 <Mat color="#efeee8" roughness={0.9} />
               </mesh>
             ))}
-          <Arm side={1} sz={p.lsz} sx={p.lsx} el={p.lel} look={look} sh={b.sh} hand={left} />
-          <Arm side={-1} sz={p.rsz} sx={p.rsx} el={p.rel} look={look} sh={b.sh} hand={right} />
+          <Arm side={1} sz={p.lsz} sx={p.lsx} el={p.lel} look={look} sh={ombro} hand={left} />
+          <Arm side={-1} sz={p.rsz} sx={p.rsx} el={p.rel} look={look} sh={ombro} hand={right} />
           {/* Cabeça */}
           <group position={[0, 1.18, 0]} rotation={new THREE.Euler(p.hp, p.hy, p.hr, 'YXZ')}>
             <group position={[0, (HEAD_Y - 1.18) * b.head, 0]} scale={b.head}>
@@ -640,7 +692,13 @@ export const Character = ({
                 <sphereGeometry args={[HEAD_R, 48, 32]} />
                 <Mat color={look.skin} roughness={0.55} />
               </mesh>
-              <FaceDecal face={face} skin={look.skin} />
+              {V && (
+                <mesh scale={1.035}>
+                  <sphereGeometry args={[HEAD_R, 40, 28]} />
+                  <meshBasicMaterial color={CONTORNO} side={THREE.BackSide} />
+                </mesh>
+              )}
+              <FaceDecal face={face} skin={look.skin} escala={V ? 1.95 : 1} />
               <Hair look={look} />
               <Beard look={look} />
               <Eyewear look={look} />

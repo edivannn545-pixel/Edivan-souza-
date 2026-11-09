@@ -177,7 +177,7 @@ o segundo em que a palavra começa (linha começa em 0; busca pelo começo da pa
   `body` ('adulto' | 'magro' | 'forte' | 'crianca' | 'idoso' | 'baixo'),
   `hairStyle` ('curto' | 'liso' | 'longo' | 'coque' | 'crespo' | 'careca' | 'chanel' | 'rabo' | 'nenhum'),
   `hat` + `hatColor` ('bone' | 'gorro' | 'touca' | 'boina' | 'policia' | 'chef' | 'capacete' | 'explorador' | 'astronauta' |
-  'cavaleiro' | 'farao' | 'marinheiro' | 'piloto' | 'capuz' | 'coroa' | 'cartola'), `faixa` (faixa colorida na cintura), `eyewear` ('grau' | 'escuro' | 'mergulho' | 'aviador'),
+  'cavaleiro' | 'farao' | 'marinheiro' | 'piloto' | 'capuz' | 'coroa' | 'cartola'), `faixa` (faixa colorida na cintura), `estilo: 'video'` (corpo e rosto dos Shorts de referência: tronco em ovo camisa+calça, pernas longas, braço cor de pele com manguinha, olhos grandes e contorno escuro — o elenco novo já usa), `eyewear` ('grau' | 'escuro' | 'mergulho' | 'aviador'),
   `beard` ('bigode' | 'barba'), `pattern` + `pattern2` + `patternH` ('listras' | 'xadrez' | 'florido' | 'acolchoado'),
   `coat` (jaleco), `vest` (colete), `apron` (avental), `skirt` ({ color, long }), `shorts`, `scarf`, `tie`, `shirt`,
   `metal` (armadura), `backpack` (mochila/tanque). Mãos claras: `gloves` = cor da pele (ou branco no estilo "rosto branco").
