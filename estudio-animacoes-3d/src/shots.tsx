@@ -40,7 +40,7 @@ const S01 = ({ t, t0, t1 }: ShotProps) => {
   const pa = W(0, 'pacifico');
   const b = W(0, 'banheira');
   const duckY = t < b - 0.4 ? 4 : Math.max(WATER_Y + 0.02, 3.2 - 12 * (t - (b - 0.4)) ** 2) + (t > b ? 0.03 * Math.sin((t - b) * 10) * Math.exp(-(t - b) * 3) : 0);
-  const pose = track(t, P({ x: -0.4, z: 1.7, ry: 0.2, hy: 0.3, hp: -0.3 }), [
+  const pose = track(t, P({ x: -0.5, z: 1.8, ry: 0.15, hy: 0.3, hp: -0.15 }), [
     { at: pa, v: { rsz: 1.4, rel: 0.2, rsx: 0.5, hy: 0.6, hp: -0.1 } },
     { at: b, v: { rsz: 0.12, rsx: 0, lsz: 1.2, lel: 0.3, hy: 0.4 } },
   ]);
@@ -52,7 +52,7 @@ const S01 = ({ t, t0, t1 }: ShotProps) => {
       {t > b - 0.4 && <Duck position={[0.4, duckY, 0.2]} rotation={[0, 0.6, 0]} scale={1.2} />}
       <Puff t={t} at={b} position={[0.4, WATER_Y + 0.1, 0.2]} color="#cfeaff" size={0.3} />
       <Character pose={pose} face={faceAt(t, [{ at: t0, f: 'curious' }, { at: pa, f: 'happy' }, { at: b, f: 'bigSmile' }], 1)} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.4, 9.0, 7.0], [0.1, 0.6, 0.4], 32], [b, [0.3, 7.6, 6.4], [0.0, 0.7, 0.6], 32], [t1, [0.2, 7.2, 6.0], [0.0, 0.7, 0.6], 32]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.4, 8.6, 6.8], [0.1, 0.6, 0.3], 32], [pa, [0.3, 5.4, 6.6], [0.0, 0.9, 0.6], 32], [t1, [0.1, 3.0, 6.2], [-0.1, 1.2, 0.6], 32]]} />
     </>
   );
 };
@@ -367,7 +367,7 @@ const S21 = ({ t, t0, t1 }: ShotProps) => {
       <Tub t={t} warm={0.95} wind={0.1} glow={1} />
       <Sign text="EL NIÑO" w={2.2} h={0.6} position={[0.4, 2.5, -0.4]} scale={pop(t, e)} bg="#c8301a" fg="#ffffff" />
       <Sparkles t={t} from={e} n={10} radius={1.2} center={[0.4, 2.4, -0.2]} size={0.14} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.4, 7.0, 6.8], [0.2, 1.0, 0.2], 32], [t1, [0.5, 6.4, 6.2], [0.3, 1.1, 0.2], 32]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.4, 5.0, 4.8], [0.3, 1.2, 0.0], 32], [t1, [0.5, 4.6, 4.3], [0.3, 1.3, 0.0], 32]]} />
     </>
   );
 };
