@@ -139,3 +139,49 @@ export const ROUPAS = {
     look: { skin: PELE.escura, jacket: '#f4f4f2', pattern: 'listras', pattern2: '#1f3b7a', patternH: true, pants: '#1f3b7a', shoes: '#111', gloves: MAO, hair: '#1a120c', hat: 'marinheiro', hatColor: '#fbfbf8' },
   },
 } satisfies Record<string, Membro>;
+
+// ============================================================================
+// NOVOS PERSONAGENS — derivados do elenco (mesma base, características diferentes).
+// ============================================================================
+export const NOVOS = {
+  cida: {
+    nome: 'Dona Cida', papel: 'a feirante', rosto: 'laugh',
+    look: { ...ELENCO.nena.look, skin: PELE.muitoEscura, jacket: '#f2d36b', pattern: 'florido', pattern2: '#d8352f', apron: '#3aa14a', hair: '#d6d6d6', body: 'baixo' },
+  },
+  juca: {
+    nome: 'Seu Juca', papel: 'o roceiro', rosto: 'content',
+    look: { ...ELENCO.tonhao.look, skin: PELE.morena, jacket: '#2f5fa8', pattern: 'xadrez', pattern2: '#f4f0e8', hat: 'explorador', hatColor: '#e2c27a', beard: 'bigode', body: 'adulto' },
+  },
+  marina: {
+    nome: 'Dra. Marina', papel: 'a médica', rosto: 'smile',
+    look: { ...ELENCO.bruna.look, jacket: '#2f6fb3', pants: '#2f6fb3', coat: '#f4f4f2', hair: '#c8572b', hairStyle: 'rabo', eyewear: 'grau' },
+  },
+  leo: {
+    nome: 'Léo', papel: 'o adolescente', rosto: 'grin',
+    look: { ...ELENCO.kaio.look, skin: PELE.media, jacket: '#f2c62e', pants: '#2f5fa8', shoes: '#d8352f', hair: '#3a2416', hairStyle: 'curto', hat: 'bone', hatColor: '#d8352f', shorts: true, body: 'magro' },
+  },
+  ze: {
+    nome: 'Vô Zé', papel: 'o avô contador de histórias', rosto: 'closedSmile',
+    look: { ...ELENCO.bento.look, skin: PELE.escura, jacket: '#e8dcc0', vest: '#6b4a2e', hat: 'boina', hatColor: '#4a3a2a', beard: 'barba', hair: '#e6e6e6', hairStyle: 'curto' },
+  },
+  ana: {
+    nome: 'Capitã Ana', papel: 'a pilota', rosto: 'confident',
+    look: { ...ROUPAS.piloto.look, skin: PELE.morena, hair: '#1f140e', hairStyle: 'longo' },
+  },
+  ravi: {
+    nome: 'Prof. Ravi', papel: 'o professor', rosto: 'thinking',
+    look: { ...ELENCO.henrique.look, skin: PELE.media, jacket: '#8a3a4a', pattern: 'listras', pattern2: '#e8dcc0', pants: '#4a4f3e', hair: '#1a120c', hairStyle: 'careca', beard: 'barba', eyewear: 'grau', tie: undefined, body: 'adulto' },
+  },
+  bia: {
+    nome: 'Bia', papel: 'a menina curiosa', rosto: 'curious',
+    look: { ...ELENCO.lia.look, skin: PELE.clara, jacket: '#7b5aa6', skirt: { color: '#f2c62e' }, hair: '#d9b56a', hairStyle: 'rabo', eyewear: 'grau', backpack: '#f2c62e' },
+  },
+  edu: {
+    nome: 'Edu', papel: 'o bombeiro', rosto: 'confident',
+    look: { ...ROUPAS.operario.look, skin: PELE.clara, jacket: '#c8322c', pants: '#2a2a2a', vest: '#f2c62e', hat: 'capacete', hatColor: '#c8322c', hair: '#3a2416', body: 'forte' },
+  },
+  kemi: {
+    nome: 'Dra. Kemi', papel: 'a cientista', rosto: 'happy',
+    look: { ...ELENCO.teo.look, skin: PELE.muitoEscura, hair: '#120c08', hairStyle: 'crespo', jacket: '#3aa14a', tie: undefined, body: 'adulto', eyewear: 'grau' },
+  },
+} satisfies Record<string, Membro>;
