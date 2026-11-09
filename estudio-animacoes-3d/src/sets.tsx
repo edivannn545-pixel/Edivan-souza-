@@ -1,7 +1,7 @@
 import { useThree } from '@react-three/fiber';
 import { useLayoutEffect, useMemo } from 'react';
 import * as THREE from 'three';
-import { clamp01, easeInOut, lerp3, V3 } from './anim';
+import { clamp01, easeInOut, easeOut, lerp3, V3 } from './anim';
 import { Field, Sign } from './props';
 import { cobbleTex, crateTex, plasterTex, tileTex, windowsTex } from './textures';
 
@@ -19,14 +19,18 @@ export const Cam = ({ t, t0, t1, keys }: { t: number; t0: number; t1: number; ke
     while (i < keys.length - 1 && t > keys[i + 1][0]) i++;
     const a = keys[i];
     const b = keys[Math.min(i + 1, keys.length - 1)];
-    const k = b[0] === a[0] ? 0 : easeInOut(clamp01((t - a[0]) / (b[0] - a[0])));
+    // Estilo dos vídeos: trecho curto (≤ 0,8 s) = CHEGADA rápida que desacelera e pousa (easeOut);
+    // trecho longo = movimento suave (easeInOut).
+    const dur = b[0] - a[0];
+    const e = dur > 0 && dur <= 0.8 ? easeOut : easeInOut;
+    const k = dur <= 0 ? 0 : e(clamp01((t - a[0]) / dur));
     const pos = lerp3(a[1], b[1], k);
     const tgt = lerp3(a[2], b[2], k);
     const fov = (a[3] ?? 32) + ((b[3] ?? 32) - (a[3] ?? 32)) * k;
     const roll = (a[4] ?? 0) + ((b[4] ?? 0) - (a[4] ?? 0)) * k;
-    const creep = 1 - 0.05 * Math.max(0, t - t0);
-    const xin = clamp01((t - (t1 - 0.3)) / 0.5);
-    const f = AFASTAMENTO * creep * (1 - 0.14 * xin * xin) * (1 + 0.07 * Math.pow(1 - clamp01((t - t0) / 0.4), 2));
+    // Depois de pousar, a câmera quase para: só uma deriva lenta (1,5%/s) para nunca congelar.
+    const creep = 1 - 0.015 * Math.max(0, t - t0);
+    const f = AFASTAMENTO * creep;
     camera.position.set(tgt[0] + (pos[0] - tgt[0]) * f, tgt[1] + (pos[1] - tgt[1]) * f, tgt[2] + (pos[2] - tgt[2]) * f);
     camera.lookAt(tgt[0], tgt[1], tgt[2]);
     if (roll) camera.rotateZ(roll);

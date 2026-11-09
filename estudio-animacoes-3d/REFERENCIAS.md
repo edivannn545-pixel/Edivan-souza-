@@ -108,8 +108,15 @@ calendário, cartaz, caixas, cones). Chão com textura (granilite, piso, terra, 
 | **Câmera tomba / cai junto** | desastre | `CAM.queda` |
 | **Fim colado no objeto ou no rosto** do começo | loop | `CAM.voltaAoInicio` |
 
+**Como a câmera se move dentro de cada plano (medido quadro a quadro):**
+- **Chega rápido e pousa:** o plano começa com um movimento rápido (~0,5 s, vindo de cima, de lado, de baixo ou de longe)
+  que desacelera e para num enquadramento de frente, simétrico. Depois a câmera quase não se move.
+- **Desce da informação até o personagem:** mostra placa/painel e desce até quem está embaixo.
+- **Recua rápido** de um detalhe para o plano aberto e pousa.
+- Quase nunca gira em volta do personagem nem inclina a câmera.
+
 **Transições:**
-- Dissolução curta (6 quadros) entre planos da mesma ideia. É o padrão do estúdio.
+- Dissolução de ~0,4 s (12 quadros) com as duas imagens sobrepostas. É o padrão do estúdio.
 - Sobreposição "fantasma" mais longa (~0,5 s) para passagem de tempo (calendário 1 → 3, os dias passando).
 - Corte seco + linhas de velocidade ou clarão nas viradas.
 - Borrão de movimento (chicote) para pular de lugar, por exemplo da Terra para Marte.

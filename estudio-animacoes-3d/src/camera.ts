@@ -14,6 +14,9 @@ import { F } from './timeline';
 //   fov   = abertura (padrão 32; 40+ = grande-angular, exagera a profundidade como no vídeo da mina)
 //
 // Mapa de emoções (o que cada receita comunica):
+//   pousa  ★     PADRÃO: chega rápido e pousa de frente (estilo dos vídeos de referência)
+//   desce        mostra a placa/painel e desce até o personagem na palavra
+//   recuaRapido  de um detalhe para o plano aberto, rápido
 //   revela        gancho: começa colado no OBJETO-MISTÉRIO e recua até mostrar quem está com ele
 //   empurra       atenção / tensão crescendo (lento) — o padrão de quase toda fala
 //   recua         isolamento, "olha o tamanho disso", final de cena
@@ -35,7 +38,50 @@ export const orbitPos = (alvo: V3, dist: number, yaw = 0, pitch = 0): V3 => [
 
 const key = (t: number, alvo: V3, dist: number, d: Dir = {}): CamKey => [t, orbitPos(alvo, dist, d.yaw ?? 0, d.pitch ?? 0), alvo, d.fov ?? 32, d.giro ?? 0];
 
+// Tempo da CHEGADA: o movimento rápido do começo de cada plano (estilo dos vídeos de referência).
+export const CHEGADA = 0.5;
+type De = 'cima' | 'baixo' | 'lado' | 'outroLado' | 'longe' | 'perto';
+// De onde a câmera vem antes de pousar (deslocamento relativo ao enquadramento final).
+const origem = (de: De, dist: number, yaw: number, pitch: number) => {
+  switch (de) {
+    case 'cima': return { d: dist * 1.25, yaw: yaw + 0.15, pitch: pitch + 0.45 };
+    case 'baixo': return { d: dist * 1.15, yaw: yaw - 0.1, pitch: pitch - 0.25 };
+    case 'lado': return { d: dist * 1.15, yaw: yaw + 0.55, pitch: pitch + 0.08 };
+    case 'outroLado': return { d: dist * 1.15, yaw: yaw - 0.55, pitch: pitch + 0.08 };
+    case 'longe': return { d: dist * 1.7, yaw, pitch: pitch + 0.12 };
+    case 'perto': return { d: dist * 0.65, yaw, pitch };
+  }
+};
+
 export const CAM = {
+  // ★ PADRÃO DOS VÍDEOS: chega rápido (~0,5 s) vindo de `de` e POUSA de frente, simétrico, na altura do peito;
+  // depois fica quase parada (deriva leve). Use em quase todo plano.
+  pousa(t0: number, t1: number, alvo: V3, o: Dir & { dist?: number; de?: De; chegada?: number } = {}): CamKey[] {
+    const dist = o.dist ?? 4.6, yaw = o.yaw ?? 0, pitch = o.pitch ?? -0.04;
+    const ori = origem(o.de ?? 'lado', dist, yaw, pitch);
+    const tc = Math.min(t1, t0 + (o.chegada ?? CHEGADA));
+    return [key(t0, alvo, ori.d, { yaw: ori.yaw, pitch: ori.pitch, fov: o.fov }), key(tc, alvo, dist, { yaw, pitch, fov: o.fov, giro: o.giro }), key(Math.max(t1, tc + 0.01), alvo, dist * 0.97, { yaw, pitch, fov: o.fov, giro: o.giro })];
+  },
+
+  // Mostra a PLACA/painel e, na palavra `quando`, DESCE rápido até o personagem (liga a informação a quem está nela).
+  desce(t0: number, t1: number, placa: V3, personagem: V3, quando: number, o: Dir & { distPlaca?: number; dist?: number } = {}): CamKey[] {
+    const dp = o.distPlaca ?? 3.2, d = o.dist ?? 4.6, yaw = o.yaw ?? 0;
+    const tc = Math.min(quando, t0 + CHEGADA);
+    return [
+      key(t0, placa, dp * 1.2, { yaw: yaw + 0.25, pitch: 0.05, fov: o.fov }),
+      key(tc, placa, dp, { yaw, pitch: 0, fov: o.fov }),
+      key(quando, placa, dp * 0.97, { yaw, pitch: 0, fov: o.fov }),
+      key(quando + CHEGADA, personagem, d, { yaw, pitch: -0.04, fov: o.fov }),
+      key(Math.max(t1, quando + CHEGADA + 0.01), personagem, d * 0.97, { yaw, pitch: -0.04, fov: o.fov }),
+    ];
+  },
+
+  // RECUA RÁPIDO de um detalhe até o plano aberto e pousa ("olha o tamanho disso").
+  recuaRapido(t0: number, t1: number, detalhe: V3, aberto: V3, o: Dir & { de?: number; para?: number } = {}): CamKey[] {
+    const tc = Math.min(t1, t0 + CHEGADA * 1.3);
+    return [key(t0, detalhe, o.de ?? 2.2, { yaw: o.yaw, pitch: 0, fov: o.fov }), key(tc, aberto, o.para ?? 9, { yaw: o.yaw, pitch: o.pitch ?? 0.08, fov: o.fov }), key(Math.max(t1, tc + 0.01), aberto, (o.para ?? 9) * 0.97, { yaw: o.yaw, pitch: o.pitch ?? 0.08, fov: o.fov })];
+  },
+
   // Gancho: colado no objeto (com lente aberta) e recua até o personagem. `ate` = quando termina de recuar.
   revela(t0: number, t1: number, objeto: V3, final: V3, o: Dir & { de?: number; para?: number; ate?: number; yaw1?: number; pitch1?: number } = {}): CamKey[] {
     const ate = o.ate ?? t0 + (t1 - t0) * 0.6;

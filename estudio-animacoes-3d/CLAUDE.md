@@ -139,9 +139,13 @@ estas regras. Quando uma regra não puder ser cumprida, avise antes de seguir.
 - Física coerente: roda gira na proporção da distância, pé não desliza, mão encosta no objeto no quadro do som (`lead: 0`).
 
 ## 6 — Câmera
-- Nunca para totalmente e nunca treme: movimentos suaves (empurra, recua, órbita, grua, travelling) começando numa palavra.
+- **Como nos vídeos de referência: cada plano começa com uma CHEGADA rápida (~0,5 s) e a câmera POUSA** de frente,
+  simétrica, na altura do peito; depois quase para (deriva leve, nunca congela, nunca treme). Receita padrão: `CAM.pousa`
+  (de 'cima' | 'baixo' | 'lado' | 'outroLado' | 'longe' | 'perto' — varie a origem a cada plano).
+- Ligue informação e personagem com `CAM.desce` (placa/painel → personagem na palavra) e use `CAM.recuaRapido` para
+  "olha o tamanho disso". Giro holandês e órbita só nos momentos de choque. Teste: composição `TesteCamera`.
 - Uma imagem nova a cada ~1–2 s (nova tomada ou mudança clara de enquadramento).
-- Tomadas se ligam com dissolução de 6 quadros começando na primeira palavra da frase nova.
+- Tomadas se ligam com dissolução de 12 quadros (~0,4 s, as duas imagens sobrepostas) começando na primeira palavra da frase nova.
 - O enquadramento mostra o que a narração diz **naquele momento**. Personagem ocupa de **1/3 a 1/2** da altura do quadro
   (preferência do dono: personagens um pouco mais distantes, com cenário visível em volta). A `Cam` já afasta tudo 25%
   (`AFASTAMENTO` em `src/sets.tsx`); closes de rosto só nos momentos de choque.
@@ -234,7 +238,7 @@ na palavra), `Aviso` ("ENVIADO ✓", "ERRO").
 (muitas cópias numa malha só). Utilitário: `dropY` (queda com quique).
 
 **Filme (src/Film.tsx + src/shots.tsx).** `SHOTS = [{ from: W(...), name, C }]` — cada tomada é um componente `({t,t0,t1}) => JSX`
-que monta cenário + câmera + personagens + objetos. Dissolve de 6 quadros entre tomadas, legendas e áudio já prontos.
+que monta cenário + câmera + personagens + objetos. Dissolve de 12 quadros entre tomadas, legendas e áudio já prontos.
 `SFX` (em shots.tsx) toca arquivos de `public/sfx/` em tempos de palavra. Música opcional: `public/musica.mp3` + prop `musica`.
 
 **Ferramentas.** `tools/palavras.mjs` (transcrição do ElevenLabs → `src/voz.ts`), `tools/voz.mjs` (alternativa: narração + tempos direto pela API com `.env`), `tools/stills.mjs` (prévias), `tools/hashes.mjs`

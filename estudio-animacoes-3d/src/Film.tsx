@@ -7,7 +7,7 @@ import { EFEITOS, SFX, SHOTS, Shot } from './shots';
 import { useFacesReady } from './textures';
 import { END, WORDS } from './timeline';
 
-const DISSOLVE = 6; // quadros de dissolução entre tomadas
+const DISSOLVE = 12; // quadros de dissolução entre tomadas (~0,4 s, as duas imagens sobrepostas, como nos vídeos)
 
 const ShotCanvas = ({ shot, t0, t1, fade }: { shot: Shot; t0: number; t1: number; fade: boolean }) => {
   const frame = useCurrentFrame();
@@ -88,14 +88,15 @@ const Vinheta = () => <AbsoluteFill style={{ background: 'radial-gradient(ellips
 
 export type FilmProps = { legendas: boolean; voz: boolean; musica: boolean };
 
-export const Film = ({ legendas, voz, musica }: FilmProps) => {
-  const { fps, durationInFrames } = useVideoConfig();
+// Monta uma lista de tomadas com dissolução entre elas (usado pelo filme e pelos testes).
+export const Montagem = ({ shots, end }: { shots: Shot[]; end: number }) => {
+  const { fps } = useVideoConfig();
   return (
-    <AbsoluteFill style={{ background: '#000' }}>
-      {SHOTS.map((s, i) => {
-        const t1 = i + 1 < SHOTS.length ? SHOTS[i + 1].from : END;
+    <>
+      {shots.map((s, i) => {
+        const t1 = i + 1 < shots.length ? shots[i + 1].from : end;
         const from = Math.round(s.from * fps);
-        const next = SHOTS[i + 1];
+        const next = shots[i + 1];
         const to = Math.round(t1 * fps) + (next && !next.corte ? DISSOLVE : 0);
         return (
           <Sequence key={s.name} name={s.name} from={from} durationInFrames={to - from}>
@@ -103,6 +104,15 @@ export const Film = ({ legendas, voz, musica }: FilmProps) => {
           </Sequence>
         );
       })}
+    </>
+  );
+};
+
+export const Film = ({ legendas, voz, musica }: FilmProps) => {
+  const { fps, durationInFrames } = useVideoConfig();
+  return (
+    <AbsoluteFill style={{ background: '#000' }}>
+      <Montagem shots={SHOTS} end={END} />
       <Vinheta />
       <Efeitos />
       {legendas && <Captions />}
