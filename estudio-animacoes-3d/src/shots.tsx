@@ -259,19 +259,19 @@ const S15 = ({ t, t0, t1 }: ShotProps) => {
 };
 
 // 16. "Durante o dia, *guardas* protegem as batatas como se fossem um *tesouro*."
-const GUARDA = (x: number, s: number, ry = 0) => P({ x, z: 0.4, ry, rsx: 0.4, rel: -1.2, hp: 0 + s * 0 });
+const GUARDA = (x: number, s: number, ry = 0) => P({ x, z: 0.2, ry, rsx: 0.4, rel: -1.2, hp: 0 + s * 0 });
 const S16 = ({ t, t0, t1 }: ShotProps) => {
   const g = W(9, 'guardas');
   const te = W(9, 'tesouro');
   return (
     <>
       <CampoBatatas t={t} />
-      <PotatoPile n={50} r={0.55} position={[0, 0.08, -1.3]} />
-      <Character pose={track(t, GUARDA(-0.95, 1, 0.2), [{ at: g, v: { hy: 0.4 } }, { at: te, v: { hy: -0.3 } }])} face={faceAt(t, [{ at: t0, f: 'confident' }, { at: g, f: 'suspicious' }], 22)} look={EB.guarda1.look} right={<Spear rotation={[-1.2, 0, 0]} />} />
-      <Character pose={track(t, GUARDA(0.95, -1, -0.2), [{ at: g, v: { hy: -0.4 } }, { at: te, v: { hy: 0.3 } }])} face={faceAt(t, [{ at: t0, f: 'suspicious' }, { at: g, f: 'confident' }], 23)} look={EB.guarda2.look} right={<Spear rotation={[-1.2, 0, 0]} />} />
-      <Sparkles t={t} from={te} n={12} radius={0.7} center={[0, 0.7, -1.3]} size={0.14} />
-      {t > te - 0.1 && <pointLight position={[0, 1.4, -0.6]} color="#ffd23a" intensity={6} distance={3} decay={1.4} />}
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0, 2.2, 5.0], [0, 1.4, 0.0], 32], [te, [0, 2.0, 3.6], [0, 0.9, -1.2], 32], [t1, [0, 1.9, 3.2], [0, 0.85, -1.2], 32]]} />
+      <PotatoPile n={50} r={0.45} position={[0, 0.08, 0.55]} />
+      <Character pose={track(t, GUARDA(-0.8, 1, 0.25), [{ at: g, v: { hy: 0.4 } }, { at: te, v: { hy: -0.3 } }])} face={faceAt(t, [{ at: t0, f: 'confident' }, { at: g, f: 'suspicious' }], 22)} look={EB.guarda1.look} right={<Spear rotation={[-1.2, 0, 0]} />} />
+      <Character pose={track(t, GUARDA(0.8, -1, -0.25), [{ at: g, v: { hy: -0.4 } }, { at: te, v: { hy: 0.3 } }])} face={faceAt(t, [{ at: t0, f: 'suspicious' }, { at: g, f: 'confident' }], 23)} look={EB.guarda2.look} right={<Spear rotation={[-1.2, 0, 0]} />} />
+      <Sparkles t={t} from={te} n={12} radius={0.55} center={[0, 0.6, 0.55]} size={0.13} />
+      {t > te - 0.1 && <pointLight position={[0, 0.7, 0.9]} color="#ffd23a" intensity={2.5} distance={1.6} decay={1.6} />}
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0, 2.3, 5.6], [0, 1.3, 0.3], 32], [te, [0, 2.3, 5.2], [0, 1.0, 0.45], 32], [t1, [0, 2.2, 5.0], [0, 0.95, 0.45], 32]]} />
     </>
   );
 };
