@@ -81,7 +81,7 @@ export type Look = {
   metal?: boolean; // armadura
   backpack?: string; // mochila / tanque
   faixa?: string; // faixa colorida na cintura (macacão de astronauta, armadura em gomos)
-  estilo?: 'video'; // 'video' = corpo e rosto dos Shorts de referência (tronco-ovo, pernas longas, olhos grandes, contorno)
+  estilo?: 'video' | 'classico'; // padrão 'video' = corpo e rosto dos Shorts de referência; 'classico' = corpo antigo do kit
 };
 
 export const VOCE: Look = {
@@ -144,8 +144,9 @@ const Limb = ({ len, r, color, metal }: { len: number; r: number; color: string;
 
 const Arm = ({ side, sz, sx, el, look, sh, hand }: { side: 1 | -1; sz: number; sx: number; el: number; look: Look; sh: number; hand?: ReactNode }) => {
   // Estilo vídeo: braço cor de pele com manguinha curta e mão pequena clara (exceto armadura/macacão).
-  const V = look.estilo === 'video';
-  const nu = V && !look.metal && !look.coat && look.gloves !== look.jacket;
+  const V = look.estilo !== 'classico';
+  // Braço à mostra só quando a "luva" é a mão padrão (escura) ou da cor da pele; luva de roupa especial mantém a manga.
+  const nu = V && !look.metal && !look.coat && (look.gloves === '#1e1f24' || look.gloves === look.skin);
   const braco = nu ? look.skin : look.jacket;
   const mao = V && !look.metal ? (nu ? look.skin : look.gloves) : look.gloves;
   return (
@@ -596,7 +597,7 @@ export const Character = ({
   const swing = Math.sin(ph) * 0.55 * p.stride;
   const bob = Math.abs(Math.sin(ph)) * 0.07 * p.stride;
   const sq = 1 - p.squash * 0.18;
-  const V = look.estilo === 'video';
+  const V = look.estilo !== 'classico';
   const pernas = b.legs * (V ? 1.35 : 1);
   // Estilo vídeo: tronco maior em relação à cabeça, ombros mais abertos.
   const torso: [number, number, number] = V ? [b.torso[0] * 1.18, b.torso[1] * 1.08, b.torso[2] * 1.18] : b.torso;

@@ -111,7 +111,9 @@ estas regras. Quando uma regra não puder ser cumprida, avise antes de seguir.
   Use `rand(semente)` de `src/anim.ts` — o mesmo quadro sai igual em qualquer render.
 
 ## 1 — Forma
-- Cabeça grande e redonda (~1/3 da altura), corpo arredondado, braços e pernas **finos**, mãos e pés escuros sem dedos.
+- Estilo dos Shorts de referência (padrão, `REFERENCIAS.md`): cabeça grande e redonda com contorno escuro, olhos grandes,
+  tronco em forma de ovo (camisa em cima, calça embaixo), pernas longas e finas, braços cor de pele com manguinha e mãos pequenas claras.
+  Para o corpo antigo do kit use `estilo: 'classico'` no `Look`.
 - Todos os personagens saem da mesma base (`Character`); muda só o `Look` (roupa, cabelo, acessórios, cores).
 
 ## 2 — Cenário
@@ -177,7 +179,7 @@ o segundo em que a palavra começa (linha começa em 0; busca pelo começo da pa
   `body` ('adulto' | 'magro' | 'forte' | 'crianca' | 'idoso' | 'baixo'),
   `hairStyle` ('curto' | 'liso' | 'longo' | 'coque' | 'crespo' | 'careca' | 'chanel' | 'rabo' | 'nenhum'),
   `hat` + `hatColor` ('bone' | 'gorro' | 'touca' | 'boina' | 'policia' | 'chef' | 'capacete' | 'explorador' | 'astronauta' |
-  'cavaleiro' | 'farao' | 'marinheiro' | 'piloto' | 'capuz' | 'coroa' | 'cartola'), `faixa` (faixa colorida na cintura), `estilo: 'video'` (corpo e rosto dos Shorts de referência: tronco em ovo camisa+calça, pernas longas, braço cor de pele com manguinha, olhos grandes e contorno escuro — o elenco novo já usa), `eyewear` ('grau' | 'escuro' | 'mergulho' | 'aviador'),
+  'cavaleiro' | 'farao' | 'marinheiro' | 'piloto' | 'capuz' | 'coroa' | 'cartola'), `faixa` (faixa colorida na cintura), `estilo` ('video' — padrão: tronco em ovo, pernas longas, braço cor de pele, olhos grandes e contorno | 'classico' — corpo antigo do kit), `eyewear` ('grau' | 'escuro' | 'mergulho' | 'aviador'),
   `beard` ('bigode' | 'barba'), `pattern` + `pattern2` + `patternH` ('listras' | 'xadrez' | 'florido' | 'acolchoado'),
   `coat` (jaleco), `vest` (colete), `apron` (avental), `skirt` ({ color, long }), `shorts`, `scarf`, `tie`, `shirt`,
   `metal` (armadura), `backpack` (mochila/tanque). Mãos claras: `gloves` = cor da pele (ou branco no estilo "rosto branco").

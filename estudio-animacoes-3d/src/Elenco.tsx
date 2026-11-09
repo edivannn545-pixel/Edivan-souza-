@@ -97,9 +97,9 @@ export const Elenco = () => {
           <Selo n={roupas.length} txt="roupas especiais" />
         </div>
       </div>
-      <Cartoes membros={todos.slice(0, 10)} w={W} h={430} />
-      <Cartoes membros={todos.slice(10)} w={W} h={430} />
-      <Cartoes membros={roupas} w={W} h={370} />
+      <Cartoes membros={todos.slice(0, 10)} w={W} h={470} />
+      <Cartoes membros={todos.slice(10)} w={W} h={470} />
+      <Cartoes membros={roupas} w={W} h={410} />
     </AbsoluteFill>
   );
 };
