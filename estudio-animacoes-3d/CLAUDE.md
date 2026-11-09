@@ -74,7 +74,7 @@ Nunca peça para colarem a chave no chat; se alguém colar, não repita a chave 
    - **Alternativa sem conector:** a pessoa cria um arquivo `.env` com `ELEVENLABS_API_KEY=...` (a chave dela, escrita por ela
      no arquivo, nunca no chat) e você roda `node tools/voz.mjs --listar pt` e `node tools/voz.mjs --voz <id>`.
    - **Sem ElevenLabs ainda:** siga com os tempos estimados e avise que a sincronia final só fica certa com a voz.
-3. **Storyboard.** Escreva `STORYBOARD.md`: uma linha por tomada com tempo, frase, ação, objeto de informação,
+3. **Storyboard.** Leia antes `REFERENCIAS.md` (personagens, ambientes e câmera dos Shorts de referência, com imagens em `referencias/`) e siga esse estilo. Escreva `STORYBOARD.md`: uma linha por tomada com tempo, frase, ação, objeto de informação,
    câmera e expressão. Planeje uma imagem nova a cada ~1–2 s, reutilizando personagens e cenários. Escolha o elenco em
    `src/personagens.ts` e chame os personagens pelo nome. Mostre ao usuário.
 4. **Elenco, cenários e objetos.** Use os personagens prontos ou crie novos `Look`; crie os cenários e objetos que a história
