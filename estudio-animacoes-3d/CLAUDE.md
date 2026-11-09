@@ -21,7 +21,7 @@ Na sua **primeira resposta**, seja qual for a mensagem dele (até um "oi"), faç
    > Você pode usar qualquer um deles, misturar roupas ou me pedir personagens novos.
 
 2. Faça a checagem do ElevenLabs (1.1).
-3. Peça o roteiro (ou o tema), o tipo de voz (masculina/feminina, animada/séria) e se quer legendas.
+3. Peça o roteiro (ou o tema) e o tipo de voz (masculina/feminina, animada/séria). Vídeos são sempre SEM legenda.
    Se ele já mandou o roteiro na primeira mensagem, não peça de novo: comece a trabalhar.
 4. Rode `npm install` (se a pasta `node_modules` não existir). No Windows, se o PowerShell bloquear `npm`/`npx`
    (política de scripts), use `npm.cmd`/`npx.cmd` — não altere a política.
@@ -98,6 +98,9 @@ Nunca peça para colarem a chave no chat; se alguém colar, não repita a chave 
 ---
 
 ## PARTE 2 — Regras do estilo
+
+> **Preferência do dono do estúdio: os vídeos NÃO levam legenda.** Não pergunte e não ative legendas
+> (`legendas: false` em `src/Root.tsx`), a não ser que ele peça explicitamente num vídeo específico.
 
 O Claude Code lê este arquivo antes de qualquer tarefa neste projeto. Toda cena, personagem ou movimento respeita
 estas regras. Quando uma regra não puder ser cumprida, avise antes de seguir.

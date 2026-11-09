@@ -14,7 +14,7 @@ export const Root = () => (
       fps={FPS}
       width={1080}
       height={1920}
-      defaultProps={{ legendas: true, voz: VOZ.length > 0, musica: false }}
+      defaultProps={{ legendas: false, voz: VOZ.length > 0, musica: false }}
     />
     {/* Folha com todo o elenco disponível (node tools/elenco.mjs) */}
     <Composition id="Elenco" component={Elenco} durationInFrames={1} fps={FPS} width={1920} height={1760} />
