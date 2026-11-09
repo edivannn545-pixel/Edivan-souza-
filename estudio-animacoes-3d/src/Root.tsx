@@ -1,5 +1,6 @@
 import { Composition } from 'remotion';
 import { Elenco, ElencoNovos } from './Elenco';
+import { Cenario } from './Cenarios';
 import { Film } from './Film';
 import { END, FPS } from './timeline';
 import { VOZ } from './voz';
@@ -17,6 +18,7 @@ export const Root = () => (
     />
     {/* Folha com todo o elenco disponível (node tools/elenco.mjs) */}
     <Composition id="Elenco" component={Elenco} durationInFrames={1} fps={FPS} width={1920} height={1760} />
+    <Composition id="Cenario" component={Cenario} durationInFrames={1} fps={FPS} width={540} height={960} defaultProps={{ i: 0 }} />
     <Composition id="Novos" component={ElencoNovos} durationInFrames={1} fps={FPS} width={1920} height={1420} />
   </>
 );
