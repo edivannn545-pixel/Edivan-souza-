@@ -17,6 +17,6 @@ export const Root = () => (
     />
     {/* Folha com todo o elenco disponível (node tools/elenco.mjs) */}
     <Composition id="Elenco" component={Elenco} durationInFrames={1} fps={FPS} width={1920} height={1760} />
-    <Composition id="Novos" component={ElencoNovos} durationInFrames={1} fps={FPS} width={1920} height={800} />
+    <Composition id="Novos" component={ElencoNovos} durationInFrames={1} fps={FPS} width={1920} height={1420} />
   </>
 );

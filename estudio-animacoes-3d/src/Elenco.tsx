@@ -115,7 +115,8 @@ export const ElencoNovos = () => {
           Novos <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontWeight: 400 }}>personagens.</span>
         </div>
       </div>
-      <Cartoes membros={novos} w={1840} h={500} />
+      <Cartoes membros={novos.slice(0, 10)} w={1840} h={500} />
+      {novos.length > 10 && <Cartoes membros={novos.slice(10, 20)} w={1840} h={500} />}
     </AbsoluteFill>
   );
 };

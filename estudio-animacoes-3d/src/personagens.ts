@@ -184,4 +184,44 @@ export const NOVOS = {
     nome: 'Dra. Kemi', papel: 'a cientista', rosto: 'happy',
     look: { ...ELENCO.teo.look, skin: PELE.muitoEscura, hair: '#120c08', hairStyle: 'crespo', jacket: '#3aa14a', tie: undefined, body: 'adulto', eyewear: 'grau' },
   },
+  lourdes: {
+    nome: 'Dona Lourdes', papel: 'a costureira', rosto: 'content',
+    look: { ...ELENCO.zuza.look, skin: PELE.morena, jacket: '#e07a9a', pattern: 'listras', pattern2: '#f4f0e8', skirt: { color: '#4a3a66', long: true }, hair: '#bcbcbc' },
+  },
+  tadeu: {
+    nome: 'Tadeu', papel: 'o carteiro', rosto: 'happy',
+    look: { ...ELENCO.tiao.look, skin: PELE.escura, jacket: '#f2c62e', pants: '#2f4f8f', hat: 'bone', hatColor: '#2f4f8f', backpack: '#8a5a32', body: 'adulto' },
+  },
+  nina: {
+    nome: 'Nina', papel: 'a bailarina', rosto: 'smile',
+    look: { ...ELENCO.lia.look, skin: PELE.media, jacket: '#f2a0c0', skirt: { color: '#f7c6dc' }, shoes: '#f2a0c0', hair: '#3a2416', hairStyle: 'coque' },
+  },
+  rui: {
+    nome: 'Rui', papel: 'o pintor', rosto: 'grin',
+    look: { ...ELENCO.tonhao.look, skin: PELE.clara, jacket: '#f4f4f2', pattern: undefined, pants: '#f4f4f2', apron: '#e8e0d0', hat: 'bone', hatColor: '#f4f4f2', beard: 'bigode', hair: '#8a5a32' },
+  },
+  sofia: {
+    nome: 'Sofia', papel: 'a astronauta', rosto: 'amazed',
+    look: { ...ROUPAS.astronauta.look, skin: PELE.morena, hair: '#1a120c' },
+  },
+  beto: {
+    nome: 'Beto', papel: 'o surfista', rosto: 'bigSmile',
+    look: { ...ROUPAS.praia.look, skin: PELE.escura, jacket: '#2fa36b', pattern: 'florido', pattern2: '#fff3d6', pants: '#f2c62e', hair: '#e2c27a', hairStyle: 'crespo' },
+  },
+  rosa: {
+    nome: 'Dona Rosa', papel: 'a jardineira', rosto: 'happy',
+    look: { ...ROUPAS.explorador.look, skin: PELE.clara, jacket: '#e8dcc0', apron: '#4f8d3c', hair: '#8a8a8a', hairStyle: 'rabo', body: 'idoso', backpack: undefined },
+  },
+  carlos: {
+    nome: 'Carlos', papel: 'o garçom', rosto: 'smile',
+    look: { ...ELENCO.funcionario.look, skin: PELE.media, jacket: '#ffffff', vest: '#1f2228', pants: '#1f2228', tie: '#1f2228', eyewear: undefined, hair: '#161210', beard: 'bigode' },
+  },
+  mila: {
+    nome: 'Mila', papel: 'a estudante gamer', rosto: 'wink',
+    look: { ...ELENCO.gabi.look, skin: PELE.escura, jacket: '#7b5aa6', pattern: 'acolchoado', pattern2: undefined, hair: '#b06bff', hairStyle: 'chanel', eyewear: 'escuro', body: 'magro' },
+  },
+  moa: {
+    nome: 'Seu Moa', papel: 'o capitão aposentado', rosto: 'smug',
+    look: { ...ROUPAS.marinheiro.look, skin: PELE.clara, hat: 'marinheiro', hatColor: '#1f3b7a', beard: 'barba', hair: '#f4f4f2', body: 'idoso', jacket: '#1f3b7a', pattern: undefined },
+  },
 } satisfies Record<string, Membro>;
