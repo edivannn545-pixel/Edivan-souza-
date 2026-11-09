@@ -9,8 +9,8 @@ export type Som = { at: number; file: string; vol: number; dur?: number; loop?: 
 // Volumes padrão (a voz fica em 1.0).
 export const VOL = { impacto: 0.55, passo: 0.35, tic: 0.3, pop: 0.3, ambiente: 0.16 };
 
-export type Curto = 'passo1' | 'passo2' | 'tic' | 'tac' | 'queda' | 'tum' | 'pop' | 'whoosh' | 'splash' | 'moeda' | 'carimbo' | 'ding';
-export type Ambiente = 'vento' | 'chuva' | 'passaros' | 'mar' | 'cidade' | 'escritorio';
+export type Curto = 'passo1' | 'passo2' | 'tic' | 'tac' | 'queda' | 'tum' | 'pop' | 'whoosh' | 'splash' | 'moeda' | 'carimbo' | 'ding' | 'ronco';
+export type Ambiente = 'vento' | 'chuva' | 'passaros' | 'mar' | 'cidade' | 'escritorio' | 'grilos';
 
 // Um som curto num instante (ex.: som('queda', W(5,'cai'))).
 export const som = (file: Curto, at: number, vol = VOL.impacto): Som => ({ at, file: `${file}.wav`, vol });

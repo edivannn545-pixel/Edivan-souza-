@@ -1,33 +1,33 @@
-# Storyboard — "El Niño: a banheira do Pacífico"
+# Storyboard — "A batata na França de 1780"
 
-Vertical 1080×1920, 30 fps, **sem legenda**, narração gravada pelo autor (`public/voz.mp3`, ~98 s).
-Elenco: **Você**, **Doutor Teo** (cientista), **Tonhão** com roupa de marinheiro (pescador do Peru),
-**Paula** (enchente), **Seu Bento** (seca). Cenários novos em `src/elnino.tsx`: banheira-oceano, mar do Peru,
-mapa do Pacífico no chão, mapa do Brasil, rua alagada, rio seco, laboratório do clima, rua da cidade.
-Efeitos: setas de vento, água quente (laranja) e fria (azul) se movendo, peixes, nutrientes, nuvens com chuva,
-água subindo, terra rachada, sol crescendo, termômetro, fogo, placas que surgem com "pop".
+Vertical 1080×1920, 30 fps, **sem legenda**, narração do autor (`public/voz.mp3`, ~67 s). Inspiração: `historias/referencia-batatas.md`.
+Elenco aprovado (src/batatas.tsx): Você (aldeão), o agrônomo, o rei, dois guardas, Paula, Seu Bento, Pedrinho, nobre da corte.
+Regras: foco no centro, efeitos visuais e sonoros, vinheta, corte a cada ~1,5–3 s.
 
-| # | Começa em | Frase (trecho) | Ação / efeito | Câmera |
+| # | Começa em | Trecho | Cena / efeito | Som |
 |---|---|---|---|---|
-| 01 | "Imagine" | oceano *Pacífico*… *banheira* | Banheira gigante; placa "OCEANO PACÍFICO"; patinho cai na água | Grua descendo |
-| 02 | "Normalmente" | *ventos*… água *quente*… | Setas de vento surgem; água quente desliza para o oeste | Lateral alta |
-| 03 | "Perto" | costa do *Peru*… água *fria* | Terra "PERU" surge; bolhas frias sobem do fundo | Empurra no lado leste |
-| 04 | "Ela" | *nutrientes*… *peixes* | Pontinhos verdes sobem; cardume aparece | Close |
-| 05 | "naquela" | naquela região | Tonhão no barco com a rede cheia | Plano médio |
-| 06 | "Mas" | ventos *enfraquecem*… *mudar* | Medidor "VENTO" cai; setas encolhem; "?!" | Lateral |
-| 07 | "A" (L5) | água quente se *desloca* | Água quente volta para o leste | Lateral |
-| 08 | "Com" | peixes podem *desaparecer* | Peixes somem com "puf" | Close |
-| 09 | "e" (L7) | depende da *pesca* | Tonhão com a rede vazia | Plano médio |
-| 10 | "A" (L8) | não fica só no *mar* | Nuvens se formam sobre a água quente | Grua subindo |
-| 11 | "O" (L9) | caminho das *chuvas* | Mapa no chão; nuvens viajam pelo Pacífico | Por cima |
-| 12 | "Em" (L10) | causar *enchentes* | Paula na rua com chuva; água sobe | Plano médio |
-| 13 | "Em" (L11) | *seca*… calor *aumentar* | Seu Bento no rio seco; rio encolhe; sol cresce; termômetro sobe | Plano médio |
-| 14 | "Enquanto" | *América* do Sul… chuvas fortes | Mapa: nuvens de chuva sobre a América do Sul | Por cima, lado leste |
-| 15 | "regiões" | *Indonésia*… *Austrália*… *incêndios* | Mapa: sóis e terra seca; fogo surge | Travelling para o oeste |
-| 16 | "No" (L14) | No *Brasil* | Mapa do Brasil sobe do chão | Por cima |
-| 17 | "você" (L15) | mais *chuva*… falta de *água* | Nuvem com chuva no sul; sol e gota vazia no norte | Por cima |
-| 18 | "Por" | *cientistas*… *ventos* | Doutor Teo no laboratório; anemômetro gira; termômetro do oceano | Plano médio |
-| 19 | "O" (L17) | *previsão*… *alerta* | Tela "PREVISÃO"; placa "ALERTA" piscando | Close |
-| 20 | "mas" (L17) | depende de onde você *mora* | Mapa do Brasil; alfinete "VOCÊ" cai | Por cima |
-| 21 | "Então" | quando o *El Niño* chega | Banheira; placa "EL NIÑO" surge; água quente brilha | Lateral |
-| 22 | "É" (L19) | *seca*, *enchente* ou *calorão*? | Você na cidade; três placas surgem, uma em cada palavra | Plano médio |
+| 01 | "Você" | Você vive na *França* | Vila de dia; grua desce dos telhados até Você | pássaros |
+| 02 | "mil" | …mil setecentos e oitenta | Placa "1780" pendurada, close, entra com pop | pop |
+| 03 | "A" (L1) | A comida começa a *faltar* | Casa camponesa, pratos vazios; Você na mesa | ronco |
+| 04 | "e" (L1) | …muita gente passa *fome* | Vila: Paula e Seu Bento tristes | — |
+| 05 | "Mesmo" | há *batatas* sobrando nos campos | Campo com montes de batatas surgindo | pop ×3, pássaros |
+| 06 | "O" (L3) | quase *ninguém* quer comê-las | Você e Paula fazem cara de nojo diante da carroça | — |
+| 07 | "Você" (L4) | fazem *mal* | **Batata gigante** no centro; fumaça verde | whoosh |
+| 08 | "que" (L4, 2º) | causar *doenças* | Você e Paula enjoados, fumaça verde | — |
+| 09 | "Um" | a batata é *nutritiva* | Agrônomo na vila com a batata erguida, olhos de estrela, brilhos | ding |
+| 10 | "mas" | ninguém *acredita* | Aldeões viram as costas, "NÃO!" | passos |
+| 11 | "Então" | procura o *rei* | Sala do trono: câmera vai do agrônomo ao rei | passos |
+| 12 | "recebe" | recebe uma *missão* | Papel "MISSÃO" surge na frente do rei | pop |
+| 13 | "fazer" | fazer o povo *aceitar* | Close do agrônomo feliz com o papel | — |
+| 14 | "Com" | apoio da *corte* | Nobre de cartola aprova | — |
+| 15 | "ele" (L8) | *terreno*… *plantação* | Campo vazio → plantas **crescem rápido**; agrônomo com pá | pássaros, pop |
+| 16 | "Durante" | *guardas*… *tesouro* | Guardas com lanças; monte de batatas brilhando | passos, ding |
+| 17 | "Ao" | *vigilância*… *valor* | Você espiando por cima da cerca; moedas na imaginação | moeda |
+| 18 | "À" | À *noite* | Campo à noite, guardas sonolentos indo embora | grilos, passos |
+| 19 | "e" (L11) | as pessoas entram para *pegar* | Você entra agachado e pega uma batata | grilos, passos |
+| 20 | "A" (L12) | A estratégia dá *certo* | Agrônomo rindo no campo (manhã) | ding |
+| 21 | "você" (L13) | leva batatas para *casa* | Você andando na vila com o saco | passos, pássaros |
+| 22 | "planta" | planta mais | Você na horta plantando | pássaros |
+| 23 | "e" (L13) | começa a *comê-las* | Você comendo batata na mesa | — |
+| 24 | "Aos" | aquilo que muita gente *rejeitava* | Seu Bento, que desconfiava, agora come feliz | — |
+| 25 | "vira" | parte da *mesa* francesa | Família na mesa farta; câmera recua | pop, brilhos |

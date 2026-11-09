@@ -62,6 +62,8 @@ export const Film = ({ legendas, voz, musica }: FilmProps) => {
           </Sequence>
         );
       })}
+      {/* vinheta: bordas levemente escurecidas (estilo cinema) */}
+      <AbsoluteFill style={{ pointerEvents: 'none', background: 'radial-gradient(ellipse 75% 62% at 50% 48%, rgba(0,0,0,0) 58%, rgba(0,0,0,0.42) 100%)' }} />
       {legendas && <Captions />}
       {voz && <Audio src={staticFile('voz.mp3')} />}
       {musica && <Audio src={staticFile('musica.mp3')} volume={(f) => 0.11 * Math.min(1, f / (0.8 * fps), (durationInFrames - f) / (1.2 * fps))} />}

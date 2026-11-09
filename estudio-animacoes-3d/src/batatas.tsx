@@ -149,6 +149,20 @@ export const Spear = (g: G) => (
   </group>
 );
 
+// Pá (para a mão).
+export const Shovel = (g: G) => (
+  <group {...g}>
+    <mesh position={[0, -0.35, 0]}>
+      <cylinderGeometry args={[0.02, 0.02, 1.2, 8]} />
+      <meshStandardMaterial color="#8a5a32" />
+    </mesh>
+    <mesh position={[0, -1.02, 0]} scale={[1, 1.3, 0.25]}>
+      <sphereGeometry args={[0.13, 14, 10]} />
+      <meshStandardMaterial color="#9aa0a8" metalness={0.7} roughness={0.35} />
+    </mesh>
+  </group>
+);
+
 // Placa de madeira pendurada com o ano.
 export const HangingSign = ({ text = '1780', ...g }: G & { text?: string }) => (
   <group {...g}>
@@ -223,7 +237,7 @@ export const Vila = ({ t = 0, noite = false, ano = true }: { t?: number; noite?:
     <TimberHouse position={[3.3, 0, -4.6]} cor="#ecd2a8" porta="#2f5a8a" />
     <TimberHouse position={[-6.6, 0, -5.2]} cor="#f4e6c8" />
     <TimberHouse position={[6.7, 0, -5]} cor="#f2dcb0" telhado="#8a3a24" />
-    {ano && <HangingSign position={[-1.6, 2.9, -3.7]} />}
+    {ano && <HangingSign position={[-1.6, 2.9, -2.9]} />}
     <Cart position={[1.6, 0, -2.2]} rotation={[0, -0.4, 0]} />
     <Sack position={[-1.9, 0, -2.6]} />
     <Sack position={[-2.4, 0, -2.3]} rotation={[0, 1, 0]} />
@@ -282,7 +296,7 @@ export const CampoBatatas = ({ t = 0, noite = false, cresce = 1 }: { t?: number;
   }, []);
   return (
     <group>
-      <WarmLights sun={noite ? [3, 6, -4] : [-5, 8, 6]} bg={noite ? '#2a2650' : '#f8c890'} sky={noite ? '#9090ff' : '#fff0d8'} ground={noite ? '#20203a' : '#6a7a3a'} fill={noite ? 0.75 : 1.05} power={noite ? 0.5 : 2.0} fog={[12, 36]} />
+      <WarmLights sun={noite ? [3, 6, -4] : [-5, 8, 6]} bg={noite ? '#2a2650' : '#f8c890'} sky={noite ? '#9090ff' : '#fff0d8'} ground={noite ? '#20203a' : '#6a7a3a'} fill={noite ? 1.0 : 1.05} power={noite ? 0.75 : 2.0} fog={[12, 36]} />
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow><planeGeometry args={[60, 60]} /><meshStandardMaterial map={tileTex('#6fae4a', '#64a244', 30)} /></mesh>
       <Box p={[0, 0.02, -4.2]} s={[9.4, 0.04, 7.4]} c="#7a5230" />
       {Array.from({ length: 9 }, (_, r) => <Box key={r} p={[0, 0.07, -1.0 - r * 0.8]} s={[9, 0.08, 0.35]} c="#6b4426" />)}

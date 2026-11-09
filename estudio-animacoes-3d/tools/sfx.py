@@ -235,6 +235,32 @@ def escritorio(d=12.5):
     return loopable(norm(y, 0.5))
 
 
+def grilos(d=12.5):
+    y = band(noise(d), 100, 1500, tilt=-0.6) * 0.08
+    for v in range(4):
+        f = 4200 + v * 380
+        per = 0.55 + v * 0.17
+        t0 = R.uniform(0, per)
+        while t0 < d - 0.2:
+            for k in range(3):
+                dd = 0.018
+                c = sine(f, dd) * np.sin(np.pi * t_(dd) / dd)
+                i = int((t0 + k * 0.032) * SR)
+                y[i:i + len(c)] += c * (0.25 + 0.1 * v)
+            t0 += per * R.uniform(0.85, 1.15)
+    return loopable(norm(y, 0.5))
+
+
+def ronco():
+    """Barriga roncando (fome)."""
+    d = 0.9
+    t = t_(d)
+    f = 70 + 25 * np.sin(2 * np.pi * 3.5 * t)
+    y = np.sin(2 * np.pi * np.cumsum(f) / SR) * (0.5 + 0.5 * np.sin(np.pi * t / d))
+    y += band(noise(d), 60, 400) * 0.3 * np.sin(np.pi * t / d)
+    return norm(y, 0.8)
+
+
 if __name__ == '__main__':
     save('passo1', passo(1))
     save('passo2', passo(2))
@@ -254,3 +280,5 @@ if __name__ == '__main__':
     save('mar', mar(), 0.5)
     save('cidade', cidade(), 0.5)
     save('escritorio', escritorio(), 0.4)
+    save('grilos', grilos(), 0.5)
+    save('ronco', ronco())
