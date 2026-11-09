@@ -3,6 +3,7 @@ import { Elenco } from './Elenco';
 import { Film } from './Film';
 import { NovosPersonagens } from './NovosPersonagens';
 import { PersonagensMina } from './PersonagensMina';
+import { PersonagensTempo } from './PersonagensTempo';
 import { Objeto, Vitrine } from './Vitrine';
 import { TESTE_FIM, TesteCamera } from './TesteCamera';
 import { END, FPS } from './timeline';
@@ -25,6 +26,7 @@ export const Root = () => (
     <Composition id="Vitrine" component={Vitrine} durationInFrames={1} fps={FPS} width={1080} height={1920} defaultProps={{ cena: 'escritorio' }} />
     <Composition id="Objeto" component={Objeto} durationInFrames={1} fps={FPS} width={440} height={480} defaultProps={{ i: 0 }} />
     <Composition id="NovosPersonagens" component={NovosPersonagens} durationInFrames={1} fps={FPS} width={1920} height={1920} />
+    <Composition id="PersonagensTempo" component={PersonagensTempo} durationInFrames={1} fps={FPS} width={1920} height={1260} />
     <Composition id="PersonagensMina" component={PersonagensMina} durationInFrames={1} fps={FPS} width={1920} height={1220} />
   </>
 );
