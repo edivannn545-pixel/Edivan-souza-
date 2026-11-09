@@ -17,7 +17,7 @@ const LEO = NOVOS.leo.look;
 const A = ({ t, t0, t1 }: ShotProps) => (
   <>
     <Estacao t={t} />
-    <Cam t={t} t0={t0} t1={t1} keys={CAM.desce(t0, t1, [-3.2, 3.0, -4.8], [0, 1.5, -0.4], 1.1, { distPlaca: 2.6, dist: 4.4 })} />
+    <Cam t={t} t0={t0} t1={t1} keys={CAM.desce(t0, t1, [0, 3.25, -0.2], [0, 1.5, -0.4], 1.1, { distPlaca: 2.4, dist: 4.4 })} />
     <Character pose={P({ x: 0, z: -0.4 })} face={faceAt(t, [{ at: 0, f: 'curious' }, { at: 1.4, f: 'starstruck' }], 1)} look={LEO} />
   </>
 );

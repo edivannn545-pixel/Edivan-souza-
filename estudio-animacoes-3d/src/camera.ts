@@ -77,9 +77,16 @@ export const CAM = {
   },
 
   // RECUA RÁPIDO de um detalhe até o plano aberto e pousa ("olha o tamanho disso").
-  recuaRapido(t0: number, t1: number, detalhe: V3, aberto: V3, o: Dir & { de?: number; para?: number } = {}): CamKey[] {
-    const tc = Math.min(t1, t0 + CHEGADA * 1.3);
-    return [key(t0, detalhe, o.de ?? 2.2, { yaw: o.yaw, pitch: 0, fov: o.fov }), key(tc, aberto, o.para ?? 9, { yaw: o.yaw, pitch: o.pitch ?? 0.08, fov: o.fov }), key(Math.max(t1, tc + 0.01), aberto, (o.para ?? 9) * 0.97, { yaw: o.yaw, pitch: o.pitch ?? 0.08, fov: o.fov })];
+  // Segura no detalhe até `quando` (padrão: logo depois da dissolução) e então recua.
+  recuaRapido(t0: number, t1: number, detalhe: V3, aberto: V3, o: Dir & { de?: number; para?: number; quando?: number } = {}): CamKey[] {
+    const q = o.quando ?? t0 + 0.55;
+    const tc = Math.min(Math.max(t1, q + 0.02), q + CHEGADA * 1.3);
+    return [
+      key(t0, detalhe, o.de ?? 2.2, { yaw: o.yaw, pitch: 0, fov: o.fov }),
+      key(q, detalhe, (o.de ?? 2.2) * 0.95, { yaw: o.yaw, pitch: 0, fov: o.fov }),
+      key(tc, aberto, o.para ?? 9, { yaw: o.yaw, pitch: o.pitch ?? 0.08, fov: o.fov }),
+      key(Math.max(t1, tc + 0.01), aberto, (o.para ?? 9) * 0.97, { yaw: o.yaw, pitch: o.pitch ?? 0.08, fov: o.fov }),
+    ];
   },
 
   // Gancho: colado no objeto (com lente aberta) e recua até o personagem. `ate` = quando termina de recuar.
