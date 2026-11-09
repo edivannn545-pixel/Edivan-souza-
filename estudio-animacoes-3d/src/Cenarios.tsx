@@ -6,6 +6,7 @@ import { Desk, MESA_CHEFE, MESA_COLEGA, MESA_GABI, MESA_KAIO, MESA_PAULA, MESA_V
 import { Boat, BrazilMap, Buoy, Anemometer, DryLand, PacificMap, RainCloud, Screen, SeaScene, Thermometer, Tub, TubRoom } from './elnino';
 import { NeonStreet, PachinkoFront, PachinkoHall, PrizeCounter, WindowShop } from './historia';
 import { Cam, Room, Stage, Street, Warehouse } from './sets';
+import { NOVOS_CENARIOS } from './cenarios2';
 
 // Catálogo de cenários do estúdio (node tools/cenarios.mjs -> out/cenarios.png).
 type C = { nome: string; C: (p: { t: number }) => JSX.Element };
@@ -62,6 +63,12 @@ export const CENARIOS: C[] = [
     ),
   },
 ];
+
+// Os 30 cenários novos entram depois dos 18 primeiros (índices 18 a 47).
+for (const n of NOVOS_CENARIOS) {
+  const Comp = n.C;
+  CENARIOS.push({ nome: n.nome, C: ({ t }) => (<><Comp t={t} />{cam(t, n.cam[0], n.cam[1])}</>) });
+}
 
 export const Cenario = ({ i }: { i: number }) => {
   const c = CENARIOS[i] ?? CENARIOS[0];
