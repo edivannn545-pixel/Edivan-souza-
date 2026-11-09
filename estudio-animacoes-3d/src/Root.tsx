@@ -1,6 +1,7 @@
 import { Composition } from 'remotion';
 import { Elenco } from './Elenco';
 import { Film } from './Film';
+import { NovosPersonagens } from './NovosPersonagens';
 import { PersonagensMina } from './PersonagensMina';
 import { END, FPS } from './timeline';
 import { VOZ } from './voz';
@@ -18,6 +19,7 @@ export const Root = () => (
     />
     {/* Folha com todo o elenco disponível (node tools/elenco.mjs) */}
     <Composition id="Elenco" component={Elenco} durationInFrames={1} fps={FPS} width={1920} height={1760} />
+ <Composition id="NovosPersonagens" component={NovosPersonagens} durationInFrames={1} fps={FPS} width={1920} height={1920} />
     <Composition id="PersonagensMina" component={PersonagensMina} durationInFrames={1} fps={FPS} width={1920} height={1220} />
   </>
 );

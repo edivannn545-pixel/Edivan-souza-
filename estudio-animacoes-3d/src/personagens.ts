@@ -139,3 +139,58 @@ export const ROUPAS = {
     look: { skin: PELE.escura, jacket: '#f4f4f2', pattern: 'listras', pattern2: '#1f3b7a', patternH: true, pants: '#1f3b7a', shoes: '#111', gloves: MAO, hair: '#1a120c', hat: 'marinheiro', hatColor: '#fbfbf8' },
   },
 } satisfies Record<string, Membro>;
+
+// ============================================================================
+// ELENCO NOVO — inspirado nos Shorts de referência (REFERENCIAS.md). Todos originais.
+// Use: <Character look={NOVOS.leo.look} ... />
+// ============================================================================
+export const NOVOS = {
+  leo: {
+    nome: 'Léo', papel: 'o novo protagonista', rosto: 'bigSmile',
+    look: { skin: PELE.media, jacket: '#2f8f7a', pants: '#2e3442', shoes: '#3a2a1e', gloves: MAO, hair: '#5b351f', hairStyle: 'liso' },
+  },
+  arlindo: {
+    nome: 'Seu Arlindo', papel: 'o tiozinho', rosto: 'laugh',
+    look: { skin: PELE.media, jacket: '#c8352f', pattern: 'xadrez', pattern2: '#3a1414', pants: '#3a3f55', shoes: '#3a2a1e', gloves: MAO, hair: '#2a1a12', hairStyle: 'careca', beard: 'barba', body: 'forte' },
+  },
+  moraes: {
+    nome: 'Dr. Moraes', papel: 'o chefão', rosto: 'smug',
+    look: { skin: PELE.clara, jacket: '#16171c', pants: '#16171c', shoes: '#0c0c0e', gloves: MAO, hair: '#0f0c0a', hairStyle: 'liso', shirt: '#ffffff', tie: '#c8242a', body: 'forte' },
+  },
+  bia: {
+    nome: 'Bia', papel: 'a operária', rosto: 'confident',
+    look: { skin: PELE.morena, jacket: '#3d4048', pants: '#2c3346', shoes: '#3a2a1e', gloves: MAO, hair: '#2a1a12', hairStyle: 'rabo', vest: '#ff8a1e', hat: 'capacete', hatColor: '#f2c62e' },
+  },
+  nina: {
+    nome: 'Comandante Nina', papel: 'a astronauta', rosto: 'happy',
+    look: { skin: PELE.escura, jacket: '#e4e6ea', pants: '#e4e6ea', shoes: '#9aa0a8', gloves: '#c8ccd2', hair: '#1a120c', hairStyle: 'coque', faixa: '#e8822a', scarf: '#3256b8' },
+  },
+  valdo: {
+    nome: 'Sir Valdo', papel: 'o cavaleiro', rosto: 'confident',
+    look: { skin: PELE.clara, jacket: '#b9c0c8', pants: '#b9c0c8', shoes: '#8a9098', gloves: '#9aa2ab', hair: '#3a2416', hat: 'cavaleiro', metal: true, faixa: '#e8822a' },
+  },
+  tome: {
+    nome: 'Frei Tomé', papel: 'o monge', rosto: 'content',
+    look: { skin: PELE.clara, jacket: '#7a5634', pants: '#5a3e26', shoes: '#3a2a1e', gloves: MAO, hair: '#8a6a4a', hairStyle: 'careca', skirt: { color: '#7a5634', long: true }, faixa: '#d8c49a' },
+  },
+  otavio: {
+    nome: 'Rei Otávio', papel: 'o rei', rosto: 'smug',
+    look: { skin: PELE.clara, jacket: '#8a1f2a', pants: '#5a1420', shoes: '#c9a14a', gloves: MAO, hair: '#e6e6e6', beard: 'barba', hat: 'coroa', scarf: '#f4f0e8', skirt: { color: '#8a1f2a', long: true }, body: 'idoso' },
+  },
+  kenji: {
+    nome: 'Kenji', papel: 'o sushiman', rosto: 'closedSmile',
+    look: { skin: PELE.clara, jacket: '#fbfbf8', pants: '#2a2a2a', shoes: '#111', gloves: MAO, hair: '#2a1e18', beard: 'bigode', hat: 'chef', scarf: '#c8352f' },
+  },
+  barao: {
+    nome: 'Barão', papel: 'o milionário', rosto: 'wink',
+    look: { skin: PELE.media, jacket: '#2a2230', pants: '#1f1a24', shoes: '#0c0c0e', gloves: MAO, hair: '#3a2416', hat: 'cartola', hatColor: '#141218', shirt: '#ffffff', tie: '#c8242a', vest: '#7a1f2a', eyewear: 'grau' },
+  },
+  tati: {
+    nome: 'Tati', papel: 'a colega de escritório', rosto: 'smile',
+    look: { skin: PELE.clara, jacket: '#f4f4f2', pattern: 'listras', pattern2: '#2f4f8f', patternH: true, pants: '#2c3346', shoes: '#2a2a2a', gloves: MAO, hair: '#c8572b', hairStyle: 'chanel' },
+  },
+  juca: {
+    nome: 'Juca', papel: 'o entregador', rosto: 'grin',
+    look: { skin: PELE.escura, jacket: '#3a4a6a', pants: '#2c3346', shoes: '#f2f2f2', gloves: MAO, hair: '#1a120c', hat: 'bone', hatColor: '#e8742a', vest: '#e8742a', backpack: '#e8742a' },
+  },
+} satisfies Record<string, Membro>;

@@ -177,7 +177,7 @@ o segundo em que a palavra começa (linha começa em 0; busca pelo começo da pa
   `body` ('adulto' | 'magro' | 'forte' | 'crianca' | 'idoso' | 'baixo'),
   `hairStyle` ('curto' | 'liso' | 'longo' | 'coque' | 'crespo' | 'careca' | 'chanel' | 'rabo' | 'nenhum'),
   `hat` + `hatColor` ('bone' | 'gorro' | 'touca' | 'boina' | 'policia' | 'chef' | 'capacete' | 'explorador' | 'astronauta' |
-  'cavaleiro' | 'farao' | 'marinheiro' | 'piloto' | 'capuz'), `eyewear` ('grau' | 'escuro' | 'mergulho' | 'aviador'),
+  'cavaleiro' | 'farao' | 'marinheiro' | 'piloto' | 'capuz' | 'coroa' | 'cartola'), `faixa` (faixa colorida na cintura), `eyewear` ('grau' | 'escuro' | 'mergulho' | 'aviador'),
   `beard` ('bigode' | 'barba'), `pattern` + `pattern2` + `patternH` ('listras' | 'xadrez' | 'florido' | 'acolchoado'),
   `coat` (jaleco), `vest` (colete), `apron` (avental), `skirt` ({ color, long }), `shorts`, `scarf`, `tie`, `shirt`,
   `metal` (armadura), `backpack` (mochila/tanque). Mãos claras: `gloves` = cor da pele (ou branco no estilo "rosto branco").
@@ -188,6 +188,9 @@ henrique (executivo), caio (friorento), bruna (enfermeira), rafa (atleta), tiao 
 gabi (artista), pedrinho (menino), funcionario (bancário), sombra (suspeito). `ROUPAS.<id>.look` — astronauta, mergulhador,
 protecao, explorador, inverno, praia, operario, medieval, cavaleiro, farao, piloto, marinheiro.
 Para vestir alguém com uma roupa especial: `{ ...ROUPAS.astronauta.look, skin: ELENCO.kaio.look.skin, hair: ELENCO.kaio.look.hair }`.
+**Elenco novo (`NOVOS.<id>.look`, folha em `ELENCO-NOVO.png`)**, inspirado nos Shorts de referência: leo (novo protagonista, camiseta verde),
+arlindo (tiozinho), moraes (chefão), bia (operária), nina (astronauta), valdo (cavaleiro), tome (monge), otavio (rei),
+kenji (sushiman), barao (milionário de cartola), tati (colega de escritório), juca (entregador).
 Escolha o elenco de cada vídeo a partir daqui (ou crie novos no mesmo formato) e use os nomes ao falar com o usuário.
 `node tools/elenco.mjs` gera de novo a folha `out/elenco.png` (ex.: depois de criar personagens novos).
 

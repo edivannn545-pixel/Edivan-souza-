@@ -49,7 +49,7 @@ export type Body = 'adulto' | 'magro' | 'forte' | 'crianca' | 'idoso' | 'baixo';
 export type HairStyle = 'curto' | 'liso' | 'longo' | 'coque' | 'crespo' | 'careca' | 'chanel' | 'rabo' | 'nenhum';
 export type Hat =
   | 'bone' | 'gorro' | 'policia' | 'chef' | 'capacete' | 'explorador' | 'astronauta' | 'cavaleiro'
-  | 'farao' | 'marinheiro' | 'piloto' | 'capuz' | 'boina' | 'touca';
+  | 'farao' | 'marinheiro' | 'piloto' | 'capuz' | 'boina' | 'touca' | 'coroa' | 'cartola';
 export type Pattern = 'liso' | 'listras' | 'xadrez' | 'florido' | 'acolchoado';
 
 export type Look = {
@@ -80,6 +80,7 @@ export type Look = {
   beard?: 'bigode' | 'barba';
   metal?: boolean; // armadura
   backpack?: string; // mochila / tanque
+  faixa?: string; // faixa colorida na cintura (macacão de astronauta, armadura em gomos)
 };
 
 export const VOCE: Look = {
@@ -334,6 +335,46 @@ const HatMesh = ({ look }: { look: Look }) => {
           )}
         </>
       );
+    case 'coroa': {
+      const ouro = look.hatColor ?? '#e2b23a';
+      return (
+        <group position={[0, 0.36, -0.02]}>
+          <mesh castShadow>
+            <cylinderGeometry args={[0.36, 0.38, 0.18, 32, 1, true]} />
+            <Mat color={ouro} metal side={THREE.DoubleSide} />
+          </mesh>
+          {Array.from({ length: 6 }, (_, i) => {
+            const a = (i / 6) * Math.PI * 2;
+            return (
+              <group key={i} position={[Math.sin(a) * 0.36, 0.15, Math.cos(a) * 0.36]}>
+                <mesh castShadow>
+                  <coneGeometry args={[0.07, 0.18, 8]} />
+                  <Mat color={ouro} metal />
+                </mesh>
+                <mesh position={[0, 0.1, 0]}>
+                  <sphereGeometry args={[0.03, 10, 8]} />
+                  <Mat color={i % 2 ? '#c0302e' : '#2f6fb3'} />
+                </mesh>
+              </group>
+            );
+          })}
+        </group>
+      );
+    }
+    case 'cartola':
+      return (
+        <>
+          <mesh position={[0, 0.62, -0.02]} castShadow>
+            <cylinderGeometry args={[0.32, 0.3, 0.56, 32]} />
+            <Mat color={c} roughness={0.5} />
+          </mesh>
+          <mesh position={[0, 0.4, -0.02]}>
+            <cylinderGeometry args={[0.315, 0.315, 0.09, 32]} />
+            <Mat color="#a8242a" />
+          </mesh>
+          {brim(0.58, c, 0.35)}
+        </>
+      );
     case 'chef':
       return (
         <>
@@ -527,6 +568,12 @@ export const Character = ({
             <sphereGeometry args={[0.3, 32, 24]} />
             <Mat color={torsoMap ? '#ffffff' : look.jacket} map={torsoMap} metal={look.metal} />
           </mesh>
+          {look.faixa && (
+            <mesh position={[0, 0.84, 0]} scale={b.torso} rotation={[Math.PI / 2, 0, 0]}>
+              <torusGeometry args={[0.298, 0.028, 10, 40]} />
+              <Mat color={look.faixa} />
+            </mesh>
+          )}
           {look.backpack && (
             <mesh position={[0, 0.88, -0.3 * b.torso[2]]} castShadow>
               <boxGeometry args={[0.42, 0.5, 0.2]} />
