@@ -214,6 +214,18 @@ No vertical o quadro é estreito: personagem e objeto lado a lado cabem até ~1,
 `Warehouse` (prateleiras até o teto, `item` configurável), `Stage` (palco liso colorido para fatos e números).
 Cada cenário já traz luz, sombra, fundo e névoa. Crie novos no mesmo padrão (caixas, cilindros, `labelTex`, `WarmLights`).
 
+**Cenários no estilo dos vídeos (src/cenarios.tsx, fotos em `out/vitrine/` com `node tools/vitrine.mjs`).**
+`Escritorio` (clima 'dia' | 'frio' | 'festa', `noite`, `cargo` na placa da mesa), `Estacao` (teletransporte; `neon` = versão
+noite rosa/roxa, `cidade`, `destino`, `liga` acende a cabine), `Nave` (interior; `gas` = verde), `NaveEspaco` (plano de fora,
+`planeta` 'terra' | 'marte'), `Castelo` (dia, muralha com torres, portão, estandartes, placa `nivel`).
+
+**Objetos no estilo dos vídeos (src/objetos.tsx, folha em `out/objetos.png`).** Escritório: `RelogioParede` (tic-tac com t),
+`JanelaPersiana` (cidade de dia/noite), `Planta`, `Cacto`, `Caneca`, `Celular` (texto na tela), `Monitor`, `Mesa`, `Cadeira`,
+`Baia`, `Cartaz`, `PlacaMesa`, `Bandeirolas`. Rua/estação: `Cone`, `Barril`, `PlacaMadeira`, `PilhaNiveis` (NÍVEL 1…N que sobem),
+`FilaCordao`, `Banco`, `Cabine` (vidro com neon), `QuadroPartidas`. Castelo: `Estandarte`, `Escada`.
+Ideia/informação: `BalaoPensamento` (ícone ou texto, surge na palavra), `Lampada` (ideia), `BarraProgresso` (chega no valor
+na palavra), `Aviso` ("ENVIADO ✓", "ERRO").
+
 **Objetos (src/props.tsx).** Efeitos: `Comic` (palavra de quadrinho), `Sparkles`, `Puff`. Informação: `Sign`, `Calendar`
 (`pages` configurável), `LedCounter`, `Gauge`, `Stamp` + `StampMark`, `Tag`, `PaperRain`. Valor: `Coin`, `CoinBurst`,
 `CoinStacks`, `MoneyStack` (`symbol`), `UpArrow`. Mão: `Hammer`, `Magnifier`, `Clipboard`. Mercadoria: `Crate`, `Field`
