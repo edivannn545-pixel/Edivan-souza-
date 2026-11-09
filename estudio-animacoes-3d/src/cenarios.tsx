@@ -108,10 +108,10 @@ const metalNave = () =>
 
 // ============================================================================
 // ESCRITÓRIO — parede bege, janelas com persiana e cidade, baias, mesas, relógio, cartazes.
-// clima: 'dia' (quente) | 'frio' (cinza-azulado, vazio/triste) | 'festa' (bandeirolas).
+// clima: 'dia' (quente) | 'frio' (cinza-azulado, vazio/triste) | 'festa' (bandeirolas). hora: ponteiros do relógio (anime para o tempo voar).
 // Mesa principal: frente em z ≈ 0.6, personagem sentado/atrás em z ≈ -0.3.
 // ============================================================================
-export const Escritorio = ({ t = 0, clima = 'dia' as 'dia' | 'frio' | 'festa', noite = false, cargo }: { t?: number; clima?: 'dia' | 'frio' | 'festa'; noite?: boolean; cargo?: string }) => {
+export const Escritorio = ({ t = 0, clima = 'dia' as 'dia' | 'frio' | 'festa', noite = false, cargo, hora }: { t?: number; clima?: 'dia' | 'frio' | 'festa'; noite?: boolean; cargo?: string; hora?: number }) => {
   const frio = clima === 'frio';
   const parede = frio ? '#9aa3ae' : '#d9cdb4';
   return (
@@ -128,7 +128,7 @@ export const Escritorio = ({ t = 0, clima = 'dia' as 'dia' | 'frio' | 'festa', n
       {/* janelas e relógio */}
       <JanelaPersiana position={[-1.4, 2.3, -3.05]} noite={noite} />
       <JanelaPersiana position={[2.6, 2.3, -3.05]} noite={noite} />
-      <RelogioParede t={t} hora={noite ? 21.3 : 9.6} position={[0.6, 3.3, -3.05]} />
+      <RelogioParede t={t} hora={hora ?? (noite ? 21.3 : 9.6)} position={[0.6, 3.3, -3.05]} />
       <Cartaz texto={'TRABALHO\nEM EQUIPE'} position={[4.6, 2.3, -3.05]} />
       <Cartaz texto={'TAREFAS\nDE HOJE:\n☐\n☐'} bg="#f4f1e8" w={0.8} h={1.0} position={[-3.6, 2.2, -3.05]} />
       {/* luminárias do teto */}

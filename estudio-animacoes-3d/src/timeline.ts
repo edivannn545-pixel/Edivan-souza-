@@ -6,21 +6,28 @@ import { VOZ } from './voz.ts';
 export const FPS = 30;
 export const F = 1 / FPS;
 
-// Roteiro: "O passarinho da mina" — texto e narração do usuário (public/voz.mp3).
+// Roteiro: "Superpoder: o tempo voa" — texto do usuário; narração gerada no ElevenLabs (public/voz.mp3).
 export const LINES = [
-  'Você trabalha numa *mina* onde todos passam o dia *cavando*.',
-  'Mas, enquanto os outros *suam* no túnel,',
-  'você anda de um lado para o outro com uma *gaiola* na mão, assobiando para um *passarinho*.',
-  'O *chefe* vê aquilo e perde a *paciência*.',
-  'Para ele, você não está fazendo *nada*.',
-  'Só que o *pássaro* está ali por um *motivo*.',
-  'Ele percebe o *perigo* antes dos homens.',
-  'Quando começa a passar *mal* e para de *cantar*,',
-  'você entende o aviso: há *gás* no túnel.',
-  'Então manda todos *saírem* depressa.',
-  'Naquele instante, o chefe percebe que você não era *preguiçoso*.',
-  'Enquanto todos cavavam, você *protegia* a equipe.',
-  'E aquele pequeno *passarinho* podia salvar a vida de *cada* mineiro.',
+  'Você olha o *relógio*... e perdeu *quarenta* minutos sem perceber.',
+  'A *reunião* começou.',
+  'O *ônibus* já passou.',
+  'E você jurava que tinha acabado de *sentar*.',
+  'Normalmente, uma hora no relógio continua tendo *sessenta* minutos.',
+  'Mas, na sua percepção, ela encolhe para *dez*.',
+  'Isso é *seis* vezes mais rápido.',
+  'Seu *cérebro* não mede o tempo como um *cronômetro*.',
+  'Atenção, *emoção* e memória mudam sua estimativa.',
+  'Quando está *concentrado*, você pode deixar de notar os minutos... até olhar para *cima*.',
+  'Que *horas* são?',
+  'Você não *sabe*.',
+  'Uma tarefa simples vira uma *armadilha*.',
+  'Você perde *compromissos*, esquece pausas e calcula mal quanto falta para chegar.',
+  'Mas o relógio *biológico* não acelera junto.',
+  'Seu ciclo diário continua perto de *vinte* e quatro horas... e seu corpo ainda precisa *dormir*.',
+  'Aí vem o *custo*: você sente que o dia mal começou, enquanto a *noite* já chegou.',
+  'Será que dá para *confiar* na própria rotina?',
+  'Você viveria *correndo* atrás do tempo... ou colocaria *alarmes* para tudo?',
+  'Se *inscreva* e escolha o próximo poder.',
 ];
 
 export type Word = { text: string; key: string; stressed: boolean; t0: number; t1: number; line: number; i: number };

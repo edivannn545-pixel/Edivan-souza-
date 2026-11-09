@@ -1,33 +1,38 @@
-# O passarinho da mina — storyboard
+# O tempo voa — storyboard
 
-Narração: `public/voz.mp3` (áudio do usuário, 40 s). Tempos estimados pelas pausas (`tools/alinhar.mjs`).
-Referência de câmera: Short "O PASSARINHO era o segredo" (câmera sempre em movimento, gancho no objeto, luz que conta a história, final em loop).
+Narração: `public/voz.mp3` (áudio do usuário, 79 s). Tempos exatos por palavra: transcrição local (faster-whisper) →
+`public/palavras.json` → `node tools/palavras.mjs public/palavras.json`. Sem legenda.
+Câmera: `CAM.pousa` (chega rápido e para de frente), `CAM.desce`, `CAM.impacto` só no "seis".
+Elenco: **Léo** (protagonista), **Dr. Moraes** (chefe), **Tati**, **Seu Arlindo**.
 
-Elenco: **Você** (mineiro da gaiola, capacete marrom), **o Chefe** (grandão de terno vinho), **Tonhão**, **Tião** e **Kaio** (mineiros de capacete).
-Cenários: `Tunel` (laranja → azul de perigo → verde de gás), `Corte` (a mina em corte, como diagrama), `Entrada` (lá fora, de dia, placa MINA).
-
-| # | Tempo | Frase | Ação | Objeto de informação | Câmera (receita) | Expressão |
-|---|---|---|---|---|---|---|
-| A | 0,0 | Você trabalha numa *mina*… | Você com a gaiola; mineiros cavando ao fundo | gaiola / passarinho | **revela**: colada na gaiola, recua até você | content → happy |
-| B | 1,6 | …todos passam o dia *cavando* | Tonhão, Tião e Kaio batem a picareta | montes de pedra + poeira | **lateral** pelos mineiros | tired / frustrated |
-| C | 3,2 | Mas, enquanto os outros *suam* no túnel | Tonhão suando | gotas de suor | **empurra**, câmera baixa | tired + sweat3 |
-| D | 5,8 | você anda de um lado para o outro | Você atravessa o túnel e volta | — | acompanha de lado | happy |
-| E | 8,0 | com uma *gaiola* na mão | Gaiola balançando | gaiola | **empurra** (insert) | — |
-| F | 8,8 | assobiando para um *passarinho* | Você assobia, o passarinho canta de volta | notas ♪ | **órbita** | content → closedSmile |
-| G | 11,0 | O *chefe* vê aquilo | O chefe aparece no fundo | — | **lateral** de você até o chefe | suspicious → annoyed |
-| H | 12,3 | e perde a *paciência* | Chefe explode | "GRRR!" | **impacto** + giro + linhas de velocidade (corte seco) | furious + vein |
-| I | 13,6 | Para ele, você não está fazendo *nada* | Chefe aponta; você não entende | — | por cima do ombro do chefe | content → confused |
-| J | 16,2 | Só que o *pássaro* está ali por um *motivo* | Close do passarinho | brilhos | **empurra** lento (close extremo) | — |
-| K | 18,9 | Ele percebe o *perigo* antes dos homens | Gás vaza da rocha; o passarinho sente primeiro | nuvem verde + mina em corte | **empurra** no diagrama; luz vira azul | curious |
-| L | 21,5 | Quando começa a passar *mal* | Passarinho murcha e fica pálido | — | **empurra** com giro leve, luz azul | worried |
-| M | 23,3 | e para de *cantar* | Notas somem, passarinho cai do poleiro | — | **queda** (a câmera tomba junto) | shocked |
-| N | 24,6 | você entende o *aviso* | Você entende | "!" | **impacto** + linhas de velocidade (corte seco) | shocked + sweat |
-| O | 26,3 | há *gás* no túnel | Túnel fica verde, lamparinas apagam | gás avançando + placa PERIGO | **recua** pelo túnel | sick / dizzy |
-| P1 | 27,8 | Então *manda* todos | Você grita com os braços para cima | "SAIAM!" | **empurra**, câmera baixa | panic |
-| P2 | 28,8 | *saírem* depressa | Mineiros saem correndo da mina (dia) | placa MINA | clarão + **recua** (corte seco) | panic / scared |
-| Q | 29,6 | Naquele instante, o chefe *percebe* | Chefe sai tossindo e se dá conta | resto de gás | **empurra** no rosto | sick → amazed |
-| R | 31,7 | que você não era *preguiçoso* | Você sai com a gaiola; chefe sem graça | — | **lateral** com os dois | confident / worried + blush |
-| S | 33,3 | Enquanto todos *cavavam* | Mina em corte: todos cavam, você vigia | gaiola | **lateral** no diagrama | confident |
-| T | 34,7 | você *protegia* a equipe | Equipe em volta de você, gaiola no alto | brilhos | **órbita** de herói | bigSmile / amazed |
-| U | 36,4 | E aquele pequeno *passarinho* | Passarinho cantando ao sol | notas ♪ | **empurra** | bigSmile |
-| V | 38,1 | podia salvar a vida de *cada* mineiro | Todos comemoram; chefe sorri | brilhos | **recua** e, no fim, **volta colada na gaiola** (loop com o 1º plano) | laugh / happy |
+| # | Tempo | Frase | Ação / objeto de informação | Câmera |
+|---|---|---|---|---|
+| 1 | 0,0 | Você olha o *relógio*... e perdeu *quarenta* minutos | relógio de parede voando; placa "-40 MIN" | desce do relógio até o Léo |
+| 2 | 4,6 | A *reunião* começou | chefe batendo o pé, colegas esperando | pousa de lado |
+| 3 | 6,2 | O *ônibus* já passou | ônibus indo embora, Léo chega correndo no PONTO | pousa de longe |
+| 4 | 7,8 | ...acabado de *sentar* | balão "ACABEI DE SENTAR!" | pousa de perto |
+| 5 | 11,3 | Normalmente, uma hora no *relógio* | relógio grande no ritmo normal | pousa de cima |
+| 6 | 13,3 | continua tendo *sessenta* minutos | contador chega em 60 MIN | pousa de lado |
+| 7 | 16,0 | ...ela *encolhe* para *dez* | relógio encolhe; contador 60 → 10 MIN | pousa de longe |
+| 8 | 20,1 | Isso é *seis* vezes mais rápido | placa ×6 + linhas de velocidade | impacto (corte seco) |
+| 9 | 23,2 | Seu *cérebro* não mede... como um *cronômetro* | cérebro → cronômetro com X vermelho | travelling lateral |
+| 10 | 26,3 | *Atenção*, *emoção* e *memória*... | olho, coração e foto saltam sobre o cérebro | pousa de baixo |
+| 11 | 31,2 | Quando está *concentrado* | digitando focado | pousa de lado |
+| 12 | 32,8 | ...deixar de notar os minutos | relógio de parede girando sem parar | pousa de perto (insert) |
+| 13 | 35,5 | até olhar para *cima* | levanta a cabeça | pousa de baixo |
+| 14 | 38,1 | Que *horas* são? | balão "?" | pousa de lado |
+| 15 | 39,4 | Você não *sabe* | encolhe os ombros | pousa de longe |
+| 16 | 40,6 | ...vira uma *armadilha* | tarefa "5 MIN"; jaula cai (TUM!) | pousa de lado + clarão |
+| 17 | 43,5 | Você perde *compromissos* | calendário vira até "PERDEU!" | pousa de cima |
+| 18 | 45,4 | *esquece* pausas | Tati oferece café, ele nem vê | pousa de lado |
+| 19 | 46,4 | ...calcula mal quanto *falta* | andando; balão "QUASE LÁ!", barra 30% | acompanha de lado |
+| 20 | 49,7 | ...relógio *biológico* não acelera | disco dia/noite devagar × relógio voando | pousa de cima |
+| 21 | 52,4 | ...perto de *vinte* e quatro horas | disco dá uma volta; contador 24 H | pousa de lado |
+| 22 | 57,4 | ...precisa *dormir* | deitado na cama, Zzz, janela de noite | pousa de cima |
+| 23 | 60,4 | Aí vem o *custo* | placa "O CUSTO" | pousa de longe |
+| 24 | 61,8 | ...o dia mal *começou* | espreguiça feliz, janela de dia | pousa de lado |
+| 25 | 64,3 | enquanto a *noite* já chegou | janela vira noite, escritório esfria; susto | pousa de perto |
+| 26 | 66,7 | ...*confiar* na própria rotina? | prancheta "ROTINA ✓ ✗ ?", balão "?" | pousa de lado |
+| 27 | 70,3 | ...*correndo* atrás do tempo | relógio rolando pela rua, Léo corre atrás | acompanha |
+| 28 | 73,3 | ...*alarmes* para tudo? | mesa cheia de despertadores tocando | pousa de longe + linhas |
+| 29 | 75,9 | Se *inscreva*... próximo poder | aperta o botão INSCREVA-SE; fecha no relógio (loop) | pousa e fecha no relógio |

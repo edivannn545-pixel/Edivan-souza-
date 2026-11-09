@@ -1,466 +1,505 @@
-import { useThree } from '@react-three/fiber';
-import { useLayoutEffect } from 'react';
 import * as THREE from 'three';
-import { clamp01, rand, V3 } from './anim';
-import { Look, Pose, VOCE } from './Character';
-import { ELENCO } from './personagens';
-import { Sign } from './props';
-import { Box } from './sets';
-import { canvasTex, comicTex } from './textures';
+import { back, easeOut, lerp, rand, seg, V3 } from './anim';
+import { Box, WarmLights } from './sets';
+import { F } from './timeline';
+import { canvasTex, comicTex, FONT, labelTex } from './textures';
 
 // ============================================================================
-// "O PASSARINHO DA MINA" — elenco, cenários e objetos desta história.
+// "O TEMPO VOA" — objetos e cenários desta história (superpoder: perceber o tempo 6x mais rápido).
 // ============================================================================
 
 type G = { position?: V3; rotation?: V3; scale?: number | V3 };
-const MAO = '#1e1f24';
+const Std = ({ c, r = 0.6, m = 0, e, ei = 0, ...p }: { c: string; r?: number; m?: number; e?: string; ei?: number; map?: THREE.Texture; side?: THREE.Side; transparent?: boolean; opacity?: number }) => (
+  <meshStandardMaterial color={c} roughness={r} metalness={m} emissive={e ?? '#000'} emissiveIntensity={ei} {...p} />
+);
 
-// ---------- Elenco ----------
-// Você: o mineiro da gaiola (capacete marrom, colete, lenço vermelho).
-export const MINEIRO: Look = {
-  ...VOCE, jacket: '#e0a030', vest: '#7a4a26', pants: '#3a3530', hat: 'capacete', hatColor: '#7a4a26', scarf: '#c0302e',
-};
-// O chefe: grandão de terno vinho, bigode.
-export const CHEFE: Look = {
-  skin: '#f0dccb', jacket: '#8a1f24', pants: '#2a2226', shoes: '#111', gloves: MAO, hair: '#1a120c', hairStyle: 'liso',
-  beard: 'bigode', body: 'forte', shirt: '#f4f0e8', tie: '#1a1a1a',
-};
-// Os outros mineiros (do elenco, com capacete).
-export const TONHAO: Look = { ...ELENCO.tonhao.look, hat: 'capacete', hatColor: '#f2c62e' };
-export const TIAO: Look = { ...ELENCO.tiao.look, hat: 'capacete', hatColor: '#d98c2e' };
-export const KAIO: Look = { ...ELENCO.kaio.look, jacket: '#4a6a8a', hat: 'capacete', hatColor: '#f2c62e' };
+// ---------- Palco colorido para os fatos ----------
+export const Palco = ({ cor = '#2f5f7a', noite = false }: { cor?: string; noite?: boolean }) => (
+  <group>
+    <WarmLights bg={cor} sky={noite ? '#9fb6ff' : '#ffffff'} ground={cor} fill={noite ? 0.7 : 1.0} power={noite ? 1.2 : 2.2} sun={[-3, 7, 6]} fog={[16, 40]} />
+    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+      <planeGeometry args={[80, 80]} />
+      <meshStandardMaterial color={cor} roughness={0.9} />
+    </mesh>
+    <mesh position={[0, 0.06, 0]} receiveShadow>
+      <cylinderGeometry args={[2.8, 2.9, 0.12, 64]} />
+      <meshStandardMaterial color={new THREE.Color(cor).offsetHSL(0, -0.05, 0.12).getStyle()} roughness={0.7} />
+    </mesh>
+  </group>
+);
 
-// Posição da mão direita no mundo (corpo adulto, sem inclinação), para pendurar a gaiola na mão.
-export const maoDireita = (p: Pose): V3 => {
-  const m = new THREE.Matrix4().compose(new THREE.Vector3(p.x, p.y, p.z), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, p.ry, 0)), new THREE.Vector3(1, 1, 1));
-  const ombro = new THREE.Matrix4().compose(new THREE.Vector3(-0.27, 1.0, 0), new THREE.Quaternion().setFromEuler(new THREE.Euler(-p.rsx, 0, -p.rsz, 'ZXY')), new THREE.Vector3(1, 1, 1));
-  const cot = new THREE.Matrix4().compose(new THREE.Vector3(0, -0.3, 0), new THREE.Quaternion().setFromEuler(new THREE.Euler(-p.rel, 0, 0)), new THREE.Vector3(1, 1, 1));
-  const v = new THREE.Vector3(0, -0.3, 0).applyMatrix4(cot).applyMatrix4(ombro).applyMatrix4(m);
-  return [v.x, v.y, v.z];
-};
-
-// ---------- Céu, névoa e luz ----------
-const Ceu = ({ bg, near, far }: { bg: string; near: number; far: number }) => {
-  const scene = useThree((s) => s.scene);
-  useLayoutEffect(() => {
-    scene.background = new THREE.Color(bg);
-    scene.fog = new THREE.Fog(bg, near, far);
-  }, [scene, bg, near, far]);
-  return null;
-};
-
-// mina = laranja quente (normal) · perigo = azul · gas = verde · dia = lá fora
-export type Clima = 'mina' | 'perigo' | 'gas' | 'dia';
-const CLIMA = {
-  mina: { bg: '#3a2414', sky: '#ffd9a0', ground: '#4a2a14', fill: 0.75, sol: '#ffcf8a', power: 1.3, pos: [-3, 6, 5] as V3 },
-  perigo: { bg: '#121a33', sky: '#6f86c8', ground: '#141420', fill: 0.6, sol: '#9fb6ff', power: 0.8, pos: [3, 6, 5] as V3 },
-  gas: { bg: '#18301c', sky: '#9fe08a', ground: '#14240f', fill: 0.65, sol: '#b8ff9a', power: 0.7, pos: [3, 6, 5] as V3 },
-  dia: { bg: '#a9d6f2', sky: '#fff1d8', ground: '#8a6a40', fill: 1.0, sol: '#ffe2b8', power: 2.4, pos: [-6, 9, 7] as V3 },
-};
-export const Luz = ({ clima = 'mina' as Clima, fog = [8, 30] as [number, number] }) => {
-  const c = CLIMA[clima];
-  return (
-    <>
-      <Ceu bg={c.bg} near={fog[0]} far={fog[1]} />
-      <hemisphereLight args={[c.sky, c.ground, c.fill]} />
-      <directionalLight
-        position={c.pos}
-        intensity={c.power}
-        color={c.sol}
-        castShadow
-        shadow-mapSize={[2048, 2048]}
-        shadow-camera-left={-8}
-        shadow-camera-right={8}
-        shadow-camera-top={8}
-        shadow-camera-bottom={-8}
-        shadow-bias={-0.0004}
-        shadow-normalBias={0.02}
-      />
-    </>
-  );
-};
-
-// ---------- Texturas ----------
-const terraTex = () =>
-  canvasTex('terra-mina', 512, 512, (c) => {
-    c.fillStyle = '#c8874a';
-    c.fillRect(0, 0, 512, 512);
-    for (let i = 0; i < 80; i++) {
-      c.fillStyle = `rgba(${rand(i) > 0.5 ? '90,50,20' : '230,170,110'},0.22)`;
-      c.beginPath();
-      c.ellipse(rand(i + 1) * 512, rand(i + 2) * 512, 18 + rand(i + 3) * 50, 8 + rand(i + 4) * 22, rand(i) * 3, 0, Math.PI * 2);
-      c.fill();
+// ---------- Relógio grande de pé (ponteiros controlados) ----------
+// minutos: ponteiro grande (60 = uma volta); horas: ponteiro pequeno.
+export const RelogioGrande = ({ minutos = 0, horas = 10, tamanho = 1, ...g }: G & { minutos?: number; horas?: number; tamanho?: number }) => {
+  const face = canvasTex('relogio-grande', 512, 512, (c) => {
+    c.fillStyle = '#fffdf5';
+    c.beginPath();
+    c.arc(256, 256, 250, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = '#22252b';
+    for (let i = 0; i < 60; i++) {
+      const a = (i / 60) * Math.PI * 2;
+      c.save();
+      c.translate(256 + Math.sin(a) * (i % 5 ? 228 : 212), 256 - Math.cos(a) * (i % 5 ? 228 : 212));
+      c.rotate(a);
+      c.fillRect(-3, 0, 6, i % 5 ? 12 : 26);
+      c.restore();
     }
-  }, [6, 10]);
-
-const rochaTex = () =>
-  canvasTex('rocha-mina', 512, 512, (c) => {
-    c.fillStyle = '#b07a48';
-    c.fillRect(0, 0, 512, 512);
-    for (let i = 0; i < 70; i++) {
-      c.fillStyle = `rgba(${rand(i) > 0.5 ? '70,40,20' : '220,160,100'},0.25)`;
-      c.beginPath();
-      c.ellipse(rand(i + 1) * 512, rand(i + 2) * 512, 20 + rand(i + 3) * 60, 10 + rand(i + 4) * 30, rand(i) * 3, 0, Math.PI * 2);
-      c.fill();
+    c.font = `900 60px ${FONT}`;
+    c.textAlign = 'center';
+    c.textBaseline = 'middle';
+    for (let h = 1; h <= 12; h++) {
+      const a = (h / 12) * Math.PI * 2;
+      c.fillText(String(h), 256 + Math.sin(a) * 168, 256 - Math.cos(a) * 168);
     }
-  }, [3, 2]);
-
-// ---------- Objetos ----------
-// Lamparina pendurada; `forca` 0..1 (apagando quando o gás chega).
-export const Lamparina = ({ t, position, forca = 1 }: { t: number; position: V3; forca?: number }) => {
-  const f = forca * (1 + 0.1 * Math.sin(t * 21 + position[2] * 3) + 0.06 * Math.sin(t * 33));
-  return (
-    <group position={position}>
-      <mesh position={[0, 0.18, 0]}>
-        <cylinderGeometry args={[0.008, 0.008, 0.3, 4]} />
-        <meshStandardMaterial color="#222" />
+  });
+  const R = 0.8 * tamanho;
+  const mao = (frac: number, len: number, w: number, cor: string, z: number) => {
+    const a = -frac * Math.PI * 2;
+    return (
+      <mesh position={[Math.sin(-a) * len * 0.5 * R, Math.cos(-a) * len * 0.5 * R, z]} rotation={[0, 0, a]}>
+        <boxGeometry args={[w * R, len * R, 0.02]} />
+        <Std c={cor} />
       </mesh>
-      <mesh>
-        <cylinderGeometry args={[0.07, 0.09, 0.16, 12]} />
-        <meshStandardMaterial color="#e8c070" emissive="#ffb347" emissiveIntensity={2.5 * f} toneMapped={false} transparent opacity={0.9} />
-      </mesh>
-      <mesh position={[0, 0.1, 0]}>
-        <coneGeometry args={[0.09, 0.07, 12]} />
-        <meshStandardMaterial color="#3a2a1e" />
-      </mesh>
-      {f > 0.02 && <pointLight intensity={6 * f} distance={6} color="#ffaa55" />}
-    </group>
-  );
-};
-
-// Passarinho (canário). canta 0..1 = bico aberto + pulinho; mal 0..1 = murcho e pálido; caido 0..1 = deitado no chão da gaiola.
-export type AveEstado = { canta?: number; mal?: number; caido?: number; olho?: number; ry?: number };
-export const Passarinho = ({ e = {}, ...g }: G & { e?: AveEstado }) => {
-  const canta = e.canta ?? 0, mal = e.mal ?? 0, caido = e.caido ?? 0, olho = e.olho ?? 1;
-  const cor = new THREE.Color('#ffd23a').lerp(new THREE.Color('#b8c47a'), mal * 0.7).getStyle();
+    );
+  };
   return (
     <group {...g}>
-      <group rotation={[0, e.ry ?? 0, caido * 1.5 + mal * 0.25]} position={[0, canta * 0.02, 0]}>
-        <mesh position={[0, 0.07, 0]} scale={[0.9, 0.85 - mal * 0.1, 1.15]} castShadow>
-          <sphereGeometry args={[0.07, 18, 14]} />
-          <meshStandardMaterial color={cor} roughness={0.6} />
+      <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
+        <cylinderGeometry args={[R * 1.12, R * 1.12, 0.16 * tamanho, 48]} />
+        <Std c="#c8352f" r={0.35} />
+      </mesh>
+      <mesh position={[0, 0, 0.081 * tamanho]}>
+        <circleGeometry args={[R, 48]} />
+        <meshStandardMaterial map={face} roughness={0.5} />
+      </mesh>
+      {mao((horas % 12) / 12, 0.55, 0.07, '#22252b', 0.1 * tamanho)}
+      {mao(minutos / 60, 0.85, 0.045, '#22252b', 0.11 * tamanho)}
+      <mesh position={[0, 0, 0.12 * tamanho]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.05 * R, 0.05 * R, 0.02, 16]} />
+        <Std c="#c8352f" />
+      </mesh>
+    </group>
+  );
+};
+
+// ---------- Contador que vai de um número a outro e chega no final exatamente na palavra ----------
+export const Contador = ({ t, from, at, de = 0, para, sufixo = '', cor = '#ffb53a', ...g }: G & { t: number; from: number; at: number; de?: number; para: number; sufixo?: string; cor?: string }) => {
+  const k = seg(t, from, at - F, easeOut);
+  const v = Math.round(lerp(de, para, k));
+  const hit = t >= at - F ? 1 + 0.15 * Math.max(0, 1 - (t - at) / 0.2) : 1;
+  return (
+    <group {...g}>
+      <group scale={hit}>
+        <Box p={[0, 0, 0]} s={[2.4, 0.9, 0.25]} c="#202326" r={0.4} />
+        <mesh position={[0, 0, 0.13]}>
+          <planeGeometry args={[2.25, 0.74]} />
+          <meshBasicMaterial map={labelTex(`${v}${sufixo}`, { w: 1024, h: 336, bg: '#0b0d0c', fg: cor, radius: 10 })} toneMapped={false} />
         </mesh>
-        <mesh position={[0, 0.06, -0.08]} rotation={[-0.6 + mal * 0.6, 0, 0]}>
-          <coneGeometry args={[0.035, 0.08, 8]} />
-          <meshStandardMaterial color={cor} />
-        </mesh>
-        {[1, -1].map((s) => (
-          <mesh key={s} position={[s * 0.058, 0.07, -0.01]} rotation={[0, 0, s * (0.2 + canta * 0.5 - mal * 0.3)]} scale={[0.3, 0.6, 1]}>
-            <sphereGeometry args={[0.06, 12, 8]} />
-            <meshStandardMaterial color="#f2bf2a" />
-          </mesh>
-        ))}
-        <group position={[0, 0.15 - mal * 0.04, 0.04 + mal * 0.02]} rotation={[mal * 0.6 - canta * 0.4, 0, 0]}>
-          <mesh castShadow>
-            <sphereGeometry args={[0.05, 16, 12]} />
-            <meshStandardMaterial color={cor} roughness={0.6} />
-          </mesh>
-          <mesh position={[0, -0.005, 0.05]} rotation={[Math.PI / 2 - canta * 0.3, 0, 0]}>
-            <coneGeometry args={[0.015, 0.04, 8]} />
-            <meshStandardMaterial color="#e8822a" />
-          </mesh>
-          <mesh position={[0, -0.015, 0.047]} rotation={[Math.PI / 2 + canta * 0.6, 0, 0]}>
-            <coneGeometry args={[0.012, 0.03, 8]} />
-            <meshStandardMaterial color="#c86a1a" />
-          </mesh>
-          {[1, -1].map((s) => (
-            <mesh key={s} position={[s * 0.03, 0.012, 0.03]} scale={[1, Math.max(0.12, olho * (1 - mal * 0.5)), 1]}>
-              <sphereGeometry args={[0.011, 8, 6]} />
-              <meshStandardMaterial color="#111" />
-            </mesh>
-          ))}
-        </group>
       </group>
     </group>
   );
 };
 
-// Gaiola dourada (altura ~0.45, o gancho fica no topo: posicione pelo gancho com `topo`).
-export const Gaiola = ({ ave, topo, balanco = 0, escala = 1 }: { ave?: AveEstado; topo: V3; balanco?: number; escala?: number }) => {
-  const ouro = '#e2b23a';
-  const H = 0.34;
+// Placa grande com texto que salta na palavra (ex.: "×6").
+export const PlacaSalta = ({ t, at, texto, bg = '#ffd23a', fg = '#2a1a0a', w = 2.2, h = 1.2, ...g }: G & { t: number; at: number; texto: string; bg?: string; fg?: string; w?: number; h?: number }) => {
+  const k = seg(t, at - 3 * F, at + 3 * F, back);
+  if (k <= 0.001) return null;
   return (
-    <group position={topo} rotation={[balanco * 0.3, 0, balanco]} scale={escala}>
-      <group position={[0, -0.59, 0]}>
-        {/* base: bacia dourada grossa com fundo de palha (fechada, não dá para ver o chão através) */}
-        <mesh position={[0, 0.0, 0]} castShadow receiveShadow>
-          <cylinderGeometry args={[0.2, 0.15, 0.1, 32]} />
-          <meshStandardMaterial color={ouro} metalness={0.35} roughness={0.35} />
+    <group {...g}>
+      <group scale={k} rotation={[0, 0, -0.06]}>
+        <Box p={[0, 0, 0]} s={[w + 0.1, h + 0.1, 0.18]} c="#2a1a0a" />
+        <mesh position={[0, 0, 0.095]}>
+          <planeGeometry args={[w, h]} />
+          <meshBasicMaterial map={labelTex(texto, { w: 1024, h: Math.round((1024 * h) / w), bg, fg, radius: 24 })} toneMapped={false} />
         </mesh>
-        <mesh position={[0, 0.05, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[0.2, 0.014, 8, 32]} />
-          <meshStandardMaterial color="#f2c84a" metalness={0.35} roughness={0.3} />
-        </mesh>
-        <mesh position={[0, 0.051, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-          <circleGeometry args={[0.19, 32]} />
-          <meshStandardMaterial color="#e6cf8a" roughness={0.9} />
-        </mesh>
-        <mesh position={[0, -0.06, 0]}>
-          <cylinderGeometry args={[0.11, 0.13, 0.03, 24]} />
-          <meshStandardMaterial color={ouro} metalness={0.35} roughness={0.35} />
-        </mesh>
-        {Array.from({ length: 14 }, (_, i) => {
-          const a = (i / 14) * Math.PI * 2;
-          return (
-            <mesh key={i} position={[Math.cos(a) * 0.17, 0.05 + H / 2, Math.sin(a) * 0.17]}>
-              <cylinderGeometry args={[0.005, 0.005, H, 4]} />
-              <meshStandardMaterial color={ouro} metalness={0.35} roughness={0.35} />
-            </mesh>
-          );
-        })}
-        {[0, 1, 2, 3].map((i) => (
-          <mesh key={`a${i}`} position={[0, 0.04 + H, 0]} rotation={[0, (i * Math.PI) / 4, 0]}>
-            <torusGeometry args={[0.17, 0.005, 6, 24, Math.PI]} />
-            <meshStandardMaterial color={ouro} metalness={0.35} roughness={0.35} />
-          </mesh>
-        ))}
-        <mesh position={[0, 0.04 + H, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[0.17, 0.006, 6, 28]} />
-          <meshStandardMaterial color={ouro} metalness={0.35} roughness={0.35} />
-        </mesh>
-        <mesh position={[0, 0.25 + H, 0]}>
-          <torusGeometry args={[0.035, 0.007, 6, 16]} />
-          <meshStandardMaterial color={ouro} metalness={0.35} roughness={0.35} />
-        </mesh>
-        {/* poleiro e potinho */}
-        <mesh position={[0, 0.15, 0]} rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.008, 0.008, 0.33, 6]} />
-          <meshStandardMaterial color="#8a5a32" />
-        </mesh>
-        <mesh position={[0.08, 0.07, 0.08]}>
-          <cylinderGeometry args={[0.035, 0.03, 0.04, 12]} />
-          <meshStandardMaterial color="#f4f4f2" />
-        </mesh>
-        {ave && <Passarinho e={ave} position={(ave.caido ?? 0) > 0.01 ? [0, 0.06, 0] : [0, 0.16, 0]} />}
       </group>
     </group>
   );
 };
 
-// Monte de pedras que os mineiros cavam.
-export const Monte = ({ seed = 0, ...g }: G & { seed?: number }) => (
-  <group {...g}>
-    {Array.from({ length: 7 }, (_, i) => (
-      <mesh key={i} position={[(rand(i + seed * 9) - 0.5) * 0.6, 0.08 + (i > 4 ? 0.18 : 0), (rand(i + 3 + seed * 9) - 0.5) * 0.5]} scale={[1, 0.75, 1]} castShadow receiveShadow>
-        <dodecahedronGeometry args={[0.16 + rand(i + 5 + seed) * 0.1, 0]} />
-        <meshStandardMaterial color={i % 2 ? '#8a5a3a' : '#a8724a'} roughness={0.9} flatShading />
-      </mesh>
-    ))}
-  </group>
-);
-
-// Picareta (na mão: o cabo continua o antebraço, eixo -Y).
-export const Picareta = (g: G) => (
-  <group {...g}>
-    <mesh position={[0, -0.25, 0]} castShadow>
-      <cylinderGeometry args={[0.02, 0.022, 0.6, 8]} />
-      <meshStandardMaterial color="#8a5a32" roughness={0.7} />
-    </mesh>
-    <mesh position={[0, -0.53, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow>
-      <cylinderGeometry args={[0.025, 0.006, 0.5, 8]} />
-      <meshStandardMaterial color="#8a8f96" metalness={0.7} roughness={0.35} />
-    </mesh>
-  </group>
-);
-
-// Notas musicais subindo (assobio / canto). Função pura de t; `forca` 0..1 some com elas.
-export const Notas = ({ t, position, forca = 1, size = 0.18 }: { t: number; position: V3; forca?: number; size?: number }) => {
-  if (forca <= 0.01) return null;
+// ---------- Ônibus (rodas giram na proporção da distância) e ponto ----------
+export const Onibus = ({ x = 0, z = 0, cor = '#f2b632' }: { x?: number; z?: number; cor?: string }) => {
+  const giro = -x / 0.45;
   return (
-    <>
-      {[0, 1, 2].map((i) => {
-        const k = (((t * 0.7 + i / 3) % 1) + 1) % 1;
-        const s = size * Math.sin(Math.PI * k) * forca;
-        return (
-          <sprite key={i} position={[position[0] + Math.sin(k * 5 + i) * 0.15 + (i - 1) * 0.12, position[1] + k * 0.6, position[2]]} scale={[s * 2, s, 1]}>
-            <spriteMaterial map={comicTex('♪', '#fff2a8')} transparent depthWrite={false} />
-          </sprite>
-        );
-      })}
-    </>
-  );
-};
-
-// Gás: nuvem verde que avança a partir de `from` ao longo de -Z → +Z (ou parada, com `fixo`).
-export const Gas = ({ t, from, center = [0, 0.8, -6] as V3, area = [4, 1.6, 8] as V3, n = 40, avanca = 2 }: { t: number; from: number; center?: V3; area?: V3; n?: number; avanca?: number }) => {
-  const k = clamp01((t - from) / 1.2);
-  if (k <= 0) return null;
-  return (
-    <>
-      {Array.from({ length: n }, (_, i) => {
-        const s = (0.35 + rand(i) * 0.5) * k * (1 + 0.1 * Math.sin(t * 1.5 + i));
-        return (
-          <mesh
-            key={i}
-            position={[center[0] + (rand(i + 1) - 0.5) * area[0] + Math.sin(t * 0.7 + i) * 0.2, center[1] + (rand(i + 2) - 0.5) * area[1], center[2] + (rand(i + 3) - 0.5) * area[2] + (t - from) * avanca * 0.3]}
-            scale={s}
-          >
-            <sphereGeometry args={[1, 10, 8]} />
-            <meshStandardMaterial color="#7fe05a" emissive="#3a9a2a" emissiveIntensity={0.5} transparent opacity={0.22} depthWrite={false} />
-          </mesh>
-        );
-      })}
-    </>
-  );
-};
-
-// ============================================================================
-// CENÁRIOS
-// ============================================================================
-
-// Túnel da mina ao longo de -Z: trilhos no meio (x = 0.7), quadros de madeira a cada 2,5 m,
-// paredes de rocha em x = ±2.6, teto em y = 3.4. `lamp` 0..1 = força das lamparinas.
-const QUADROS = [2.5, 0, -2.5, -5, -7.5, -10, -12.5, -15, -17.5, -20, -22.5, -25];
-export const Tunel = ({ t, clima = 'mina' as Clima, lamp = 1, perigo = false }: { t: number; clima?: Clima; lamp?: number; perigo?: boolean }) => (
-  <group>
-    <Luz clima={clima} fog={clima === 'mina' ? [9, 30] : [6, 22]} />
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -10]} receiveShadow>
-      <planeGeometry args={[6, 40]} />
-      <meshStandardMaterial map={terraTex()} roughness={1} />
-    </mesh>
-    {/* trilhos */}
-    {[0.42, 0.98].map((x) => (
-      <Box key={x} p={[x, 0.06, -10]} s={[0.06, 0.06, 40]} c="#4a4a52" r={0.35} />
-    ))}
-    {Array.from({ length: 50 }, (_, i) => (
-      <Box key={i} p={[0.7, 0.025, 8 - i * 0.8]} s={[0.95, 0.05, 0.16]} c="#6b4426" />
-    ))}
-    {/* paredes e teto */}
-    {[-2.6, 2.6].map((x) => (
-      <Box key={x} p={[x, 1.7, -10]} s={[0.4, 3.4, 40]} c="#ffffff" map={rochaTex()} r={0.95} />
-    ))}
-    <Box p={[0, 3.5, -10]} s={[6, 0.2, 40]} c="#2a1a10" />
-    {QUADROS.map((z) => (
-      <group key={z}>
-        {[-2.2, 2.2].map((x) => (
-          <Box key={x} p={[x, 1.6, z]} s={[0.22, 3.2, 0.22]} c="#8a5a32" />
-        ))}
-        <Box p={[0, 3.25, z]} s={[4.8, 0.26, 0.28]} c="#7a4a26" />
-        <Lamparina t={t} position={[-1.85, 2.6, z + 0.2]} forca={lamp} />
-      </group>
-    ))}
-    {/* barris, caixas, pedras */}
-    <mesh position={[-1.7, 0.4, -3.5]} castShadow>
-      <cylinderGeometry args={[0.3, 0.3, 0.8, 16]} />
-      <meshStandardMaterial color="#8a5a32" />
-    </mesh>
-    <Box p={[1.85, 0.3, -6.4]} s={[0.6, 0.6, 0.6]} c="#9a6b3e" />
-    <Box p={[1.8, 0.25, -11]} s={[0.5, 0.5, 0.5]} c="#9a6b3e" />
-    {Array.from({ length: 10 }, (_, i) => (
-      <mesh key={i} position={[(rand(i) - 0.5) * 4, 0.06, -rand(i + 1) * 20]} scale={[1, 0.6, 1]}>
-        <sphereGeometry args={[0.08 + rand(i + 2) * 0.1, 8, 6]} />
-        <meshStandardMaterial color="#5a3a22" />
-      </mesh>
-    ))}
-    {/* carrinho de mina */}
-    <group position={[0.7, 0, -8.5]}>
-      <Box p={[0, 0.5, 0]} s={[0.8, 0.5, 1.1]} c="#5a5a62" r={0.4} />
-      {[[-0.32, -0.35], [0.32, -0.35], [-0.32, 0.35], [0.32, 0.35]].map(([x, z]) => (
-        <mesh key={`${x}${z}`} position={[x, 0.18, z]} rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.13, 0.13, 0.06, 14]} />
-          <meshStandardMaterial color="#2a2a2e" />
+    <group position={[x, 0, z]}>
+      <Box p={[0, 1.55, 0]} s={[6, 2.4, 2.2]} c={cor} r={0.45} />
+      <Box p={[0, 0.5, 0]} s={[6, 0.3, 2.2]} c="#2a2c34" />
+      <Box p={[0, 2.82, 0]} s={[5.6, 0.15, 2.0]} c="#e8e4da" />
+      {[-2.2, -1.1, 0, 1.1].map((xx) => (
+        <mesh key={xx} position={[xx, 1.95, 1.11]}>
+          <planeGeometry args={[0.95, 0.85]} />
+          <meshStandardMaterial color="#8fc8ee" roughness={0.1} metalness={0.2} />
         </mesh>
       ))}
-      <mesh position={[0, 0.8, 0]} scale={[1, 0.4, 1]}>
-        <sphereGeometry args={[0.38, 12, 8]} />
-        <meshStandardMaterial color="#3a2a1e" />
+      <mesh position={[2.4, 1.6, 1.11]}>
+        <planeGeometry args={[0.8, 1.9]} />
+        <meshStandardMaterial color="#5a6272" />
+      </mesh>
+      <mesh position={[3.01, 1.95, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <planeGeometry args={[1.9, 0.9]} />
+        <meshStandardMaterial color="#8fc8ee" roughness={0.1} />
+      </mesh>
+      <Box p={[0, 1.2, 1.11]} s={[6, 0.18, 0.02]} c="#2f6fb3" />
+      {[-2, 2].map((xx) =>
+        [-1.1, 1.1].map((zz) => (
+          <group key={`${xx}${zz}`} position={[xx, 0.45, zz]} rotation={[0, 0, giro]}>
+            <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
+              <cylinderGeometry args={[0.45, 0.45, 0.3, 24]} />
+              <Std c="#1e1f24" />
+            </mesh>
+            <Box p={[0, 0, zz > 0 ? 0.16 : -0.16]} s={[0.5, 0.1, 0.02]} c="#b9c0c8" />
+          </group>
+        )),
+      )}
+    </group>
+  );
+};
+
+export const PontoOnibus = ({ ...g }: G) => (
+  <group {...g}>
+    <Box p={[0, 1.4, 0]} s={[0.08, 2.8, 0.08]} c="#4a4a52" />
+    <group position={[0, 2.85, 0]}>
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.38, 0.38, 0.06, 32]} />
+        <Std c="#2f6fb3" />
+      </mesh>
+      <mesh position={[0, 0, 0.035]}>
+        <circleGeometry args={[0.34, 32]} />
+        <meshBasicMaterial map={labelTex('PONTO', { w: 512, h: 512, bg: '#2f6fb3', fg: '#ffffff', radius: 256 })} toneMapped={false} />
       </mesh>
     </group>
-    {/* frente de escavação no fundo */}
-    <Box p={[0, 1.7, -26]} s={[5, 3.4, 0.5]} c="#ffffff" map={rochaTex()} />
-    {perigo && <Sign text="PERIGO" w={1.3} h={0.35} position={[0, 2.85, -9.8]} bg="#b3241e" fg="#ffffff" />}
+    <Box p={[1.2, 2.3, -0.5]} s={[2.4, 0.08, 1.2]} c="#c9d2da" />
+    <Box p={[1.2, 1.15, -1.05]} s={[2.4, 2.3, 0.05]} c="#a8d0e8" r={0.1} />
+    <Box p={[1.2, 0.5, -0.8]} s={[2.0, 0.08, 0.4]} c="#a8683a" />
   </group>
 );
 
-// Entrada da mina vista de fora (dia): encosta de rocha, portal de madeira com placa MINA, trilhos saindo.
-export const Entrada = () => (
-  <group>
-    <Luz clima="dia" fog={[25, 80]} />
-    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-      <planeGeometry args={[120, 120]} />
-      <meshStandardMaterial color="#e2c08a" roughness={1} />
+// ---------- Cérebro (com rostinho), cronômetro e ícones ----------
+export const Cerebro = ({ ...g }: G) => (
+  <group {...g}>
+    {Array.from({ length: 14 }, (_, i) => {
+      const a = (i / 14) * Math.PI * 2;
+      return (
+        <mesh key={i} position={[Math.cos(a) * 0.55, 0.1 + Math.sin(i * 1.7) * 0.25, Math.sin(a) * 0.4]} scale={[1, 0.8, 1]} castShadow>
+          <sphereGeometry args={[0.38, 18, 14]} />
+          <Std c={i % 2 ? '#f29ab8' : '#f5aac4'} r={0.55} />
+        </mesh>
+      );
+    })}
+    <mesh scale={[1.3, 0.95, 1]}>
+      <sphereGeometry args={[0.6, 24, 18]} />
+      <Std c="#f5aac4" r={0.55} />
     </mesh>
-    {/* encosta */}
-    <mesh position={[0, 0, -9]} scale={[2.2, 1, 1]} castShadow receiveShadow>
-      <sphereGeometry args={[7, 32, 20, 0, Math.PI * 2, 0, Math.PI / 2]} />
-      <meshStandardMaterial map={rochaTex()} color="#e8b88a" roughness={0.95} />
+    {[-0.22, 0.22].map((x) => (
+      <group key={x} position={[x, 0.05, 0.66]}>
+        <mesh scale={[1, 1.25, 0.6]}>
+          <sphereGeometry args={[0.1, 14, 12]} />
+          <Std c="#ffffff" />
+        </mesh>
+        <mesh position={[0, -0.01, 0.06]}>
+          <sphereGeometry args={[0.05, 12, 10]} />
+          <Std c="#1a1a1a" />
+        </mesh>
+      </group>
+    ))}
+    <mesh position={[0, -0.2, 0.66]} rotation={[0, 0, Math.PI]}>
+      <torusGeometry args={[0.1, 0.022, 8, 20, Math.PI]} />
+      <Std c="#7a2a3a" />
     </mesh>
-    {/* boca escura */}
-    <Box p={[0, 1.5, -2.7]} s={[2.6, 3.0, 0.5]} c="#120a06" />
-    {/* portal */}
-    {[-1.45, 1.45].map((x) => (
-      <Box key={x} p={[x, 1.65, -2.4]} s={[0.3, 3.3, 0.3]} c="#9a6436" />
-    ))}
-    <Box p={[0, 3.35, -2.4]} s={[3.5, 0.32, 0.35]} c="#8a5a32" />
-    {[-1, 1].map((s) => (
-      <Box key={s} p={[s * 1.15, 3.0, -2.25]} s={[0.6, 0.12, 0.12]} c="#8a5a32" />
-    ))}
-    <Sign text="MINA" w={1.9} h={0.55} position={[0, 3.95, -2.35]} bg="#c88a3e" fg="#3a2210" />
-    {/* trilhos saindo */}
-    {[0.42, 0.98].map((x) => (
-      <Box key={x} p={[x - 0.7, 0.06, 4]} s={[0.06, 0.06, 14]} c="#4a4a52" />
-    ))}
-    {Array.from({ length: 18 }, (_, i) => (
-      <Box key={i} p={[0, 0.025, -2.4 + i * 0.8]} s={[0.95, 0.05, 0.16]} c="#6b4426" />
-    ))}
-    {/* caixas, barris, placa verde */}
-    <Box p={[-2.6, 0.35, -1.2]} s={[0.7, 0.7, 0.7]} c="#9a6b3e" />
-    <Box p={[-3.2, 0.3, -0.6]} s={[0.6, 0.6, 0.6]} c="#a87444" />
-    {[[2.6, -1.0], [3.2, -0.4]].map(([x, z], i) => (
-      <mesh key={i} position={[x, 0.4, z]} castShadow>
-        <cylinderGeometry args={[0.3, 0.3, 0.8, 16]} />
-        <meshStandardMaterial color="#8a5a32" />
+    <mesh position={[0, -0.75, 0]}>
+      <cylinderGeometry args={[0.12, 0.18, 0.4, 16]} />
+      <Std c="#e889a8" />
+    </mesh>
+  </group>
+);
+
+export const Cronometro = ({ t = 0, ...g }: G & { t?: number }) => {
+  const s = t * 6;
+  return (
+    <group {...g}>
+      <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
+        <cylinderGeometry args={[0.6, 0.6, 0.22, 40]} />
+        <Std c="#b9c0c8" m={0.5} r={0.3} />
       </mesh>
-    ))}
-    {/* nuvens */}
-    {[[-8, 14, -40], [10, 17, -50], [0, 20, -60]].map(([x, y, z], i) => (
-      <group key={i} position={[x, y, z]}>
-        {[0, 1.6, -1.6].map((dx) => (
-          <mesh key={dx} position={[dx, 0, 0]} scale={[1.4, 0.8, 1]}>
-            <sphereGeometry args={[1.6, 14, 10]} />
-            <meshStandardMaterial color="#ffffff" fog={false} />
+      <mesh position={[0, 0, 0.112]}>
+        <circleGeometry args={[0.52, 40]} />
+        <Std c="#fbfaf5" />
+      </mesh>
+      {Array.from({ length: 12 }, (_, i) => {
+        const a = (i / 12) * Math.PI * 2;
+        return <Box key={i} p={[Math.sin(a) * 0.44, Math.cos(a) * 0.44, 0.115]} s={[0.03, 0.07, 0.005]} c="#22252b" />;
+      })}
+      <mesh position={[Math.sin(s) * 0.2, Math.cos(s) * 0.2, 0.12]} rotation={[0, 0, -s]}>
+        <boxGeometry args={[0.025, 0.42, 0.01]} />
+        <Std c="#d8322c" />
+      </mesh>
+      <Box p={[0, 0.72, 0]} s={[0.14, 0.18, 0.14]} c="#9aa0a8" />
+      <mesh position={[0, 0.86, 0]}>
+        <torusGeometry args={[0.12, 0.03, 8, 20]} />
+        <Std c="#9aa0a8" m={0.5} />
+      </mesh>
+    </group>
+  );
+};
+
+// X vermelho que carimba na palavra.
+export const XVermelho = ({ t, at, ...g }: G & { t: number; at: number }) => {
+  const k = seg(t, at - 3 * F, at + 2 * F, back);
+  if (k <= 0.001) return null;
+  return (
+    <group {...g}>
+      <group scale={k}>
+        {[1, -1].map((s) => (
+          <mesh key={s} rotation={[0, 0, s * 0.78]}>
+            <boxGeometry args={[1.5, 0.2, 0.05]} />
+            <Std c="#e02a2a" />
           </mesh>
         ))}
       </group>
-    ))}
+    </group>
+  );
+};
+
+const salto = (t: number, at: number) => seg(t, at - 3 * F, at + 3 * F, back);
+export const IconeOlho = ({ t, at, ...g }: G & { t: number; at: number }) => {
+  const k = salto(t, at);
+  if (k <= 0.001) return null;
+  return (
+    <group {...g}>
+      <group scale={k}>
+        <mesh scale={[1, 0.6, 0.4]}>
+          <sphereGeometry args={[0.45, 24, 16]} />
+          <Std c="#ffffff" />
+        </mesh>
+        <mesh position={[0, 0, 0.16]}>
+          <sphereGeometry args={[0.18, 16, 12]} />
+          <Std c="#3a86d8" />
+        </mesh>
+        <mesh position={[0, 0, 0.27]}>
+          <sphereGeometry args={[0.09, 12, 10]} />
+          <Std c="#111" />
+        </mesh>
+      </group>
+    </group>
+  );
+};
+export const IconeCoracao = ({ t, at, ...g }: G & { t: number; at: number }) => {
+  const k = salto(t, at) * (1 + 0.08 * Math.max(0, Math.sin((t - at) * 9)));
+  if (k <= 0.001) return null;
+  return (
+    <group {...g}>
+      <group scale={k}>
+        {[-0.17, 0.17].map((x) => (
+          <mesh key={x} position={[x, 0.1, 0]}>
+            <sphereGeometry args={[0.24, 20, 16]} />
+            <Std c="#e8364c" r={0.4} />
+          </mesh>
+        ))}
+        <mesh position={[0, -0.16, 0]} rotation={[0, 0, Math.PI]}>
+          <coneGeometry args={[0.38, 0.48, 24]} />
+          <Std c="#e8364c" r={0.4} />
+        </mesh>
+      </group>
+    </group>
+  );
+};
+export const IconeFoto = ({ t, at, ...g }: G & { t: number; at: number }) => {
+  const k = salto(t, at);
+  if (k <= 0.001) return null;
+  const tex = canvasTex('foto-memoria', 256, 256, (c) => {
+    c.fillStyle = '#8fc8ee';
+    c.fillRect(0, 0, 256, 256);
+    c.fillStyle = '#ffd23a';
+    c.beginPath();
+    c.arc(190, 70, 30, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = '#4fa346';
+    c.beginPath();
+    c.moveTo(0, 256);
+    c.lineTo(90, 120);
+    c.lineTo(170, 256);
+    c.fill();
+    c.fillStyle = '#3f8a3a';
+    c.beginPath();
+    c.moveTo(110, 256);
+    c.lineTo(190, 150);
+    c.lineTo(256, 256);
+    c.fill();
+  });
+  return (
+    <group {...g}>
+      <group scale={k} rotation={[0, 0, 0.12]}>
+        <Box p={[0, -0.05, 0]} s={[0.75, 0.88, 0.03]} c="#fbfaf5" />
+        <mesh position={[0, 0.03, 0.017]}>
+          <planeGeometry args={[0.63, 0.6]} />
+          <meshStandardMaterial map={tex} />
+        </mesh>
+      </group>
+    </group>
+  );
+};
+
+// ---------- Relógio biológico: disco dia/noite (sol e lua) que gira ----------
+export const CicloDiaNoite = ({ giro = 0, ...g }: G & { giro?: number }) => {
+  const tex = canvasTex('dia-noite', 512, 512, (c) => {
+    c.fillStyle = '#8fd0f5';
+    c.beginPath();
+    c.moveTo(256, 256);
+    c.arc(256, 256, 250, Math.PI, 0);
+    c.fill();
+    c.fillStyle = '#1e2a5a';
+    c.beginPath();
+    c.moveTo(256, 256);
+    c.arc(256, 256, 250, 0, Math.PI);
+    c.fill();
+    c.fillStyle = '#ffd23a';
+    c.beginPath();
+    c.arc(256, 110, 60, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = '#fff3c8';
+    c.beginPath();
+    c.arc(256, 400, 52, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = '#1e2a5a';
+    c.beginPath();
+    c.arc(280, 385, 46, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = '#ffffff';
+    for (let i = 0; i < 14; i++) c.fillRect(60 + rand(i) * 380, 300 + rand(i + 1) * 170, 5, 5);
+  });
+  return (
+    <group {...g}>
+      <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
+        <cylinderGeometry args={[1.12, 1.12, 0.14, 48]} />
+        <Std c="#2a2c34" />
+      </mesh>
+      <mesh position={[0, 0, 0.071]} rotation={[0, 0, giro]}>
+        <circleGeometry args={[1.02, 48]} />
+        <meshBasicMaterial map={tex} toneMapped={false} />
+      </mesh>
+      <mesh position={[0, 1.2, 0.1]} rotation={[0, 0, Math.PI]}>
+        <coneGeometry args={[0.12, 0.22, 3]} />
+        <Std c="#c8352f" />
+      </mesh>
+    </group>
+  );
+};
+
+// ---------- Despertador que toca a partir de `toca` ----------
+export const Despertador = ({ t = 0, toca = 999, cor = '#c8352f', semente = 0, ...g }: G & { t?: number; toca?: number; cor?: string; semente?: number }) => {
+  const on = t >= toca;
+  const tr = on ? Math.sin(t * 55 + semente * 7) * 0.12 : 0;
+  return (
+    <group {...g}>
+      <group rotation={[0, 0, tr]}>
+        <mesh position={[0, 0.32, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+          <cylinderGeometry args={[0.26, 0.26, 0.14, 28]} />
+          <Std c={cor} r={0.35} />
+        </mesh>
+        <mesh position={[0, 0.32, 0.071]}>
+          <circleGeometry args={[0.21, 28]} />
+          <Std c="#fbfaf5" />
+        </mesh>
+        <Box p={[0.0, 0.37, 0.075]} s={[0.025, 0.12, 0.005]} c="#22252b" />
+        <Box p={[0.04, 0.32, 0.075]} s={[0.1, 0.025, 0.005]} c="#22252b" />
+        {[-1, 1].map((s) => (
+          <mesh key={s} position={[s * 0.17, 0.58, 0]} rotation={[0, 0, -s * 0.5]}>
+            <sphereGeometry args={[0.1, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2]} />
+            <Std c="#e2b23a" m={0.4} r={0.3} />
+          </mesh>
+        ))}
+        {[-1, 1].map((s) => (
+          <Box key={`p${s}`} p={[s * 0.16, 0.08, 0]} s={[0.04, 0.16, 0.04]} c="#2a2c34" />
+        ))}
+      </group>
+      {on && Math.sin(t * 8 + semente) > -0.3 && (
+        <sprite position={[0.3, 0.85, 0]} scale={[0.5, 0.25, 1]}>
+          <spriteMaterial map={comicTex('TRIM!', '#ffd23a')} transparent depthWrite={false} />
+        </sprite>
+      )}
+    </group>
+  );
+};
+
+// ---------- Jaula que cai (a "armadilha") ----------
+export const Jaula = ({ y = 0, ...g }: G & { y?: number }) => (
+  <group {...g}>
+    <group position={[0, y, 0]}>
+      <mesh position={[0, 2.95, 0]}>
+        <cylinderGeometry args={[1.0, 1.0, 0.12, 32]} />
+        <Std c="#4a4a52" m={0.5} r={0.35} />
+      </mesh>
+      <mesh position={[0, 0.03, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.98, 0.05, 8, 32]} />
+        <Std c="#4a4a52" m={0.5} r={0.35} />
+      </mesh>
+      {Array.from({ length: 16 }, (_, i) => {
+        const a = (i / 16) * Math.PI * 2;
+        return (
+          <mesh key={i} position={[Math.cos(a) * 0.98, 1.48, Math.sin(a) * 0.98]}>
+            <cylinderGeometry args={[0.03, 0.03, 2.95, 8]} />
+            <Std c="#5a5a62" m={0.5} r={0.35} />
+          </mesh>
+        );
+      })}
+    </group>
   </group>
 );
 
-// Corte da mina (como um diagrama): bloco de terra em camadas com o túnel aberto na frente.
-// Túnel de x = -4.5 a 4.5, chão em y = 0, teto em y = 2.6, frente em z = 0.
-export const Corte = ({ t, clima = 'mina' as Clima, lamp = 1 }: { t: number; clima?: Clima; lamp?: number }) => (
-  <group>
-    <Luz clima={clima} fog={[30, 70]} />
-    <directionalLight position={[1, 3, 10]} intensity={clima === 'mina' ? 1.1 : 0.9} color={clima === 'mina' ? '#ffe2b8' : '#b8c8ff'} />
-    {/* camadas de terra em volta do túnel */}
-    <Box p={[0, -1.6, -1]} s={[14, 3.2, 2.2]} c="#a8693a" />
-    <Box p={[0, 4.6, -1]} s={[14, 4, 2.2]} c="#b8784a" />
-    <Box p={[-5.75, 1.3, -1]} s={[2.5, 2.6, 2.2]} c="#b8784a" />
-    <Box p={[5.75, 1.3, -1]} s={[2.5, 2.6, 2.2]} c="#b8784a" />
-    {[-0.6, 3.1, 5.4].map((y, i) => (
-      <Box key={y} p={[0, y, 0.11]} s={[14, 0.12, 0.02]} c={['#8a5230', '#c88a56', '#d89a62'][i]} />
-    ))}
-    {/* superfície com grama e céu */}
-    <Box p={[0, 6.7, -1]} s={[14, 0.2, 2.2]} c="#7fae4a" />
-    {/* fundo do túnel */}
-    <Box p={[0, 1.3, -2]} s={[9, 2.6, 0.2]} c="#5a3418" map={rochaTex()} />
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, -1]} receiveShadow>
-      <planeGeometry args={[9, 2.2]} />
-      <meshStandardMaterial map={terraTex()} />
-    </mesh>
-    {[-4.2, -1.4, 1.4, 4.2].map((x) => (
-      <group key={x}>
-        <Box p={[x, 1.3, -1.6]} s={[0.16, 2.6, 0.16]} c="#8a5a32" />
-        <Lamparina t={t} position={[x + 0.3, 2.2, -1.5]} forca={lamp} />
-      </group>
-    ))}
-    <Box p={[0, 2.5, -1.6]} s={[9, 0.18, 0.2]} c="#7a4a26" />
-    {/* pedrinhas na terra */}
-    {Array.from({ length: 24 }, (_, i) => (
-      <mesh key={i} position={[(rand(i) - 0.5) * 13, rand(i + 1) > 0.5 ? -0.3 - rand(i + 2) * 2.5 : 2.9 + rand(i + 2) * 3, 0.12]} scale={[1, 0.7, 0.3]}>
-        <sphereGeometry args={[0.09 + rand(i + 3) * 0.08, 8, 6]} />
-        <meshStandardMaterial color="#d8d0c4" />
+// ---------- Botão de inscrição (genérico, sem marca) ----------
+export const BotaoInscreva = ({ aperta = 0, inscrito = false, ...g }: G & { aperta?: number; inscrito?: boolean }) => (
+  <group {...g}>
+    <Box p={[0, 0.1, 0]} s={[2.6, 0.2, 1.0]} c="#2a2c34" />
+    <group position={[0, 0.32 - 0.12 * aperta, 0]}>
+      <Box p={[0, 0, 0]} s={[2.4, 0.3, 0.85]} c={inscrito ? '#6a6f78' : '#e02a2a'} r={0.35} />
+      <mesh position={[0, 0, 0.43]}>
+        <planeGeometry args={[2.3, 0.28]} />
+        <meshBasicMaterial map={labelTex(inscrito ? 'INSCRITO ✓' : 'INSCREVA-SE', { w: 1024, h: 125, bg: inscrito ? '#6a6f78' : '#e02a2a', fg: '#ffffff', radius: 8 })} toneMapped={false} />
       </mesh>
-    ))}
+    </group>
+  </group>
+);
+
+// ---------- Cama ----------
+export const Cama = ({ ...g }: G) => (
+  <group {...g}>
+    <Box p={[0, 0.25, 0]} s={[1.2, 0.2, 2.3]} c="#7a4a26" />
+    <Box p={[0, 0.45, 0]} s={[1.12, 0.2, 2.2]} c="#f4f1e8" />
+    <Box p={[0, 0.6, 0.35]} s={[1.14, 0.1, 1.4]} c="#3a5fa8" />
+    <Box p={[0, 0.62, -0.85]} s={[0.8, 0.14, 0.4]} c="#ffffff" />
+    <Box p={[0, 0.7, -1.15]} s={[1.2, 1.2, 0.12]} c="#7a4a26" />
+  </group>
+);
+export const DEITADO: V3 = [-Math.PI / 2, 0, 0];
+
+export const Zzz = ({ t, position, size = 0.35 }: { t: number; position: V3; size?: number }) => (
+  <>
+    {[0, 1, 2].map((i) => {
+      const k = (((t * 0.55 + i / 3) % 1) + 1) % 1;
+      const s = size * (0.5 + k * 0.7) * Math.sin(Math.PI * k);
+      return (
+        <sprite key={i} position={[position[0] + k * 0.4, position[1] + k * 0.9, position[2]]} scale={[s * 2, s, 1]}>
+          <spriteMaterial map={comicTex('Z', '#bfe3ff')} transparent depthWrite={false} />
+        </sprite>
+      );
+    })}
+  </>
+);
+
+// Tarefa (prancheta grande num pedestal).
+export const Tarefa = ({ texto = 'TAREFA\n5 MIN', ...g }: G & { texto?: string }) => (
+  <group {...g}>
+    <mesh position={[0, 0.5, 0]}>
+      <cylinderGeometry args={[0.06, 0.08, 1.0, 12]} />
+      <Std c="#4a4a52" />
+    </mesh>
+    <group position={[0, 1.25, 0]} rotation={[-0.15, 0, 0]}>
+      <Box p={[0, 0, 0]} s={[0.7, 0.9, 0.04]} c="#8a5a32" />
+      <mesh position={[0, -0.02, 0.022]}>
+        <planeGeometry args={[0.6, 0.76]} />
+        <meshStandardMaterial map={labelTex(texto, { w: 512, h: 648, bg: '#fafafa', fg: '#2a2a2e', radius: 10 })} />
+      </mesh>
+    </group>
   </group>
 );
