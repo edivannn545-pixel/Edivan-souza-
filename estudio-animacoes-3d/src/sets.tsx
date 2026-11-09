@@ -8,6 +8,9 @@ import { cobbleTex, crateTex, plasterTex, tileTex, windowsTex } from './textures
 // ---------- Câmera ----------
 // Nunca para: segue as chaves, avança ~5%/s, acelera para dentro do corte e chega no plano seguinte já em movimento.
 // fov é multiplicado por 1.6 porque no vertical 9:16 o fov do three é vertical.
+// Afastamento geral da câmera em todas as tomadas (1 = como foi escrito na tomada; 1.25 = 25% mais longe).
+// Preferência do dono do estúdio: personagens um pouco mais distantes, ocupando ~1/3 a 1/2 da altura do quadro.
+export const AFASTAMENTO = 1.25;
 export type CamKey = [number, V3, V3, number?, number?]; // tempo, posição, alvo, fov, giro (inclinação holandesa, rad)
 export const Cam = ({ t, t0, t1, keys }: { t: number; t0: number; t1: number; keys: CamKey[] }) => {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
@@ -23,7 +26,7 @@ export const Cam = ({ t, t0, t1, keys }: { t: number; t0: number; t1: number; ke
     const roll = (a[4] ?? 0) + ((b[4] ?? 0) - (a[4] ?? 0)) * k;
     const creep = 1 - 0.05 * Math.max(0, t - t0);
     const xin = clamp01((t - (t1 - 0.3)) / 0.5);
-    const f = creep * (1 - 0.14 * xin * xin) * (1 + 0.07 * Math.pow(1 - clamp01((t - t0) / 0.4), 2));
+    const f = AFASTAMENTO * creep * (1 - 0.14 * xin * xin) * (1 + 0.07 * Math.pow(1 - clamp01((t - t0) / 0.4), 2));
     camera.position.set(tgt[0] + (pos[0] - tgt[0]) * f, tgt[1] + (pos[1] - tgt[1]) * f, tgt[2] + (pos[2] - tgt[2]) * f);
     camera.lookAt(tgt[0], tgt[1], tgt[2]);
     if (roll) camera.rotateZ(roll);

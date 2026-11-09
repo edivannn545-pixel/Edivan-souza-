@@ -142,7 +142,9 @@ estas regras. Quando uma regra não puder ser cumprida, avise antes de seguir.
 - Nunca para totalmente e nunca treme: movimentos suaves (empurra, recua, órbita, grua, travelling) começando numa palavra.
 - Uma imagem nova a cada ~1–2 s (nova tomada ou mudança clara de enquadramento).
 - Tomadas se ligam com dissolução de 6 quadros começando na primeira palavra da frase nova.
-- O enquadramento mostra o que a narração diz **naquele momento**. Personagem ocupa de 1/3 a 2/3 da altura do quadro.
+- O enquadramento mostra o que a narração diz **naquele momento**. Personagem ocupa de **1/3 a 1/2** da altura do quadro
+  (preferência do dono: personagens um pouco mais distantes, com cenário visível em volta). A `Cam` já afasta tudo 25%
+  (`AFASTAMENTO` em `src/sets.tsx`); closes de rosto só nos momentos de choque.
 
 ## Narração e tempos
 - Roteiro em segunda pessoa, gancho na primeira frase, uma ideia visual por frase, ênfase com `*palavra*`.
