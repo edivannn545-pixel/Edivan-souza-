@@ -6,28 +6,23 @@ import { VOZ } from './voz.ts';
 export const FPS = 30;
 export const F = 1 / FPS;
 
-// Roteiro: "El Niño: a banheira do Pacífico" (narração gravada pelo próprio autor, igual a este texto).
+// Roteiro: "A batata na França de 1780" (narração gravada pelo próprio autor, igual a este texto).
 export const LINES = [
-  'Imagine o oceano *Pacífico* como uma imensa *banheira*.',
-  'Normalmente, os *ventos* empurram a água *quente* pela superfície, levando-a para o outro lado do oceano.',
-  'Perto da costa do *Peru*, a água *fria* que vem do fundo sobe até a superfície.',
-  'Ela traz *nutrientes* e ajuda a manter muitos *peixes* naquela região.',
-  'Mas, quando os ventos *enfraquecem*, esse equilíbrio pode *mudar*.',
-  'A água quente se *desloca* e o oceano já não funciona do mesmo jeito.',
-  'Com menos água fria subindo, os peixes podem *desaparecer* de algumas áreas,',
-  'e a vida de quem depende da *pesca* também pode ser afetada.',
-  'A mudança não fica só no *mar*.',
-  'O calor e a umidade alteram o caminho das *chuvas*.',
-  'Em alguns lugares, pode chover mais e causar *enchentes*.',
-  'Em outros, a *seca* pode se prolongar, os rios baixar e o calor *aumentar*.',
-  'Enquanto certas áreas da *América* do Sul enfrentam chuvas fortes,',
-  'regiões como a *Indonésia* e a *Austrália* podem passar por períodos mais secos, com maior risco de *incêndios*.',
-  'No *Brasil*, os efeitos podem variar de uma região para outra:',
-  'você pode ver mais *chuva* em alguns lugares e falta de *água* em outros.',
-  'Por isso, *cientistas* acompanham as temperaturas do oceano e os *ventos*.',
-  'O vídeo mostra uma *previsão* e um *alerta*, mas o impacto depende de onde você mora e de como o fenômeno se desenvolve.',
-  'Então, quando o *El Niño* chega, a pergunta não é apenas o que acontece no oceano.',
-  'É também: na sua cidade, você vai enfrentar *seca*, *enchente* ou *calorão*?',
+  'Você vive na *França* por volta de *mil* setecentos e oitenta.',
+  'A comida começa a *faltar*, e muita gente passa *fome*.',
+  'Mesmo assim, há *batatas* sobrando nos campos.',
+  'O problema é que quase *ninguém* quer comê-las.',
+  'Você ouve que elas fazem *mal* e que podem até causar *doenças*.',
+  'Um homem tenta convencer a população de que a batata é *nutritiva*, mas ninguém *acredita*.',
+  'Então ele procura o *rei* e recebe uma *missão*:',
+  'fazer o povo *aceitar* aquele alimento.',
+  'Com o apoio da *corte*, ele consegue um *terreno* e organiza uma *plantação*.',
+  'Durante o dia, *guardas* protegem as batatas como se fossem um *tesouro*.',
+  'Ao ver tanta *vigilância*, você começa a pensar que aquele alimento deve ter muito *valor*.',
+  'À *noite*, os guardas deixam o campo menos protegido, e as pessoas entram para *pegar* algumas batatas.',
+  'A estratégia dá *certo*:',
+  'você leva batatas para *casa*, planta mais e começa a *comê-las*.',
+  'Aos poucos, aquilo que muita gente *rejeitava* vira parte da *mesa* francesa.',
 ];
 
 export type Word = { text: string; key: string; stressed: boolean; t0: number; t1: number; line: number; i: number };

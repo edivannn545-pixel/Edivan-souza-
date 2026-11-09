@@ -49,7 +49,7 @@ export type Body = 'adulto' | 'magro' | 'forte' | 'crianca' | 'idoso' | 'baixo';
 export type HairStyle = 'curto' | 'liso' | 'longo' | 'coque' | 'crespo' | 'careca' | 'chanel' | 'rabo' | 'nenhum';
 export type Hat =
   | 'bone' | 'gorro' | 'policia' | 'chef' | 'capacete' | 'explorador' | 'astronauta' | 'cavaleiro'
-  | 'farao' | 'marinheiro' | 'piloto' | 'capuz' | 'boina' | 'touca';
+  | 'farao' | 'marinheiro' | 'piloto' | 'capuz' | 'boina' | 'touca' | 'coroa' | 'bicorne' | 'cartola';
 export type Pattern = 'liso' | 'listras' | 'xadrez' | 'florido' | 'acolchoado';
 
 export type Look = {
@@ -410,6 +410,73 @@ const HatMesh = ({ look }: { look: Look }) => {
               <Mat color="#ffffff" map={patternTex('listras', '#2b56a8', '#e8b931', true)} />
             </mesh>
           ))}
+        </>
+      );
+    case 'coroa':
+      return (
+        <group position={[0, 0.36, -0.02]}>
+          <mesh castShadow>
+            <cylinderGeometry args={[0.4, 0.42, 0.16, 32, 1, true]} />
+            <Mat color="#e8b931" metal side={THREE.DoubleSide} />
+          </mesh>
+          {Array.from({ length: 8 }, (_, i) => {
+            const a = (i / 8) * Math.PI * 2;
+            return (
+              <group key={i}>
+                <mesh position={[Math.sin(a) * 0.4, 0.15, Math.cos(a) * 0.4]} castShadow>
+                  <coneGeometry args={[0.07, 0.18, 6]} />
+                  <Mat color="#e8b931" metal />
+                </mesh>
+                <mesh position={[Math.sin(a) * 0.42, 0.0, Math.cos(a) * 0.42]}>
+                  <sphereGeometry args={[0.035, 10, 8]} />
+                  <Mat color={i % 2 ? '#c8102e' : '#2b56a8'} />
+                </mesh>
+              </group>
+            );
+          })}
+          <mesh position={[0, -0.02, 0]} scale={[1, 0.35, 1]}>
+            <sphereGeometry args={[0.38, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2]} />
+            <Mat color={c} />
+          </mesh>
+        </group>
+      );
+    case 'bicorne':
+      return (
+        <group position={[0, 0.4, -0.04]}>
+          <mesh rotation={[0, 0, Math.PI / 2]} scale={[0.7, 1, 0.32]} castShadow>
+            <cylinderGeometry args={[0.36, 0.36, 1.1, 32, 1, false, 0, Math.PI]} />
+            <Mat color={c} side={THREE.DoubleSide} />
+          </mesh>
+          <mesh position={[0, -0.02, 0]} scale={[1.1, 0.25, 0.75]}>
+            <sphereGeometry args={[0.46, 24, 12]} />
+            <Mat color={c} />
+          </mesh>
+          <mesh position={[0.28, 0.12, 0.16]} rotation={[0.2, 0, 0]}>
+            <cylinderGeometry args={[0.08, 0.08, 0.02, 20]} />
+            <Mat color="#c8102e" />
+          </mesh>
+          <mesh position={[0.28, 0.12, 0.17]} rotation={[0.2, 0, 0]}>
+            <cylinderGeometry args={[0.05, 0.05, 0.022, 20]} />
+            <Mat color="#ffffff" />
+          </mesh>
+          <mesh position={[0.28, 0.12, 0.175]} rotation={[0.2, 0, 0]}>
+            <cylinderGeometry args={[0.025, 0.025, 0.024, 16]} />
+            <Mat color="#2b56a8" />
+          </mesh>
+        </group>
+      );
+    case 'cartola':
+      return (
+        <>
+          <mesh position={[0, 0.62, -0.02]} castShadow>
+            <cylinderGeometry args={[0.36, 0.34, 0.6, 32]} />
+            <Mat color={c} />
+          </mesh>
+          <mesh position={[0, 0.4, -0.02]}>
+            <cylinderGeometry args={[0.345, 0.345, 0.08, 32]} />
+            <Mat color="#8a1a24" />
+          </mesh>
+          {brim(0.58, c, 0.33)}
         </>
       );
     case 'capuz':

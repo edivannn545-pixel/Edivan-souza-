@@ -5,6 +5,7 @@ import { AbsoluteFill } from 'remotion';
 import * as THREE from 'three';
 import { Character, REST } from './Character';
 import { ELENCO, Membro, NOVOS, ROUPAS } from './personagens';
+import { ELENCO_BATATAS } from './batatas';
 import { tileTex } from './textures';
 
 // Folha do elenco (1920x1760): mostra todos os personagens e roupas prontos para usar.
@@ -117,6 +118,22 @@ export const ElencoNovos = () => {
       </div>
       <Cartoes membros={novos.slice(0, 10)} w={1840} h={500} />
       {novos.length > 10 && <Cartoes membros={novos.slice(10, 20)} w={1840} h={500} />}
+    </AbsoluteFill>
+  );
+};
+
+// Elenco da história da batata (node tools/elenco.mjs Batatas -> out/batatas.png).
+export const ElencoBatatas = () => {
+  const m = Object.values(ELENCO_BATATAS) as Membro[];
+  return (
+    <AbsoluteFill style={{ background: PAGE, padding: '44px 40px', display: 'flex', flexDirection: 'column', gap: 26 }}>
+      <div>
+        <div style={{ fontFamily: 'Arial, sans-serif', fontSize: 22, letterSpacing: 4, color: '#6b6b6b', fontWeight: 700 }}>A BATATA NA FRANÇA DE 1780</div>
+        <div style={{ fontFamily: 'Arial Black, sans-serif', fontWeight: 900, fontSize: 80, color: '#141414', lineHeight: 1 }}>
+          O <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontWeight: 400 }}>elenco.</span>
+        </div>
+      </div>
+      <Cartoes membros={m} w={1840} h={560} />
     </AbsoluteFill>
   );
 };

@@ -7,6 +7,8 @@ import { Boat, BrazilMap, Buoy, Anemometer, DryLand, PacificMap, RainCloud, Scre
 import { NeonStreet, PachinkoFront, PachinkoHall, PrizeCounter, WindowShop } from './historia';
 import { Cam, Room, Stage, Street, Warehouse } from './sets';
 import { NOVOS_CENARIOS } from './cenarios2';
+import { CampoBatatas, CasaCamponesa, ELENCO_BATATAS as EB, SalaDoTrono, Spear, Vila } from './batatas';
+import { Character, REST } from './Character';
 
 // Catálogo de cenários do estúdio (node tools/cenarios.mjs -> out/cenarios.png).
 type C = { nome: string; C: (p: { t: number }) => JSX.Element };
@@ -69,6 +71,17 @@ for (const n of NOVOS_CENARIOS) {
   const Comp = n.C;
   CENARIOS.push({ nome: n.nome, C: ({ t }) => (<><Comp t={t} />{cam(t, n.cam[0], n.cam[1])}</>) });
 }
+
+// Cenários da história da batata (índices 48 a 53), já com os personagens para aprovação.
+const face = (f: string) => ({ f, blink: 0, o: [] }) as never;
+CENARIOS.push(
+  { nome: 'Vila francesa (1780)', C: ({ t }) => (<><Vila t={t} /><Character pose={{ ...REST, x: -0.5, z: 0.6, ry: 0.2 }} face={face('worried')} look={EB.voce.look} /><Character pose={{ ...REST, x: 0.8, z: 0.2, ry: -0.3 }} face={face('suspicious')} look={EB.aldea.look} />{cam(t, [0.1, 2.3, 7.2], [0.1, 1.8, -1])}</>) },
+  { nome: 'Casa camponesa', C: ({ t }) => (<><CasaCamponesa t={t} /><Character pose={{ ...REST, x: -0.4, z: -1.5, y: 0 }} face={face('tired')} look={EB.voce.look} />{cam(t, [0.2, 2.0, 4.6], [0.2, 1.2, -1])}</>) },
+  { nome: 'Sala do trono', C: ({ t }) => (<><SalaDoTrono /><Character pose={{ ...REST, x: 0, y: 0.6, z: -3.3 }} face={face('smug')} look={EB.rei.look} /><Character pose={{ ...REST, x: 1.3, z: -1.2, ry: -0.5 }} face={face('happy')} look={EB.agronomo.look} />{cam(t, [0.2, 2.2, 5.2], [0.1, 1.6, -2.2])}</>) },
+  { nome: 'Campo (dia)', C: ({ t }) => (<><CampoBatatas t={t} /><Character pose={{ ...REST, x: -0.7, z: 0.4, ry: 0.2, rsx: 0.4, rel: -1.2 }} face={face('confident')} look={EB.guarda1.look} right={<Spear rotation={[-1.2, 0, 0]} />} /><Character pose={{ ...REST, x: 0.8, z: 0.4, ry: -0.2, rsx: 0.4, rel: -1.2 }} face={face('suspicious')} look={EB.guarda2.look} right={<Spear rotation={[-1.2, 0, 0]} />} />{cam(t, [0, 2.4, 6.2], [0, 1.4, -1])}</>) },
+  { nome: 'Campo (noite)', C: ({ t }) => (<><CampoBatatas t={t} noite /><Character pose={{ ...REST, x: 0, z: -1.6, ry: 0.4, squash: 0.25, lean: 0.25 }} face={face('nervous')} look={EB.voce.look} />{cam(t, [0.4, 2.4, 6.0], [0, 1.0, -1.4])}</>) },
+  { nome: 'Mesa francesa', C: ({ t }) => (<><CasaCamponesa t={t} farta /><Character pose={{ ...REST, x: -0.4, z: -1.5 }} face={face('bigSmile')} look={EB.voce.look} /><Character pose={{ ...REST, x: -1.6, z: -0.9, ry: 0.8 }} face={face('happy')} look={EB.aldea.look} /><Character pose={{ ...REST, x: 0.8, z: -0.9, ry: -0.8 }} face={face('laugh')} look={EB.menino.look} />{cam(t, [0.0, 2.2, 5.0], [-0.3, 1.2, -1])}</>) },
+);
 
 export const Cenario = ({ i }: { i: number }) => {
   const c = CENARIOS[i] ?? CENARIOS[0];
