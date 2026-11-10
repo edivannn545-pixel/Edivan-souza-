@@ -45,7 +45,7 @@ export function faceAt(t: number, keys: FaceKey[], seed = 0): FaceState {
 
 // ---------- Visual ----------
 // Corpo: 6 tipos, todos da mesma base (cabeça grande, membros finos).
-export type Body = 'adulto' | 'magro' | 'forte' | 'crianca' | 'idoso' | 'baixo';
+export type Body = 'adulto' | 'magro' | 'forte' | 'crianca' | 'idoso' | 'baixo' | 'esbelto' | 'esbeltoCrianca';
 export type HairStyle = 'curto' | 'liso' | 'longo' | 'coque' | 'crespo' | 'careca' | 'chanel' | 'rabo' | 'nenhum' | 'espetado' | 'topete';
 export type Hat =
   | 'bone' | 'gorro' | 'policia' | 'chef' | 'capacete' | 'explorador' | 'astronauta' | 'cavaleiro'
@@ -109,6 +109,9 @@ const BODY: Record<Body, { s: number; torso: [number, number, number]; legs: num
   crianca: { s: 0.7, torso: [0.95, 1.0, 0.85], legs: 0.85, head: 1.12, lean: 0, sh: 0.26 },
   idoso: { s: 0.94, torso: [1.05, 1.08, 0.9], legs: 0.95, head: 1, lean: 0.12, sh: 0.27 },
   baixo: { s: 0.84, torso: [1.15, 1.0, 0.95], legs: 0.78, head: 1.02, lean: 0, sh: 0.3 },
+  // Estilo "E se...?": camiseta reta (sem barriga), pernas longas, cabeça grande.
+  esbelto: { s: 1, torso: [0.86, 1.3, 0.62], legs: 1.22, head: 1.12, lean: 0, sh: 0.25 },
+  esbeltoCrianca: { s: 0.74, torso: [0.86, 1.2, 0.62], legs: 1.05, head: 1.22, lean: 0, sh: 0.25 },
 };
 
 const HEAD_R = 0.5;
@@ -676,14 +679,14 @@ export const Character = ({
                 )}
               </mesh>
               {look.contorno && !look.holo && (
-                <mesh scale={1.045}>
+                <mesh scale={1.022}>
                   <sphereGeometry args={[HEAD_R, 48, 32]} />
                   <meshBasicMaterial color={look.contorno} side={THREE.BackSide} />
                 </mesh>
               )}
               {look.faixa && (
-                <mesh position={[0, 0.2, 0]} rotation={[-0.12, 0, 0]}>
-                  <cylinderGeometry args={[0.472, 0.49, 0.1, 40, 1, true]} />
+                <mesh position={[0, 0.3, 0]} rotation={[-0.12, 0, 0]}>
+                  <cylinderGeometry args={[0.43, 0.465, 0.09, 40, 1, true]} />
                   <Mat color={look.faixa} side={THREE.DoubleSide} />
                 </mesh>
               )}

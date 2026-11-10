@@ -145,7 +145,7 @@ export const ROUPAS = {
 // olhos grandes brancos, corpo de bastão, camiseta de manga curta. Cada um tem UMA cor e UM acessório
 // que o identificam de longe. Personagens originais deste estúdio.
 // ============================================================================
-const ESFERA = { skin: '#141419', gloves: '#141419', esfera: true, contorno: '#ffe3b0', mangaCurta: true } as const;
+const ESFERA = { skin: '#141419', gloves: '#141419', esfera: true, contorno: '#ffe3b0', mangaCurta: true, body: 'esbelto' } as const;
 
 export const ESFERAS = {
   nino: {
@@ -162,7 +162,7 @@ export const ESFERAS = {
   },
   mel: {
     nome: 'Mel', papel: 'a irmã caçula', rosto: 'smile',
-    look: { ...ESFERA, jacket: '#ff8fc2', pants: '#3a3f8f', shoes: '#ffd23a', hair: '#141419', hairStyle: 'coque', body: 'crianca' },
+    look: { ...ESFERA, jacket: '#ff8fc2', pants: '#3a3f8f', shoes: '#ffd23a', hair: '#141419', hairStyle: 'coque', body: 'esbeltoCrianca' },
   },
   dona_cida: {
     nome: 'Dona Cida', papel: 'a mãe', rosto: 'content',
