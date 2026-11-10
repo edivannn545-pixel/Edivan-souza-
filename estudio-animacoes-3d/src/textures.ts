@@ -48,7 +48,13 @@ const RECEITA: Record<FaceName, [Eyes, Brows, Mouth]> = {
   knockedOut: ['x', 'none', 'tongue'],
 };
 
-const INK = '#26232a';
+let INK = '#26232a';
+const PUPIL = '#1b1a20';
+// Pele escura (estilo cabeça-esfera): traços claros.
+const luma = (hex: string) => {
+  const n = parseInt(hex.replace('#', '').slice(0, 6), 16);
+  return (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255;
+};
 const EYES: [number, number][] = [
   [182, 220],
   [330, 220],
@@ -94,7 +100,7 @@ const drawEye = (c: CanvasRenderingContext2D, kind: Eyes, x: number, y: number, 
     c.stroke();
     c.beginPath();
     c.ellipse(x + dx, y + dy, pr, pr * 1.25, 0, 0, Math.PI * 2);
-    c.fillStyle = INK;
+    c.fillStyle = PUPIL;
     c.fill();
     c.beginPath();
     c.arc(x + dx - pr * 0.35, y + dy - pr * 0.45, pr * 0.32, 0, Math.PI * 2);
@@ -389,6 +395,7 @@ export const useFacesReady = () => {
 // Desenha o rosto no canvas. blink: 0 aberto, 0.5 meio fechado, 1 fechado.
 export function drawFace(c: CanvasRenderingContext2D, face: FaceName, blink: number, overlays: OverlayName[], skin: string) {
   c.clearRect(0, 0, 512, 512);
+  INK = luma(skin) < 0.25 ? '#f6f1e4' : '#26232a';
   if (overlays.includes('shading')) {
     const s = imgs[OVERLAYS.shading];
     if (s) c.drawImage(s, 0, 0);
@@ -398,14 +405,31 @@ export function drawFace(c: CanvasRenderingContext2D, face: FaceName, blink: num
   if (kit) c.drawImage(kit, 0, 0);
   else {
     const [e, b, m] = RECEITA[face];
+    // Cabeça escura (estilo esfera): olhos e boca maiores, como nos shorts "E se...?".
+    const big = INK !== '#26232a' ? 1.38 : 1;
     EYES.forEach(([x, y], i) => {
-      drawBrow(c, b, x, y, i === 0 ? -1 : 1);
+      c.save();
+      c.translate(x, y);
+      c.scale(big, big);
+      c.translate(-x, -y);
+      drawBrow(c, b, x, y - (big - 1) * 8, i === 0 ? -1 : 1);
       drawEye(c, e, x, y, i === 0 ? -1 : 1, skin);
+      c.restore();
     });
+    c.save();
+    c.translate(256, 350);
+    c.scale(big, big);
+    c.translate(-256, -350 + (big - 1) * 20);
     drawMouth(c, m);
+    c.restore();
   }
   if (blink > 0) {
+    const big = INK !== '#26232a' ? 1.38 : 1;
     for (const [x, y] of EYES) {
+      c.save();
+      c.translate(x, y);
+      c.scale(big, big);
+      c.translate(-x, -y);
       c.fillStyle = skin;
       c.beginPath();
       if (blink >= 1) c.ellipse(x, y, 42, 46, 0, 0, Math.PI * 2);
@@ -419,6 +443,7 @@ export function drawFace(c: CanvasRenderingContext2D, face: FaceName, blink: num
         c.lineTo(x + 30, y + 2);
       }
       c.stroke();
+      c.restore();
     }
   }
   for (const o of overlays) {

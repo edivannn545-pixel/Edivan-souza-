@@ -6,11 +6,33 @@ import { VOZ } from './voz.ts';
 export const FPS = 30;
 export const F = 1 / FPS;
 
-// Roteiro de exemplo (curto). Troque pelo roteiro do seu vídeo.
+// Episódio de exemplo — fórmula "E se...?" (gancho → pergunta → ciência → poder → "só que" → dilema → moral → volta ao início → pergunta final).
 export const LINES = [
-  'Imagine que você *abre* uma padaria.',
-  'Todo dia, você vende *quinhentos* pães.',
-  'Em um *ano*, isso dá mais de *cento* e oitenta mil!',
+  'Você cai do *skate*, bate a canela na calçada,',
+  'e quem *quebra* é a calçada.',
+  'E se seus *ossos* fossem de *aço*?',
+  'Seu osso já aguenta mais aperto que *concreto*.',
+  'Mas o aço pesa quase *quatro* vezes mais.',
+  'Seu esqueleto tinha uns *dez* quilos.',
+  'Agora? *Quarenta*.',
+  'O Bruno, seu rival, chuta sua *canela*.',
+  'Quem sai pulando num pé só é *ele*.',
+  'Só que seu corpo ganhou *trinta* quilos.',
+  'Na balança da escola: *noventa*.',
+  'E corpo pesado não *boia*.',
+  'Sábado, *piscina* do clube.',
+  'A Lara, sua melhor amiga, tem *câimbra* no fundo.',
+  'O Bruno grita: pula, *herói*!',
+  'Mas se você pular, você *afunda*.',
+  'Ficar na borda, ou pular *mesmo* assim?',
+  'Você *pula*.',
+  'Afunda feito *pedra*, e anda pelo *fundo*.',
+  'Segura a Lara e *empurra* ela pra cima.',
+  'Ela respira. Você sai pela *escada*, a pé.',
+  'Às vezes, quem afunda é quem *levanta* os outros.',
+  'Dias depois, você cai do skate de novo, e *ri*.',
+  'E você, o que faria com ossos de *aço*?',
+  'Comenta aí e se *inscreve*!',
 ];
 
 export type Word = { text: string; key: string; stressed: boolean; t0: number; t1: number; line: number; i: number };
@@ -42,7 +64,8 @@ const build = (): Word[] => {
 };
 
 export const WORDS = build();
-export const END = WORDS[WORDS.length - 1].t1 + 1.1;
+// +2,6 s depois da última palavra: tempo da tela final (COMENTA AÍ / INSCREVA-SE).
+export const END = WORDS[WORDS.length - 1].t1 + 2.6;
 
 // Tempo de início de uma palavra: W(linha, índice) ou W(linha, 'texto').
 export const W = (line: number, w: number | string = 0): number => {

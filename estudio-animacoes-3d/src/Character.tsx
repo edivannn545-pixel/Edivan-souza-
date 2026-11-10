@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react';
+import { createContext, ReactNode, useContext, useMemo } from 'react';
 import * as THREE from 'three';
 import { F } from './timeline';
 import { drawFace, FaceName, OverlayName, patternTex } from './textures';
@@ -46,7 +46,7 @@ export function faceAt(t: number, keys: FaceKey[], seed = 0): FaceState {
 // ---------- Visual ----------
 // Corpo: 6 tipos, todos da mesma base (cabeça grande, membros finos).
 export type Body = 'adulto' | 'magro' | 'forte' | 'crianca' | 'idoso' | 'baixo';
-export type HairStyle = 'curto' | 'liso' | 'longo' | 'coque' | 'crespo' | 'careca' | 'chanel' | 'rabo' | 'nenhum';
+export type HairStyle = 'curto' | 'liso' | 'longo' | 'coque' | 'crespo' | 'careca' | 'chanel' | 'rabo' | 'nenhum' | 'espetado' | 'topete';
 export type Hat =
   | 'bone' | 'gorro' | 'policia' | 'chef' | 'capacete' | 'explorador' | 'astronauta' | 'cavaleiro'
   | 'farao' | 'marinheiro' | 'piloto' | 'capuz' | 'boina' | 'touca';
@@ -80,7 +80,18 @@ export type Look = {
   beard?: 'bigode' | 'barba';
   metal?: boolean; // armadura
   backpack?: string; // mochila / tanque
+  // ---- Estilo "cabeça-esfera" (shorts "E se...?") ----
+  esfera?: boolean; // cabeça lisa e brilhante (verniz), rosto desenhado em traço claro se a pele for escura
+  contorno?: string; // luz de borda: anel claro em volta da cabeça (separa a cabeça escura do fundo)
+  mangaCurta?: boolean; // camiseta: braços na cor da pele, com manga curta na cor da roupa
+  faixa?: string; // faixa de cabeça (testeira)
+  holo?: Holo; // modo raio-X / holograma
 };
+
+// Modo raio-X: corpo translúcido brilhante com ossos visíveis por dentro.
+export type Holo = { cor?: string; osso?: string; ossoMetal?: boolean; destaque?: 'pernas' | 'bracos' | 'tudo'; destaqueCor?: string };
+const HoloCtx = createContext<Holo | null>(null);
+const BoneCtx = createContext<string | null>(null);
 
 export const VOCE: Look = {
   skin: '#f0dccb', jacket: '#2f6158', pants: '#2e3442', shoes: '#5a3a22', gloves: '#1e1f24',
@@ -103,9 +114,29 @@ const BODY: Record<Body, { s: number; torso: [number, number, number]; legs: num
 const HEAD_R = 0.5;
 const HEAD_Y = 1.62;
 
-const Mat = ({ color, metal, ...p }: { color: string; metal?: boolean; map?: THREE.Texture; side?: THREE.Side; roughness?: number; transparent?: boolean; opacity?: number }) => (
-  <meshStandardMaterial color={color} metalness={metal ? 0.85 : 0} roughness={metal ? 0.25 : p.roughness ?? 0.7} {...p} />
-);
+const Mat = ({ color, metal, ...p }: { color: string; metal?: boolean; map?: THREE.Texture; side?: THREE.Side; roughness?: number; transparent?: boolean; opacity?: number }) => {
+  const holo = useContext(HoloCtx);
+  if (holo) {
+    const c = holo.cor ?? '#3fb4ff';
+    return <meshStandardMaterial color={c} emissive={c} emissiveIntensity={0.45} transparent opacity={0.34} depthWrite={false} roughness={0.2} side={p.side} />;
+  }
+  return <meshStandardMaterial color={color} metalness={metal ? 0.85 : 0} roughness={metal ? 0.25 : p.roughness ?? 0.7} {...p} />;
+};
+
+// Osso por dentro do membro (só aparece no modo raio-X).
+const Osso = ({ len, r }: { len: number; r: number }) => {
+  const holo = useContext(HoloCtx);
+  const destaque = useContext(BoneCtx);
+  if (!holo) return null;
+  const c = destaque ?? holo.osso ?? '#f4fbff';
+  const metal = !!holo.ossoMetal && !!destaque;
+  return (
+    <mesh position={[0, -len / 2, 0]} renderOrder={1}>
+      <capsuleGeometry args={[r * (metal ? 0.6 : 0.45), len * 0.92, 4, 8]} />
+      <meshStandardMaterial color={c} emissive={metal ? '#8796a8' : c} emissiveIntensity={metal ? 0.55 : 0.8} metalness={metal ? 0.75 : 0} roughness={metal ? 0.15 : 0.4} />
+    </mesh>
+  );
+};
 
 const FaceDecal = ({ face, skin }: { face: FaceState; skin: string }) => {
   const canvas = useMemo(() => {
@@ -134,17 +165,27 @@ const FaceDecal = ({ face, skin }: { face: FaceState; skin: string }) => {
 };
 
 const Limb = ({ len, r, color, metal }: { len: number; r: number; color: string; metal?: boolean }) => (
-  <mesh position={[0, -len / 2, 0]} castShadow>
-    <capsuleGeometry args={[r, len, 4, 10]} />
-    <Mat color={color} metal={metal} />
-  </mesh>
+  <>
+    <mesh position={[0, -len / 2, 0]} castShadow>
+      <capsuleGeometry args={[r, len, 4, 10]} />
+      <Mat color={color} metal={metal} />
+    </mesh>
+    <Osso len={len} r={r} />
+  </>
 );
 
 const Arm = ({ side, sz, sx, el, look, sh, hand }: { side: 1 | -1; sz: number; sx: number; el: number; look: Look; sh: number; hand?: ReactNode }) => (
   <group position={[side * sh, 1.0, 0]} rotation={new THREE.Euler(-sx, 0, side * sz, 'ZXY')}>
-    <Limb len={0.3} r={0.032} color={look.jacket} metal={look.metal} />
+    <BoneCtx.Provider value={look.holo && (look.holo.destaque === 'bracos' || look.holo.destaque === 'tudo') ? look.holo.destaqueCor ?? '#ff5a7a' : null}>
+    <Limb len={0.3} r={0.032} color={look.mangaCurta ? look.skin : look.jacket} metal={look.metal} />
+    {look.mangaCurta && (
+      <mesh position={[0, -0.05, 0]} castShadow>
+        <capsuleGeometry args={[0.062, 0.08, 4, 12]} />
+        <Mat color={look.jacket} />
+      </mesh>
+    )}
     <group position={[0, -0.3, 0]} rotation={[-el, 0, 0]}>
-      <Limb len={0.27} r={0.028} color={look.coat ?? look.jacket} metal={look.metal} />
+      <Limb len={0.27} r={0.028} color={look.mangaCurta ? look.skin : look.coat ?? look.jacket} metal={look.metal} />
       <group position={[0, -0.3, 0]}>
         <mesh castShadow scale={[1, 1.1, 0.9]}>
           <sphereGeometry args={[0.07, 16, 12]} />
@@ -153,12 +194,14 @@ const Arm = ({ side, sz, sx, el, look, sh, hand }: { side: 1 | -1; sz: number; s
         {hand}
       </group>
     </group>
+    </BoneCtx.Provider>
   </group>
 );
 
 const Leg = ({ side, swing, tap, look }: { side: 1 | -1; swing: number; tap: number; look: Look }) => {
   const knee = Math.max(0, -swing) * 0.9 + tap * 0.5;
   return (
+    <BoneCtx.Provider value={look.holo && (look.holo.destaque === 'pernas' || look.holo.destaque === 'tudo') ? look.holo.destaqueCor ?? '#ff5a7a' : null}>
     <group position={[side * 0.13, 0.55, 0]} rotation={[-swing - tap * 0.3, 0, 0]}>
       <Limb len={0.24} r={0.035} color={look.pants} metal={look.metal} />
       <group position={[0, -0.26, 0]} rotation={[knee, 0, 0]}>
@@ -169,6 +212,7 @@ const Leg = ({ side, swing, tap, look }: { side: 1 | -1; swing: number; tap: num
         </mesh>
       </group>
     </group>
+    </BoneCtx.Provider>
   );
 };
 
@@ -246,6 +290,39 @@ const Hair = ({ look }: { look: Look }) => {
             {m}
           </mesh>
         </>
+      );
+    case 'espetado':
+      return (
+        <>
+          {back}
+          {[...Array(9)].map((_, i) => {
+            const a = (i / 9) * Math.PI * 2;
+            const tilt = 0.75;
+            return (
+              <mesh key={i} position={[Math.sin(a) * 0.3, 0.36, Math.cos(a) * 0.3 - 0.04]} rotation={[Math.cos(a) * tilt, 0, -Math.sin(a) * tilt]} castShadow>
+                <coneGeometry args={[0.09, 0.3, 8]} />
+                {m}
+              </mesh>
+            );
+          })}
+          <mesh position={[0, 0.5, -0.04]} castShadow>
+            <coneGeometry args={[0.1, 0.32, 8]} />
+            {m}
+          </mesh>
+        </>
+      );
+    case 'topete':
+      return (
+        <group position={[0, 0.42, 0.12]} rotation={[0.55, 0, 0]}>
+          <mesh scale={[1.25, 0.55, 1]} castShadow>
+            <sphereGeometry args={[0.16, 18, 12]} />
+            {m}
+          </mesh>
+          <mesh position={[0, 0.1, 0.06]} rotation={[0.9, 0, 0]} castShadow>
+            <coneGeometry args={[0.1, 0.26, 10]} />
+            {m}
+          </mesh>
+        </group>
       );
     case 'crespo':
       return (
@@ -515,6 +592,7 @@ export const Character = ({
   const dy = 0.55 * (b.legs - 1);
   const torsoMap = look.pattern && look.pattern !== 'liso' ? patternTex(look.pattern, look.jacket, look.pattern2 ?? '#f4f0e8', look.patternH) : undefined;
   return (
+    <HoloCtx.Provider value={look.holo ?? null}>
     <group position={[p.x, p.y + bob, p.z]} rotation={[0, p.ry, 0]} scale={b.s}>
       <group scale={[1, b.legs, 1]}>
         <Leg side={1} swing={swing} tap={p.ltap} look={look} />
@@ -591,17 +669,64 @@ export const Character = ({
             <group position={[0, (HEAD_Y - 1.18) * b.head, 0]} scale={b.head}>
               <mesh castShadow>
                 <sphereGeometry args={[HEAD_R, 48, 32]} />
-                <Mat color={look.skin} roughness={0.55} />
+                {look.esfera && !look.holo ? (
+                  <meshPhysicalMaterial color={look.skin} roughness={0.22} clearcoat={1} clearcoatRoughness={0.12} metalness={0} />
+                ) : (
+                  <Mat color={look.skin} roughness={0.55} />
+                )}
               </mesh>
-              <FaceDecal face={face} skin={look.skin} />
+              {look.contorno && !look.holo && (
+                <mesh scale={1.045}>
+                  <sphereGeometry args={[HEAD_R, 48, 32]} />
+                  <meshBasicMaterial color={look.contorno} side={THREE.BackSide} />
+                </mesh>
+              )}
+              {look.faixa && (
+                <mesh position={[0, 0.2, 0]} rotation={[-0.12, 0, 0]}>
+                  <cylinderGeometry args={[0.472, 0.49, 0.1, 40, 1, true]} />
+                  <Mat color={look.faixa} side={THREE.DoubleSide} />
+                </mesh>
+              )}
+              <FaceDecal face={face} skin={look.holo ? '#2a6f9a' : look.skin} />
               <Hair look={look} />
               <Beard look={look} />
               <Eyewear look={look} />
               <HatMesh look={look} />
             </group>
           </group>
+          {look.holo && <Esqueleto />}
         </group>
       </group>
+    </group>
+    </HoloCtx.Provider>
+  );
+};
+
+// Coluna, costelas e bacia vistas no raio-X.
+const Esqueleto = () => {
+  const holo = useContext(HoloCtx)!;
+  const tudo = holo.destaque === 'tudo';
+  const c = tudo ? holo.destaqueCor ?? '#ff5a7a' : holo.osso ?? '#f4fbff';
+  const metal = tudo && !!holo.ossoMetal;
+  const mat = <meshStandardMaterial color={c} emissive={metal ? '#8796a8' : c} emissiveIntensity={metal ? 0.55 : 0.7} metalness={metal ? 0.75 : 0} roughness={metal ? 0.15 : 0.4} />;
+  return (
+    <group renderOrder={1}>
+      {[...Array(7)].map((_, i) => (
+        <mesh key={i} position={[0, 0.62 + i * 0.075, -0.05]}>
+          <boxGeometry args={[0.07, 0.05, 0.06]} />
+          {mat}
+        </mesh>
+      ))}
+      {[...Array(4)].map((_, i) => (
+        <mesh key={`r${i}`} position={[0, 0.98 - i * 0.075, -0.03]} rotation={[Math.PI / 2, 0, 0]} scale={[1, 0.6, 1]}>
+          <torusGeometry args={[0.17 - i * 0.012, 0.012, 6, 24, Math.PI * 1.6]} />
+          {mat}
+        </mesh>
+      ))}
+      <mesh position={[0, 0.56, -0.02]} scale={[1, 0.5, 0.7]}>
+        <sphereGeometry args={[0.13, 12, 8]} />
+        {mat}
+      </mesh>
     </group>
   );
 };

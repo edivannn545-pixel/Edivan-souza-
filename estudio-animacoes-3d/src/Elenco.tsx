@@ -4,7 +4,7 @@ import { useLayoutEffect } from 'react';
 import { AbsoluteFill } from 'remotion';
 import * as THREE from 'three';
 import { Character, REST } from './Character';
-import { ELENCO, Membro, ROUPAS } from './personagens';
+import { ELENCO, ESFERAS, Membro, raioX, ROUPAS } from './personagens';
 import { tileTex } from './textures';
 
 // Folha do elenco (1920x1760): mostra todos os personagens e roupas prontos para usar.
@@ -100,6 +100,39 @@ export const Elenco = () => {
       <Cartoes membros={todos.slice(0, 10)} w={W} h={430} />
       <Cartoes membros={todos.slice(10)} w={W} h={430} />
       <Cartoes membros={roupas} w={W} h={370} />
+    </AbsoluteFill>
+  );
+};
+
+// Folha do elenco "cabeça-esfera" (estilo "E se...?") + versões raio-X: node tools/elenco.mjs ElencoEsferas
+export const ElencoEsferas = () => {
+  const todos = Object.values(ESFERAS) as Membro[];
+  const n = ESFERAS.nino;
+  const raios: Membro[] = [
+    { nome: 'Nino raio-X', papel: 'ossos normais', rosto: 'confident', look: raioX(n.look) },
+    { nome: 'Nino destaque', papel: "destaque: 'pernas'", rosto: 'curious', look: raioX(n.look, { destaque: 'pernas', destaqueCor: '#ff5a7a' }) },
+    { nome: 'Nino de aço', papel: 'ossoMetal: true', rosto: 'starstruck', look: raioX(n.look, { destaque: 'tudo', destaqueCor: '#dfe7f0', ossoMetal: true }) },
+    { nome: 'Nino calor', papel: "cor: '#ff7a2a'", rosto: 'furious', look: raioX(n.look, { cor: '#ff7a2a', osso: '#fff3d6' }) },
+    { nome: 'Lara raio-X', papel: '', rosto: 'happy', look: raioX(ESFERAS.lara.look) },
+    { nome: 'Bruno raio-X', papel: '', rosto: 'smug', look: raioX(ESFERAS.bruno.look) },
+  ];
+  const W = 1840;
+  return (
+    <AbsoluteFill style={{ background: PAGE, padding: '44px 40px', display: 'flex', flexDirection: 'column', gap: 26 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+        <div>
+          <div style={{ fontFamily: 'Arial, sans-serif', fontSize: 22, letterSpacing: 4, color: '#6b6b6b', fontWeight: 700 }}>ESTILO "E SE...?"</div>
+          <div style={{ fontFamily: 'Arial Black, sans-serif', fontWeight: 900, fontSize: 86, color: '#141414', lineHeight: 1 }}>
+            O <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontWeight: 400 }}>elenco esfera.</span>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 16 }}>
+          <Selo n={todos.length} txt="personagens" />
+          <Selo n={raios.length} txt="modos raio-X" />
+        </div>
+      </div>
+      <Cartoes membros={todos} w={W} h={560} />
+      <Cartoes membros={raios} w={W} h={560} />
     </AbsoluteFill>
   );
 };

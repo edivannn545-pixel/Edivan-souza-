@@ -234,3 +234,18 @@ que monta cenário + câmera + personagens + objetos. Dissolve de 6 quadros entr
   serão faladas (ex.: "cento e vinte" em vez de "120") e gere a voz de novo.
 - **Tela preta ou cena vazia numa prévia:** a câmera está olhando para o lugar errado — confira alvo e distância da `Cam`.
 - **Render lento:** normal (WebGL no navegador). Use `--concurrency=4` e renderize em segundo plano.
+
+---
+
+## PARTE 5 — Estilo "E se...?" (cabeça-esfera)
+
+Quando o usuário pedir vídeos "no estilo E se...?", "cabeça-esfera" ou "como o episódio dos ossos de aço",
+siga **GUIA-ESTILO-E-SE.md**. Resumo do que muda em relação às PARTES 2 e 3:
+- Elenco: `ESFERAS` em `src/personagens.ts` (Nino, Lara, Bruno, Mel, Dona Cida, Mestre Ono, Dra. Iara, Zeca) e `raioX(look, {...})`.
+- Duração 60–80 s; fórmula de 10 blocos (gancho → "E se...?" → ciência → poder → "Só que..." → dilema → clímax → moral → volta ao começo → pergunta final).
+- Transição padrão é o **corte seco** (`trans` por tomada: 'corte' | 'flash' | 'dissolve' | 'preto'), um plano a cada ~1,6–1,9 s.
+- Texto na tela é permitido pelo HUD (`src/hud.tsx`: Titulo, Selo, Numero, Onoma, Capitulo, Vinheta, TelaFinal) no campo `O` da tomada.
+- Cenários novos em `src/historia.tsx`: `GradeNeon` (raio-X), `Piscina` (com `submerso`) e objetos `Skate`, `Calcada`, `Osso`,
+  `BlocoConcreto`, `Prensa`, `Balanca`, `Bolhas`, `Splash`, `Arco`, `salto()`.
+- Câmera: `CamKey` aceita um 5º número (giro/inclinação holandesa, em radianos).
+- O episódio de exemplo completo está em `src/shots.tsx` e `STORYBOARD.md`.

@@ -139,3 +139,48 @@ export const ROUPAS = {
     look: { skin: PELE.escura, jacket: '#f4f4f2', pattern: 'listras', pattern2: '#1f3b7a', patternH: true, pants: '#1f3b7a', shoes: '#111', gloves: MAO, hair: '#1a120c', hat: 'marinheiro', hatColor: '#fbfbf8' },
   },
 } satisfies Record<string, Membro>;
+
+// ============================================================================
+// ELENCO "CABEÇA-ESFERA" — estilo dos shorts "E se...?": cabeça preta brilhante com contorno claro,
+// olhos grandes brancos, corpo de bastão, camiseta de manga curta. Cada um tem UMA cor e UM acessório
+// que o identificam de longe. Personagens originais deste estúdio.
+// ============================================================================
+const ESFERA = { skin: '#141419', gloves: '#141419', esfera: true, contorno: '#ffe3b0', mangaCurta: true } as const;
+
+export const ESFERAS = {
+  nino: {
+    nome: 'Nino', papel: 'o protagonista ("você")', rosto: 'bigSmile',
+    look: { ...ESFERA, jacket: '#ff6a3d', pants: '#27324a', shoes: '#f4f2ec', hair: '#141419', hairStyle: 'topete' },
+  },
+  lara: {
+    nome: 'Lara', papel: 'a melhor amiga', rosto: 'happy',
+    look: { ...ESFERA, jacket: '#a98bff', pants: '#f3efe6', shoes: '#ff6a8a', hair: '#2a1712', hairStyle: 'rabo', shorts: true },
+  },
+  bruno: {
+    nome: 'Bruno', papel: 'o rival', rosto: 'smug',
+    look: { ...ESFERA, jacket: '#e8edf2', pants: '#1f2026', shoes: '#e63946', hair: '#141419', hairStyle: 'espetado', faixa: '#e63946' },
+  },
+  mel: {
+    nome: 'Mel', papel: 'a irmã caçula', rosto: 'smile',
+    look: { ...ESFERA, jacket: '#ff8fc2', pants: '#3a3f8f', shoes: '#ffd23a', hair: '#141419', hairStyle: 'coque', body: 'crianca' },
+  },
+  dona_cida: {
+    nome: 'Dona Cida', papel: 'a mãe', rosto: 'content',
+    look: { ...ESFERA, jacket: '#2ab3a6', pants: '#2a2f45', shoes: '#3a2a1e', hair: '#141419', hairStyle: 'chanel', skirt: { color: '#24485c' } },
+  },
+  mestre_ono: {
+    nome: 'Mestre Ono', papel: 'o treinador sábio', rosto: 'smile',
+    look: { ...ESFERA, jacket: '#f2f0ea', pants: '#f2f0ea', shoes: '#2a2a2a', hair: '#e9e9e9', hairStyle: 'careca', beard: 'barba', body: 'idoso', mangaCurta: false },
+  },
+  dra_iara: {
+    nome: 'Dra. Iara', papel: 'a cientista', rosto: 'thinking',
+    look: { ...ESFERA, jacket: '#4b7bd8', pants: '#2c3346', shoes: '#2a2a2a', hair: '#141419', hairStyle: 'crespo', coat: '#f6f6f2', eyewear: 'grau', mangaCurta: false },
+  },
+  zeca: {
+    nome: 'Zeca', papel: 'o amigo engraçado', rosto: 'grin',
+    look: { ...ESFERA, jacket: '#3fbf6a', pants: '#3a2f28', shoes: '#f4f2ec', hair: '#141419', hairStyle: 'nenhum', hat: 'bone', hatColor: '#ffd23a', body: 'baixo' },
+  },
+} satisfies Record<string, Membro>;
+
+// Versão raio-X de qualquer look: <Character look={raioX(ESFERAS.nino.look, { destaque: 'pernas', destaqueCor: '#cfd8e3', ossoMetal: true })} />
+export const raioX = (look: Look, h: Look['holo'] = {}): Look => ({ ...look, holo: { cor: '#3fb4ff', osso: '#f4fbff', ...h } });
