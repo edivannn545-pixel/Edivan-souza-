@@ -5,7 +5,7 @@ import { ASTRO, BreakingSign, Clock, Cockpit, Earth, FloatSign, Floating, Ship, 
 import { Titulo } from './hud';
 import { IARA, IARA_IDOSA, Lab, LightBolt, Moon, NINO, OrbitTrail, Ready, Space, Sun } from './luz';
 import { Calendar, LedCounter, Sparkles } from './props';
-import { Cam } from './sets';
+import { Cam, CamKey } from './sets';
 import { W } from './timeline';
 
 // ============================================================================
@@ -20,6 +20,12 @@ export type Shot = { from: number; name: string; C: (p: ShotProps) => JSX.Elemen
 const P = (o: Partial<Pose> = {}): Pose => ({ ...REST, ...o });
 const drift = (t: number, s = 0): V3 => [0.06 * Math.sin(t * 0.7 + s), 0.08 * Math.sin(t * 0.9 + s), 0];
 const FLOAT = { lsz: 0.7, rsz: 0.7, lel: 0.5, rel: 0.5 };
+// Câmera de corpo inteiro, sempre centralizada no personagem (x = 0): aproxima devagar sem cortar cabeça nem pés.
+// y = altura do alvo; d0 → d1 = distância no começo e no fim da tomada; lado = leve órbita lateral.
+const corpo = (t0: number, t1: number, y = 1.25, d0 = 5.8, d1 = 5.2, lado = 0.3): CamKey[] => [
+  [t0, [lado, y + 0.25, d0], [0, y, 0], 32],
+  [t1, [-lado * 0.5, y + 0.2, d1], [0, y, 0], 32],
+];
 
 // 1. "What if you traveled at the speed of *light?*"
 const S01 = ({ t, t0, t1 }: ShotProps) => {
@@ -31,8 +37,8 @@ const S01 = ({ t, t0, t1 }: ShotProps) => {
     <>
       <Space glowPos={[0, 4, -10]} glow="#9fd0ff" />
       <StarStreaks t={t} speed={speed} n={170} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.3, -0.6, 4.4], [0, 0.1, 0], 32], [t1, [0.1, -0.4, 3.6], [0, 0.2, 0], 32]]} />
-      <Floating pose={pose} face={face} position={drift(t)} rotation={[0.15, 0.2, 0.05 * Math.sin(t)]} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 0, 5.6, 5.0, 0.2)} />
+      <Floating pose={pose} face={face} position={[0, drift(t)[1], 0]} rotation={[0.1, 0, 0.04 * Math.sin(t)]} />
     </>
   );
 };
@@ -43,14 +49,14 @@ const O01 = ({ t }: ShotProps) => (
 // 2. "Dr. Teo just *finished*" — a cientista no hangar, ao lado da nave pronta.
 const S02 = ({ t, t0, t1 }: ShotProps) => {
   const fi = W(1, 'finished');
-  const pose = track(t, P({ x: -0.35, ry: 0.0, hy: 0.0 }), [{ at: fi, v: { rsz: 1.4, rsx: 0.6, rel: 0.1, hy: 0.35, hp: -0.05 } }]);
+  const pose = track(t, P({ ry: 0.0, hy: 0.0 }), [{ at: fi, v: { rsz: 1.4, rsx: 0.6, rel: 0.1, hy: 0.35, hp: -0.05 } }]);
   const face = faceAt(t, [{ at: t0, f: 'thinking' }, { at: fi, f: 'confident' }], 2);
   return (
     <>
       <Lab t={t} />
-      <Ship t={0} position={[1.4, 1.05, -3.5]} rotation={[0, -0.6, 0]} scale={1.5} />
-      <Ready t={t} at={fi} position={[-0.4, 2.55, 0.1]} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.2, 1.7, 5.4], [0.0, 1.4, -0.8], 34], [t1, [0.0, 1.65, 4.7], [0.0, 1.4, -0.8], 34]]} />
+      <Ship t={0} position={[0, 1.05, -3.8]} rotation={[0, 0, 0]} scale={1.5} />
+      <Ready t={t} at={fi} position={[0, 2.75, 0.1]} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.35)} />
       <Character pose={pose} face={face} look={IARA} />
     </>
   );
@@ -66,7 +72,7 @@ const S03 = ({ t, t0, t1 }: ShotProps) => {
       <Ship t={t} position={[0, 1.05, -1.2]} rotation={[0, 0.25 * Math.sin(t * 0.3), 0]} scale={1.5} />
       <FloatSign t={t} at={fa} text="FASTEST SHIP" position={[0, 2.9, -1.2]} w={2.6} h={0.6} />
       <Sparkles t={t} from={wo} n={10} radius={2.0} center={[0, 1.3, -1]} size={0.3} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-4.5, 1.6, 7.5], [0, 1.5, -1.2], 34], [t1, [3.8, 1.8, 7.2], [0, 1.6, -1.2], 34]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.6, 1.8, 8.4], [0, 1.6, -1.2], 34], [t1, [1.6, 1.9, 8.0], [0, 1.6, -1.2], 34]]} />
     </>
   );
 };
@@ -80,8 +86,8 @@ const S04 = ({ t, t0, t1 }: ShotProps) => {
   return (
     <>
       <Lab t={t} />
-      <Ship t={0} position={[-1.9, 1.05, -2.5]} rotation={[0, 0.4, 0]} scale={1.5} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.3, 1.6, 4.6], [0, 1.3, 0], 32], [t1, [0.1, 1.6, 3.9], [0, 1.35, 0], 32]]} />
+      <Ship t={0} position={[0, 1.05, -3.8]} scale={1.5} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1)} />
       <Character pose={pose} face={face} look={IARA} />
     </>
   );
@@ -90,13 +96,13 @@ const S04 = ({ t, t0, t1 }: ShotProps) => {
 // 5. "*You.*" — Nino aponta para si mesmo.
 const S05 = ({ t, t0, t1 }: ShotProps) => {
   const y = W(3, 'you');
-  const pose = track(t, P({ ry: -0.1 }), [{ at: y, v: { rsx: 1.2, rsz: -0.1, rel: -2.3, lsz: 0.9, lel: 0.4, squash: 0.08, hp: -0.1 } }]);
+  const pose = track(t, P({ ry: 0 }), [{ at: y, v: { rsx: 1.2, rsz: -0.1, rel: -2.3, lsz: 0.9, lel: 0.4, squash: 0.08, hp: -0.1 } }]);
   const face = faceAt(t, [{ at: t0, f: 'surprised' }, { at: y + 0.35, f: 'shocked', o: ['sweat'] }], 4);
   return (
     <>
       <Lab t={t} />
-      <Ship t={0} position={[2.0, 1.05, -3]} rotation={[0, -0.4, 0]} scale={1.5} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.1, 1.6, 4.4], [0, 1.3, 0], 30], [t1, [0, 1.6, 3.7], [0, 1.35, 0], 30]]} />
+      <Ship t={0} position={[0, 1.05, -3.8]} scale={1.5} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.2, 5.4, 4.9, 0.15)} />
       <Character pose={pose} face={face} look={NINO} />
     </>
   );
@@ -182,14 +188,14 @@ const S10 = ({ t, t0, t1 }: ShotProps) => {
 // 11. "But here's where it gets *weird.*" — Nino na cabine, desconfiado.
 const S11 = ({ t, t0, t1 }: ShotProps) => {
   const we = W(8, 'weird');
-  const pose = track(t, P({ ry: 0.2 }), [{ at: we, v: { rsx: 2.2, rsz: 0.3, rel: -2.3, hy: 0.3, hr: -0.15 } }]);
+  const pose = track(t, P({ ry: 0 }), [{ at: we, v: { rsx: 2.2, rsz: 0.3, rel: -2.3, hy: 0.3, hr: -0.15 } }]);
   const face = faceAt(t, [{ at: t0, f: 'curious' }, { at: we, f: 'confused' }], 5);
   return (
     <>
       <Space glowPos={[0, 2, -10]} glow="#9fd0ff" />
       <Cockpit />
       <Earth t={t} position={[1, 1.4, -12]} r={1.4} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.4, 1.7, 3.8], [0, 1.4, 0], 32], [t1, [0.1, 1.65, 3.1], [0, 1.45, 0], 32]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.2, 5.4, 4.9)} />
       <Character pose={pose} face={face} look={ASTRO} />
     </>
   );
@@ -215,14 +221,14 @@ const S12 = ({ t, t0, t1 }: ShotProps) => {
 const S13 = ({ t, t0, t1 }: ShotProps) => {
   const sl = W(9, 'slower');
   const clk = (t - t0) * 40 * (1 - 0.95 * seg(t, t0, sl));
-  const pose = track(t, P({ ry: -0.4, x: 0.7, hy: -0.5 }), [{ at: sl, v: { hp: 0.1, rsx: 1.4, rsz: 0.2, rel: -0.3 } }]);
+  const pose = track(t, P({ ry: 0, hp: -0.25 }), [{ at: sl, v: { hp: -0.3, rsx: 2.6, rsz: 0.2, rel: -0.2 } }]);
   const face = faceAt(t, [{ at: t0, f: 'curious' }, { at: sl, f: 'surprised' }], 6);
   return (
     <>
       <Space glowPos={[0, 2, -10]} glow="#9fd0ff" />
       <Cockpit />
-      <Clock time={clk} position={[-0.7, 1.9, -1.2]} scale={1.2} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.2, 1.8, 4.2], [0, 1.6, -0.6], 32], [t1, [0, 1.75, 3.5], [0, 1.6, -0.6], 32]]} />
+      <Clock time={clk} position={[0, 3.05, -0.6]} scale={0.9} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.6, 6.0, 5.5)} />
       <Character pose={pose} face={face} look={ASTRO} />
     </>
   );
@@ -232,16 +238,16 @@ const S13 = ({ t, t0, t1 }: ShotProps) => {
 const S14 = ({ t, t0, t1 }: ShotProps) => {
   const mi = W(10, 'minutes');
   const clk = 60 * 5 * seg(t, t0, mi);
-  const pose = track(t, P({ ry: 0.15 }), [{ at: W(10, 'ship'), v: { lsz: 1.2, rsz: 1.2, lel: 0.3, rel: 0.3 } }, { at: mi, v: { lsz: 0.2, rsz: 0.2, lel: 0.15, rel: 0.15, rsx: 1.6 } }]);
+  const pose = track(t, P({ ry: 0 }), [{ at: W(10, 'ship'), v: { lsz: 1.2, rsz: 1.2, lel: 0.3, rel: 0.3 } }, { at: mi, v: { lsz: 0.2, rsz: 0.2, lel: 0.15, rel: 0.15, rsx: 1.6 } }]);
   const face = faceAt(t, [{ at: t0, f: 'smile' }, { at: mi, f: 'confident' }], 7);
   return (
     <>
       <Space glowPos={[0, 2, -10]} glow="#9fd0ff" />
       <Cockpit />
-      <Clock time={clk} position={[0.95, 2.1, -1.2]} scale={1.0} />
-      <FloatSign t={t} at={mi} text="5 MINUTES" position={[0.95, 1.2, -1.2]} w={1.5} h={0.4} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.6, 1.6, 4.6], [0.3, 1.4, -0.5], 34], [t1, [-0.3, 1.6, 4.0], [0.3, 1.45, -0.5], 34]]} />
-      <Character pose={P({ ...pose, x: -0.5 })} face={face} look={ASTRO} />
+      <Clock time={clk} position={[0, 3.05, -0.6]} scale={0.9} />
+      <FloatSign t={t} at={mi} text="5 MINUTES" position={[0, 3.9, -0.6]} w={1.6} h={0.42} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.8, 6.6, 6.0)} />
+      <Character pose={pose} face={face} look={ASTRO} />
     </>
   );
 };
@@ -250,13 +256,13 @@ const S14 = ({ t, t0, t1 }: ShotProps) => {
 const S15 = ({ t, t0, t1 }: ShotProps) => {
   const ye = W(11, 'years');
   const pages = ['2026', '2030', '2035', '2040', '2045', '2050', '2055', '2060', '2066', '+40 YEARS'];
-  const pose = track(t, P({ x: -0.6, ry: 0.15, hy: 0.15 }), [{ at: ye, v: { hy: 0.35, hp: -0.05, lsz: 0.8, lel: 0.6 } }]);
+  const pose = track(t, P({ ry: 0, hp: -0.2 }), [{ at: ye, v: { hp: -0.3, lsz: 0.8, lel: 0.6, rsz: 0.8, rel: 0.6 } }]);
   const face = faceAt(t, [{ at: t0, f: 'thinking' }, { at: ye, f: 'worried' }], 8);
   return (
     <>
       <Lab t={t} />
-      <Calendar t={t} from={t0} at={ye} pages={pages} position={[0.75, 1.6, 0]} rotation={[0, -0.25, 0]} scale={0.95} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.2, 1.6, 5.0], [0.1, 1.4, 0], 32], [t1, [0.0, 1.55, 4.4], [0.1, 1.45, 0], 32]]} />
+      <Calendar t={t} from={t0} at={ye} pages={pages} position={[0, 3.25, -0.4]} scale={0.85} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.75, 6.6, 6.0)} />
       <Character pose={pose} face={face} look={IARA} />
     </>
   );
@@ -266,14 +272,14 @@ const S15 = ({ t, t0, t1 }: ShotProps) => {
 const S16 = ({ t, t0, t1 }: ShotProps) => {
   const ho = W(12, 'home');
   const land = seg(t, t0, ho);
-  const pose = track(t, P({ x: 1.4, z: 1.2, ry: -0.3 }), [{ at: ho, v: { lsz: 1.3, rsz: 1.3, lel: 0.2, rel: 0.2 } }]);
+  const pose = track(t, P({ z: 0.8 }), [{ at: ho, v: { lsz: 1.3, rsz: 1.3, lel: 0.2, rel: 0.2 } }]);
   const face = faceAt(t, [{ at: t0, f: 'happy' }, { at: ho, f: 'bigSmile' }], 9);
   return (
     <>
       <Lab t={t} />
-      <Ship t={t} position={[-0.4, 1.05 + 3 * (1 - land), -1.6]} rotation={[0, 0.3, 0]} scale={1.5} />
+      <Ship t={t} position={[0, 1.05 + 3 * (1 - land), -2.6]} scale={1.5} />
       {t > ho - 0.3 && <Character pose={pose} face={face} look={ASTRO} />}
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.6, 2.2, 7.5], [0, 1.8, -1], 34], [t1, [0.8, 1.6, 6.2], [0.4, 1.3, -0.5], 34]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.2, 2.2, 8.2], [0, 1.9, -1], 34], [t1, [-0.1, 1.6, 6.4], [0, 1.3, 0], 34]]} />
     </>
   );
 };
@@ -281,12 +287,12 @@ const S16 = ({ t, t0, t1 }: ShotProps) => {
 // 17. "and Dr. Teo has *white* *hair.*" — Dra. Iara idosa.
 const S17 = ({ t, t0, t1 }: ShotProps) => {
   const wh = W(12, 'white');
-  const pose = track(t, P({ ry: 0.15, lean: 0.1 }), [{ at: wh, v: { lsz: 1.0, rsz: 1.0, lel: 0.5, rel: 0.5, hp: 0.05 } }]);
+  const pose = track(t, P({ ry: 0 }), [{ at: wh, v: { lsz: 1.0, rsz: 1.0, lel: 0.5, rel: 0.5, hp: 0.05 } }]);
   const face = faceAt(t, [{ at: t0, f: 'content' }, { at: wh, f: 'happy' }], 10);
   return (
     <>
       <Lab t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.1, 1.6, 4.4], [0, 1.35, 0], 30], [t1, [0, 1.6, 3.4], [0, 1.45, 0], 30]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.25, 5.6, 5.0, 0.15)} />
       <Character pose={pose} face={face} look={IARA_IDOSA} />
       <Sparkles t={t} from={wh} n={8} radius={0.7} center={[0, 2.4, 0]} size={0.16} />
     </>
@@ -301,9 +307,9 @@ const S18 = ({ t, t0, t1 }: ShotProps) => {
   return (
     <>
       <Lab t={t} />
-      <Character pose={P({ x: 0.9, z: -1.2, ry: -2.6 })} face={{ f: 'content', blink: 0, o: [] }} look={IARA_IDOSA} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.4, 1.7, 4.4], [0.2, 1.35, -0.4], 32], [t1, [0.1, 1.65, 3.6], [0.1, 1.4, -0.4], 32]]} />
-      <Character pose={P({ ...pose, x: -0.4 })} face={face} look={ASTRO} />
+      <Character pose={P({ x: 0.55, z: -1.0, ry: -0.5 })} face={{ f: 'content', blink: 0, o: [] }} look={IARA_IDOSA} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.25, 6.4, 5.8, 0.2)} />
+      <Character pose={P({ ...pose, x: -0.5, ry: 0.3 })} face={face} look={ASTRO} />
     </>
   );
 };
@@ -311,13 +317,13 @@ const S18 = ({ t, t0, t1 }: ShotProps) => {
 // 19. "and there's *no* ticket *back.*" — a placa "TICKET BACK" racha ao meio.
 const S19 = ({ t, t0, t1 }: ShotProps) => {
   const bk = W(13, 'back');
-  const pose = track(t, P({ ry: 0.2, hp: -0.2, hy: 0.3 }), [{ at: bk, v: { hp: 0.15, hy: 0, lsz: 0.15, rsz: 0.15 } }]);
+  const pose = track(t, P({ ry: 0, hp: -0.25 }), [{ at: bk, v: { hp: 0.15, hy: 0, lsz: 0.15, rsz: 0.15 } }]);
   const face = faceAt(t, [{ at: t0, f: 'lookUp' }, { at: bk, f: 'worried' }], 12);
   return (
     <>
       <Lab t={t} />
-      <BreakingSign t={t} appear={t0 + 0.15} at={bk} text="TICKET BACK" position={[0, 2.85, 0.3]} w={2.0} h={0.55} fg="#ffd23a" />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.2, 1.9, 4.6], [0, 1.8, 0], 32], [t1, [0.1, 1.8, 5.2], [0, 1.6, 0], 32]]} />
+      <BreakingSign t={t} appear={t0 + 0.15} at={bk} text="TICKET BACK" position={[0, 3.0, 0]} w={2.0} h={0.55} fg="#ffd23a" />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.6, 6.0, 5.6, 0.15)} />
       <Character pose={pose} face={face} look={ASTRO} />
     </>
   );
