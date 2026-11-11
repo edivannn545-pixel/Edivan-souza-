@@ -84,7 +84,7 @@ export const Film = ({ legendas, voz, musica }: FilmProps) => {
       {voz && <Audio src={staticFile('voz.mp3')} />}
       {musica && <Audio src={staticFile('musica.mp3')} volume={(f) => 0.11 * Math.min(1, f / (0.8 * fps), (durationInFrames - f) / (1.2 * fps))} />}
       {SFX.map((s, i) => (
-        <Sequence key={`sfx${i}`} from={Math.max(0, Math.round(s.at * fps))} durationInFrames={Math.round(3.5 * fps)} layout="none">
+        <Sequence key={`sfx${i}`} from={Math.max(0, Math.round(s.at * fps))} durationInFrames={Math.round(5 * fps)} layout="none">
           <Audio src={staticFile(`sfx/${s.file}`)} volume={s.vol} />
         </Sequence>
       ))}

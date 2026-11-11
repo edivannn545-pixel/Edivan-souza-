@@ -11,7 +11,8 @@ import { cobbleTex, crateTex, plasterTex, tileTex, windowsTex } from './textures
 // Afasta todas as câmeras um pouco (o elenco cabeça-esfera tem cabeça maior). 1 = distância original.
 export const DIST = 1.22;
 export type CamKey = [number, V3, V3, number?, number?]; // tempo, posição, alvo, fov, giro (inclinação holandesa, em radianos)
-export const Cam = ({ t, t0, t1, keys }: { t: number; t0: number; t1: number; keys: CamKey[] }) => {
+// shake = tremor da câmera em metros (decolagem, pouso). Função pura do tempo: o mesmo quadro sai sempre igual.
+export const Cam = ({ t, t0, t1, keys, shake = 0 }: { t: number; t0: number; t1: number; keys: CamKey[]; shake?: number }) => {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   useLayoutEffect(() => {
     let i = 0;
@@ -26,14 +27,18 @@ export const Cam = ({ t, t0, t1, keys }: { t: number; t0: number; t1: number; ke
     const xin = clamp01((t - (t1 - 0.3)) / 0.5);
     const f = DIST * creep * (1 - 0.04 * xin * xin) * (1 + 0.07 * Math.pow(1 - clamp01((t - t0) / 0.4), 2));
     camera.position.set(tgt[0] + (pos[0] - tgt[0]) * f, tgt[1] + (pos[1] - tgt[1]) * f, tgt[2] + (pos[2] - tgt[2]) * f);
-    camera.lookAt(tgt[0], tgt[1], tgt[2]);
+    if (shake > 0) {
+      camera.position.x += shake * (Math.sin(t * 71) + 0.5 * Math.sin(t * 133));
+      camera.position.y += shake * (Math.sin(t * 89 + 1) + 0.5 * Math.sin(t * 151));
+    }
+    camera.lookAt(tgt[0] + (shake > 0 ? shake * 0.5 * Math.sin(t * 97) : 0), tgt[1], tgt[2]);
     const roll = (a[4] ?? 0) + ((b[4] ?? 0) - (a[4] ?? 0)) * k;
     if (roll) camera.rotateZ(roll);
     camera.fov = fov * 1.6;
     camera.near = 0.05;
     camera.far = 200;
     camera.updateProjectionMatrix();
-  }, [camera, t, t0, t1, keys]);
+  }, [camera, t, t0, t1, keys, shake]);
   return null;
 };
 

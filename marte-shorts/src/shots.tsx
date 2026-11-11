@@ -116,7 +116,7 @@ const S05 = ({ t, t0, t1 }: ShotProps) => {
       <BaseLancamento />
       <Foguete t={t} position={[0, y, -1]} porta={1 - fecha} chama={seg(t, ign, ign + 0.25)} />
       <Fumaca t={t} from={ign} position={[0, 0, -1]} n={12} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t, [0.8, 3.2 + sobe * 0.9, 15], [0, 4.6 + sobe, -1], 40]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t, [0.8, 3.2 + sobe * 0.9, 15], [0, 4.6 + sobe, -1], 40]]} shake={0.12 * seg(t, ign, ign + 0.4)} />
     </>
   );
 };
@@ -133,7 +133,7 @@ const S06 = ({ t, t0, t1 }: ShotProps) => {
       <Earth t={t} position={[0, -8.2 - 1.5 * k, -4]} r={1.4 - 0.4 * k} />
       <PlanetaMarte t={t} position={[0, 8.6, -4]} r={0.9 + 0.5 * k} />
       <Foguete t={t} position={[0, -4.6, 0]} chama={1} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t, [3.0 * Math.sin(t * 0.8), 0.3, 15], [0, 0.2, 0], 40]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t, [3.0 * Math.sin(t * 0.8), 0.3, 15], [0, 0.2, 0], 40]]} shake={0.05} />
     </>
   );
 };
@@ -150,7 +150,7 @@ const S07 = ({ t, t0, t1 }: ShotProps) => {
       <Foguete t={t} position={[0, 0, 0]} porta={porta} />
       <PoeiraMarte t={t} at={t0 - 0.6} position={[0, 0, 0]} raio={3} />
       {porta > 0.3 && <Character pose={pose} face={face} look={ASTRO} />}
-      <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 4.6, 0.5], 11.5, 10.5, 0.4, -1.2, 34)} />
+      <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 4.6, 0.5], 11.5, 10.5, 0.4, -1.2, 34)} shake={0.15 * Math.max(0, 1 - (t - t0) / 0.7)} />
     </>
   );
 };
@@ -197,6 +197,7 @@ const S10 = ({ t, t0, t1 }: ShotProps) => {
   return (
     <>
       <SoloMarte t={t} />
+      <Sparkles t={t} from={W(6, '3')} n={8} radius={0.6} center={[-1.3, 2.8, -0.3]} size={0.14} />
       <ReguaPulo t={t} at={W(6, '3')} position={[-0.55, 0, -0.3]} h1={0.6} h3={1.8} />
       <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [-0.45, 1.9, 0], 7.8, 7.2, 0.25, 0.2)} />
       <Character pose={pose} face={face} look={ASTRO} />
@@ -215,6 +216,7 @@ const S11 = ({ t, t0, t1 }: ShotProps) => {
       <SoloMarte t={t} />
       <Gauge t={t} from={t0 + 0.2} at={te} value={0.33} label="GRAVIDADE" position={[0, 3.85, -0.2]} scale={0.85} />
       <FloatSign t={t} at={W(7, 'gravidade')} text="1/3 DA TERRA" position={[0, 4.85, -0.2]} w={1.9} h={0.45} />
+      <Sparkles t={t} from={W(7, 'gravidade')} n={8} radius={1.0} center={[0, 4.85, -0.2]} size={0.16} />
       <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 2.4, 0], 8.0, 7.4, -0.4, 0.2)} />
       <Character pose={P({ ...pose, y })} face={face} look={ASTRO} />
     </>
@@ -303,6 +305,7 @@ const S16 = ({ t, t0, t1 }: ShotProps) => {
     <>
       <SoloMarte t={t} />
       <Calendar t={t} from={t0 + 0.1} at={d} pages={pages} position={[0, 3.55, -0.2]} scale={1.3} />
+      <Sparkles t={t} from={d} n={10} radius={0.9} center={[0, 3.55, -0.2]} size={0.16} />
       <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 2.3, 0], 7.8, 7.0, -0.6, 0.1)} />
       <Character pose={pose} face={face} look={ASTRO} />
     </>
@@ -363,6 +366,7 @@ const S20 = ({ t, t0, t1 }: ShotProps) => {
       <PlanetaMarte t={t} position={[0, -5.2, 0]} r={2} />
       <Earth t={t} position={[0, 5.4, -1]} r={1.6} />
       <Sinal t={t} from={W(16, 'mensagem') - 0.3} at={t1 + 1.2} de={de} para={para} />
+      <Sparkles t={t} from={n20} n={10} radius={2.2} center={[0, -1.2, 3]} size={0.3} />
       <FloatSign t={t} at={n20} text="ATÉ 20 MINUTOS" position={[0, -1.2, 3]} w={4.6} h={1.05} />
       <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 0.2, 0], 16.5, 15.5, 0.4, 0.0, 36)} />
     </>
@@ -408,9 +412,9 @@ export const SHOTS: Shot[] = [
   { from: W(2, 0), name: '04 nino vai ao foguete', C: S04 },
   { from: W(2, 'primeiro') - 0.1, name: '05 decolagem', C: S05 },
   { from: W(3, 0), name: '06 viagem', C: S06, trans: 'flash' },
-  { from: W(4, 0), name: '07 abre a porta', C: S07 },
+  { from: W(4, 0), name: '07 abre a porta', C: S07, trans: 'flash' },
   { from: W(4, 'pula') - 0.05, name: '08 pula', C: S08 },
-  { from: W(5, 0), name: '09 uau', C: S09 },
+  { from: W(5, 0), name: '09 uau', C: S09, trans: 'flash' },
   { from: W(6, 0), name: '10 3x mais alto', C: S10 },
   { from: W(7, 0), name: '11 gravidade', C: S11 },
   { from: W(8, 0), name: '12 capacete', C: S12, trans: 'flash' },
@@ -419,7 +423,7 @@ export const SHOTS: Shot[] = [
   { from: W(11, 0), name: '15 dia', C: S15, trans: 'flash' },
   { from: W(12, 0), name: '16 ano', C: S16 },
   { from: W(13, 0), name: '17 por do sol', C: S17, trans: 'dissolve' },
-  { from: W(14, 0), name: '18 azul', C: S18 },
+  { from: W(14, 0), name: '18 azul', C: S18, trans: 'flash' },
   { from: W(15, 0), name: '19 liga', C: S19 },
   { from: W(16, 'mensagem') - 0.2, name: '20 mensagem', C: S20 },
   { from: W(16, 'para'), name: '21 chegar', C: S21 },
@@ -427,4 +431,36 @@ export const SHOTS: Shot[] = [
 ];
 
 // Sem efeitos sonoros: o usuário coloca os dele na edição.
-export const SFX: { at: number; file: string; vol: number }[] = [];
+// Efeitos sonoros profissionais (gerados no ElevenLabs da conta do usuário), em public/sfx/.
+// Volumes baixos para a voz ficar sempre na frente.
+export const SFX: { at: number; file: string; vol: number }[] = [
+  { at: 0.02, file: 'whoosh.mp3', vol: 0.35 },
+  { at: W(0, 'marte') - 0.1, file: 'brilho.mp3', vol: 0.35 },
+  { at: W(1, 'foguete') - 0.2, file: 'whoosh.mp3', vol: 0.25 },
+  { at: W(2, 'primeiro') - 0.1, file: 'porta-fecha.mp3', vol: 0.35 },
+  { at: W(2, 'primeiro') + 0.3, file: 'foguete.mp3', vol: 0.5 },
+  { at: W(3, 0), file: 'warp.mp3', vol: 0.4 },
+  { at: W(4, 0) - 0.05, file: 'pouso.mp3', vol: 0.45 },
+  { at: W(4, 'abre') - 0.3, file: 'porta-abre.mp3', vol: 0.3 },
+  { at: W(4, 'pula') - 0.05, file: 'pulo.mp3', vol: 0.4 },
+  { at: W(5, 0), file: 'brilho.mp3', vol: 0.35 },
+  { at: W(6, 'alto') - 0.9, file: 'pulo-curto.mp3', vol: 0.4 },
+  { at: W(6, '3'), file: 'ding.mp3', vol: 0.35 },
+  { at: W(7, 'terço'), file: 'ding.mp3', vol: 0.35 },
+  { at: W(8, 'não'), file: 'alerta.mp3', vol: 0.3 },
+  { at: W(9, 'gás'), file: 'ding.mp3', vol: 0.3 },
+  { at: W(10, '80'), file: 'gelo.mp3', vol: 0.45 },
+  { at: W(11, 'dia'), file: 'relogio.mp3', vol: 0.3 },
+  { at: W(11, 'dia') + 1.0, file: 'relogio.mp3', vol: 0.3 },
+  { at: W(11, 'dia') + 2.0, file: 'relogio.mp3', vol: 0.3 },
+  { at: W(11, '37'), file: 'ding.mp3', vol: 0.35 },
+  { at: W(12, 'dois'), file: 'ding.mp3', vol: 0.35 },
+  { at: W(13, 0), file: 'whoosh.mp3', vol: 0.2 },
+  { at: W(14, 'azul'), file: 'brilho.mp3', vol: 0.4 },
+  { at: W(15, 'liga'), file: 'radio.mp3', vol: 0.3 },
+  { at: W(16, 'mensagem'), file: 'radio2.mp3', vol: 0.25 },
+  { at: W(16, '20'), file: 'ding.mp3', vol: 0.35 },
+  { at: W(16, 'chegar'), file: 'brilho.mp3', vol: 0.35 },
+  { at: W(17, 0), file: 'whoosh.mp3', vol: 0.25 },
+  { at: W(17, 'passagem'), file: 'ding.mp3', vol: 0.4 },
+];
