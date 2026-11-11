@@ -646,18 +646,5 @@ export const SHOTS: Shot[] = [
 ];
 
 // Efeitos sonoros (public/sfx/), ancorados nas palavras.
-export const SFX: { at: number; file: string; vol: number }[] = [
-  { at: 0, file: 'glitch.mp3', vol: 0.35 },
-  { at: W(0, 'stretched') - 0.1, file: 'warp.mp3', vol: 0.4 },
-  { at: W(4, 0) - 0.1, file: 'whoosh.mp3', vol: 0.3 },
-  { at: W(5, 'light') - 0.1, file: 'whoosh.mp3', vol: 0.35 },
-  { at: W(7, 'stretch') - 0.1, file: 'warp.mp3', vol: 0.4 },
-  { at: W(10, 'spaceship') - 0.15, file: 'whoosh.mp3', vol: 0.3 },
-  { at: W(12, 'freeze') - 0.05, file: 'heartbeat.mp3', vol: 0.45 },
-  { at: W(13, 'disappears'), file: 'glitch.mp3', vol: 0.3 },
-  { at: W(14, 'normal') - 0.3, file: 'clock.mp3', vol: 0.35 },
-  { at: W(19, 'galaxy') - 0.2, file: 'whoosh.mp3', vol: 0.3 },
-  { at: W(21, 'first') - 0.05, file: 'heartbeat.mp3', vol: 0.4 },
-  { at: W(24, 'break') - 0.05, file: 'glitch.mp3', vol: 0.35 },
-  { at: W(28, 'jump') - 0.15, file: 'whoosh.mp3', vol: 0.3 },
-];
+// Sem efeitos sonoros: o usuário coloca os dele na edição.
+export const SFX: { at: number; file: string; vol: number }[] = [];
