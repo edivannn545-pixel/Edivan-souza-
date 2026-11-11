@@ -1,0 +1,31 @@
+ESTÚDIO DE PRODUÇÃO DE ANIMAÇÕES 3D
+====================================
+
+Obrigado pela compra! Para começar são 3 passos:
+
+1. DESCOMPACTE este zip numa pasta (de preferência com um caminho curto, ex.: C:\shorts\ ou ~/shorts/).
+
+2. ABRA O CLAUDE CODE DENTRO DESSA PASTA
+   - No terminal:   cd estudio-animacoes-3d   e depois   claude
+   - No app Claude (aba Code): escolha a pasta "estudio-animacoes-3d" como pasta do projeto.
+
+3. ESCREVA QUALQUER COISA (um "oi" ou já o roteiro do seu vídeo).
+   O Claude mostra o elenco, explica como conectar o ElevenLabs e começa a montar o seu vídeo.
+
+Também funciona arrastar o zip direto na conversa do Claude Code: ele descompacta sozinho.
+(Não funciona no claude.ai pelo navegador — use o Claude Code.)
+
+O QUE VOCÊ PRECISA
+- Claude Code (assinatura Claude).
+- Node.js 18 ou mais novo (nodejs.org).
+- Google Chrome instalado (recomendado).
+- Sua própria conta ElevenLabs para a narração (o plano grátis serve para testar).
+  Este kit NÃO inclui conta nem chave de ninguém — o Claude explica como conectar a sua.
+
+O QUE VEM NO KIT
+- ELENCO.png ........ os 20 personagens, 6 tipos de corpo e 12 roupas especiais
+- CLAUDE.md ......... as instruções e as regras do estilo (o Claude lê sozinho)
+- src/ .............. o motor de animação (personagens, cenários, objetos, câmera, rostos)
+- tools/ ............ voz, prévias, folha do elenco e verificação
+- O Remotion é grátis para pessoas físicas e empresas pequenas; empresas maiores precisam de licença
+  (remotion.dev/license).

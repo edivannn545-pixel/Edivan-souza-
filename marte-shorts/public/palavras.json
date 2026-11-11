@@ -1,0 +1,607 @@
+[
+{
+"text": "E",
+"start": 0.0,
+"end": 0.2
+},
+{
+"text": "se",
+"start": 0.2,
+"end": 0.36
+},
+{
+"text": "você",
+"start": 0.36,
+"end": 0.76
+},
+{
+"text": "vivesse",
+"start": 0.76,
+"end": 1.14
+},
+{
+"text": "em",
+"start": 1.14,
+"end": 1.36
+},
+{
+"text": "Marte?",
+"start": 1.36,
+"end": 2.18
+},
+{
+"text": "A",
+"start": 2.38,
+"end": 2.5
+},
+{
+"text": "doutora",
+"start": 2.5,
+"end": 2.84
+},
+{
+"text": "Yara",
+"start": 2.84,
+"end": 3.12
+},
+{
+"text": "construiu",
+"start": 3.12,
+"end": 3.6
+},
+{
+"text": "um",
+"start": 3.6,
+"end": 3.8
+},
+{
+"text": "foguete.",
+"start": 3.8,
+"end": 4.32
+},
+{
+"text": "E",
+"start": 4.56,
+"end": 4.7
+},
+{
+"text": "adivinha",
+"start": 4.7,
+"end": 5.04
+},
+{
+"text": "quem",
+"start": 5.04,
+"end": 5.18
+},
+{
+"text": "vai",
+"start": 5.18,
+"end": 5.4
+},
+{
+"text": "ser",
+"start": 5.4,
+"end": 5.56
+},
+{
+"text": "o",
+"start": 5.56,
+"end": 5.78
+},
+{
+"text": "primeiro",
+"start": 5.78,
+"end": 6.08
+},
+{
+"text": "a",
+"start": 6.08,
+"end": 6.2
+},
+{
+"text": "morar",
+"start": 6.2,
+"end": 6.56
+},
+{
+"text": "lá?",
+"start": 6.56,
+"end": 6.76
+},
+{
+"text": "Você!",
+"start": 7.68,
+"end": 8.24
+},
+{
+"text": "Você",
+"start": 8.76,
+"end": 9.04
+},
+{
+"text": "abre",
+"start": 9.04,
+"end": 9.2
+},
+{
+"text": "a",
+"start": 9.2,
+"end": 9.46
+},
+{
+"text": "porta",
+"start": 9.46,
+"end": 9.72
+},
+{
+"text": "e",
+"start": 9.72,
+"end": 9.98
+},
+{
+"text": "pula.",
+"start": 9.98,
+"end": 10.62
+},
+{
+"text": "Uau!",
+"start": 10.96,
+"end": 11.52
+},
+{
+"text": "Você",
+"start": 11.7,
+"end": 11.9
+},
+{
+"text": "vai",
+"start": 11.9,
+"end": 12.1
+},
+{
+"text": "3",
+"start": 12.1,
+"end": 12.42
+},
+{
+"text": "vezes",
+"start": 12.42,
+"end": 12.84
+},
+{
+"text": "mais",
+"start": 12.84,
+"end": 13.2
+},
+{
+"text": "alto",
+"start": 13.2,
+"end": 13.46
+},
+{
+"text": "do",
+"start": 13.46,
+"end": 13.62
+},
+{
+"text": "que",
+"start": 13.62,
+"end": 13.66
+},
+{
+"text": "na",
+"start": 13.66,
+"end": 13.94
+},
+{
+"text": "Terra.",
+"start": 13.94,
+"end": 14.24
+},
+{
+"text": "Marte",
+"start": 14.9,
+"end": 15.2
+},
+{
+"text": "tem",
+"start": 15.2,
+"end": 15.36
+},
+{
+"text": "só",
+"start": 15.36,
+"end": 15.72
+},
+{
+"text": "1",
+"start": 15.72,
+"end": 16.0
+},
+{
+"text": "terço",
+"start": 16.0,
+"end": 16.4
+},
+{
+"text": "da",
+"start": 16.4,
+"end": 16.58
+},
+{
+"text": "gravidade",
+"start": 16.58,
+"end": 17.08
+},
+{
+"text": "da",
+"start": 17.08,
+"end": 17.32
+},
+{
+"text": "Terra.",
+"start": 17.32,
+"end": 17.6
+},
+{
+"text": "Mas",
+"start": 17.98,
+"end": 18.16
+},
+{
+"text": "não",
+"start": 18.16,
+"end": 18.46
+},
+{
+"text": "tire",
+"start": 18.46,
+"end": 18.6
+},
+{
+"text": "o",
+"start": 18.6,
+"end": 18.82
+},
+{
+"text": "capacete.",
+"start": 18.82,
+"end": 19.38
+},
+{
+"text": "O",
+"start": 19.7,
+"end": 19.82
+},
+{
+"text": "ar",
+"start": 19.82,
+"end": 19.94
+},
+{
+"text": "é",
+"start": 19.94,
+"end": 20.22
+},
+{
+"text": "fino",
+"start": 20.22,
+"end": 20.44
+},
+{
+"text": "e",
+"start": 20.44,
+"end": 20.76
+},
+{
+"text": "quase",
+"start": 20.76,
+"end": 21.08
+},
+{
+"text": "todo",
+"start": 21.08,
+"end": 21.34
+},
+{
+"text": "é",
+"start": 21.34,
+"end": 21.62
+},
+{
+"text": "gás",
+"start": 21.62,
+"end": 21.96
+},
+{
+"text": "carbônico.",
+"start": 21.96,
+"end": 22.6
+},
+{
+"text": "À",
+"start": 22.96,
+"end": 23.08
+},
+{
+"text": "noite,",
+"start": 23.08,
+"end": 23.44
+},
+{
+"text": "a",
+"start": 23.68,
+"end": 23.82
+},
+{
+"text": "temperatura",
+"start": 23.82,
+"end": 24.28
+},
+{
+"text": "cai",
+"start": 24.28,
+"end": 24.52
+},
+{
+"text": "para",
+"start": 24.52,
+"end": 24.84
+},
+{
+"text": "80",
+"start": 24.84,
+"end": 25.5
+},
+{
+"text": "graus",
+"start": 25.5,
+"end": 25.92
+},
+{
+"text": "negativos.",
+"start": 25.92,
+"end": 26.68
+},
+{
+"text": "Lá,",
+"start": 26.68,
+"end": 27.62
+},
+{
+"text": "um",
+"start": 27.9,
+"end": 28.06
+},
+{
+"text": "dia",
+"start": 28.06,
+"end": 28.22
+},
+{
+"text": "dura",
+"start": 28.22,
+"end": 28.48
+},
+{
+"text": "24",
+"start": 28.48,
+"end": 29.12
+},
+{
+"text": "horas",
+"start": 29.12,
+"end": 29.66
+},
+{
+"text": "e",
+"start": 29.66,
+"end": 30.02
+},
+{
+"text": "37",
+"start": 30.02,
+"end": 30.5
+},
+{
+"text": "minutos.",
+"start": 30.5,
+"end": 31.24
+},
+{
+"text": "Mais",
+"start": 31.66,
+"end": 31.82
+},
+{
+"text": "um",
+"start": 31.82,
+"end": 32.1
+},
+{
+"text": "ano,",
+"start": 32.1,
+"end": 32.46
+},
+{
+"text": "quase",
+"start": 33.0,
+"end": 33.2
+},
+{
+"text": "dois",
+"start": 33.2,
+"end": 33.5
+},
+{
+"text": "anos",
+"start": 33.5,
+"end": 33.76
+},
+{
+"text": "da",
+"start": 33.76,
+"end": 34.06
+},
+{
+"text": "Terra.",
+"start": 34.06,
+"end": 34.36
+},
+{
+"text": "E",
+"start": 34.98,
+"end": 35.1
+},
+{
+"text": "o",
+"start": 35.1,
+"end": 35.24
+},
+{
+"text": "pôr",
+"start": 35.24,
+"end": 35.38
+},
+{
+"text": "do",
+"start": 35.38,
+"end": 35.56
+},
+{
+"text": "sol",
+"start": 35.56,
+"end": 35.7
+},
+{
+"text": "em",
+"start": 35.7,
+"end": 35.92
+},
+{
+"text": "Marte?",
+"start": 35.92,
+"end": 36.36
+},
+{
+"text": "É",
+"start": 36.72,
+"end": 36.92
+},
+{
+"text": "azul.",
+"start": 36.92,
+"end": 37.28
+},
+{
+"text": "Você",
+"start": 37.62,
+"end": 37.88
+},
+{
+"text": "liga",
+"start": 37.88,
+"end": 38.1
+},
+{
+"text": "para",
+"start": 38.1,
+"end": 38.32
+},
+{
+"text": "casa.",
+"start": 38.32,
+"end": 38.66
+},
+{
+"text": "Mas",
+"start": 38.86,
+"end": 39.08
+},
+{
+"text": "a",
+"start": 39.08,
+"end": 39.32
+},
+{
+"text": "sua",
+"start": 39.32,
+"end": 39.48
+},
+{
+"text": "mensagem",
+"start": 39.48,
+"end": 40.22
+},
+{
+"text": "leva",
+"start": 40.22,
+"end": 40.52
+},
+{
+"text": "até",
+"start": 40.52,
+"end": 40.88
+},
+{
+"text": "20",
+"start": 40.88,
+"end": 41.2
+},
+{
+"text": "minutos",
+"start": 41.2,
+"end": 41.64
+},
+{
+"text": "para",
+"start": 41.64,
+"end": 41.94
+},
+{
+"text": "chegar.",
+"start": 41.94,
+"end": 42.3
+},
+{
+"text": "E",
+"start": 43.18,
+"end": 43.38
+},
+{
+"text": "aí,",
+"start": 43.38,
+"end": 43.64
+},
+{
+"text": "você",
+"start": 43.84,
+"end": 44.14
+},
+{
+"text": "compraria",
+"start": 44.14,
+"end": 44.6
+},
+{
+"text": "uma",
+"start": 44.6,
+"end": 44.8
+},
+{
+"text": "passagem",
+"start": 44.8,
+"end": 45.38
+},
+{
+"text": "para",
+"start": 45.38,
+"end": 45.52
+},
+{
+"text": "Marte?",
+"start": 45.52,
+"end": 46.0
+}
+]
