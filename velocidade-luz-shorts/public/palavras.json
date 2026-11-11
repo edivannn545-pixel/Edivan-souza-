@@ -1,0 +1,572 @@
+[
+{
+"text": "What",
+"start": 0.0,
+"end": 0.26
+},
+{
+"text": "if",
+"start": 0.26,
+"end": 0.42
+},
+{
+"text": "you",
+"start": 0.42,
+"end": 0.64
+},
+{
+"text": "traveled",
+"start": 0.64,
+"end": 0.92
+},
+{
+"text": "at",
+"start": 0.92,
+"end": 1.08
+},
+{
+"text": "the",
+"start": 1.08,
+"end": 1.34
+},
+{
+"text": "speed",
+"start": 1.34,
+"end": 1.48
+},
+{
+"text": "of",
+"start": 1.48,
+"end": 1.74
+},
+{
+"text": "light?",
+"start": 1.74,
+"end": 2.12
+},
+{
+"text": "Dr.",
+"start": 2.6,
+"end": 2.94
+},
+{
+"text": "Teo",
+"start": 3.14,
+"end": 3.28
+},
+{
+"text": "just",
+"start": 3.28,
+"end": 3.58
+},
+{
+"text": "finished",
+"start": 3.58,
+"end": 3.84
+},
+{
+"text": "the",
+"start": 3.84,
+"end": 4.08
+},
+{
+"text": "fastest",
+"start": 4.08,
+"end": 4.52
+},
+{
+"text": "ship",
+"start": 4.52,
+"end": 4.8
+},
+{
+"text": "in",
+"start": 4.8,
+"end": 4.96
+},
+{
+"text": "the",
+"start": 4.96,
+"end": 5.14
+},
+{
+"text": "world.",
+"start": 5.14,
+"end": 5.52
+},
+{
+"text": "And",
+"start": 6.06,
+"end": 6.22
+},
+{
+"text": "guess",
+"start": 6.22,
+"end": 6.34
+},
+{
+"text": "who",
+"start": 6.34,
+"end": 6.46
+},
+{
+"text": "he",
+"start": 6.46,
+"end": 6.7
+},
+{
+"text": "picked",
+"start": 6.7,
+"end": 6.84
+},
+{
+"text": "to",
+"start": 6.84,
+"end": 7.08
+},
+{
+"text": "fly",
+"start": 7.08,
+"end": 7.24
+},
+{
+"text": "it?",
+"start": 7.24,
+"end": 7.56
+},
+{
+"text": "You.",
+"start": 7.76,
+"end": 8.28
+},
+{
+"text": "Light",
+"start": 8.68,
+"end": 8.96
+},
+{
+"text": "travels",
+"start": 8.96,
+"end": 9.38
+},
+{
+"text": "300",
+"start": 9.38,
+"end": 10.16
+},
+{
+"text": ",000",
+"start": 10.16,
+"end": 10.6
+},
+{
+"text": "kilometers",
+"start": 10.6,
+"end": 11.06
+},
+{
+"text": "per",
+"start": 11.06,
+"end": 11.42
+},
+{
+"text": "second.",
+"start": 11.42,
+"end": 11.78
+},
+{
+"text": "In",
+"start": 12.18,
+"end": 12.46
+},
+{
+"text": "one",
+"start": 12.46,
+"end": 12.68
+},
+{
+"text": "second,",
+"start": 12.68,
+"end": 13.04
+},
+{
+"text": "you",
+"start": 13.2,
+"end": 13.3
+},
+{
+"text": "could",
+"start": 13.3,
+"end": 13.56
+},
+{
+"text": "circle",
+"start": 13.56,
+"end": 13.82
+},
+{
+"text": "the",
+"start": 13.82,
+"end": 14.04
+},
+{
+"text": "Earth",
+"start": 14.04,
+"end": 14.18
+},
+{
+"text": "more",
+"start": 14.18,
+"end": 14.46
+},
+{
+"text": "than",
+"start": 14.46,
+"end": 14.68
+},
+{
+"text": "seven",
+"start": 14.68,
+"end": 15.02
+},
+{
+"text": "times.",
+"start": 15.02,
+"end": 15.62
+},
+{
+"text": "You",
+"start": 16.7,
+"end": 17.0
+},
+{
+"text": "would",
+"start": 17.0,
+"end": 17.16
+},
+{
+"text": "reach",
+"start": 17.16,
+"end": 17.36
+},
+{
+"text": "the",
+"start": 17.36,
+"end": 17.54
+},
+{
+"text": "moon",
+"start": 17.54,
+"end": 17.68
+},
+{
+"text": "in",
+"start": 17.68,
+"end": 17.82
+},
+{
+"text": "just",
+"start": 17.82,
+"end": 18.04
+},
+{
+"text": "over",
+"start": 18.04,
+"end": 18.32
+},
+{
+"text": "one",
+"start": 18.32,
+"end": 18.58
+},
+{
+"text": "second.",
+"start": 18.58,
+"end": 19.04
+},
+{
+"text": "And",
+"start": 20.18,
+"end": 20.52
+},
+{
+"text": "the",
+"start": 20.52,
+"end": 20.76
+},
+{
+"text": "sun",
+"start": 20.76,
+"end": 21.18
+},
+{
+"text": "in",
+"start": 21.18,
+"end": 21.86
+},
+{
+"text": "eight",
+"start": 21.86,
+"end": 22.06
+},
+{
+"text": "minutes.",
+"start": 22.06,
+"end": 22.46
+},
+{
+"text": "But",
+"start": 23.52,
+"end": 23.96
+},
+{
+"text": "here's",
+"start": 23.96,
+"end": 24.26
+},
+{
+"text": "where",
+"start": 24.26,
+"end": 24.42
+},
+{
+"text": "it",
+"start": 24.42,
+"end": 24.56
+},
+{
+"text": "gets",
+"start": 24.56,
+"end": 24.76
+},
+{
+"text": "weird.",
+"start": 24.76,
+"end": 25.24
+},
+{
+"text": "The",
+"start": 26.18,
+"end": 26.4
+},
+{
+"text": "faster",
+"start": 26.4,
+"end": 26.72
+},
+{
+"text": "you",
+"start": 26.72,
+"end": 26.94
+},
+{
+"text": "go,",
+"start": 26.94,
+"end": 27.2
+},
+{
+"text": "the",
+"start": 27.26,
+"end": 27.48
+},
+{
+"text": "slower",
+"start": 27.48,
+"end": 27.68
+},
+{
+"text": "time",
+"start": 27.68,
+"end": 27.96
+},
+{
+"text": "passes",
+"start": 27.96,
+"end": 28.34
+},
+{
+"text": "for",
+"start": 28.34,
+"end": 28.64
+},
+{
+"text": "you.",
+"start": 28.64,
+"end": 28.92
+},
+{
+"text": "On",
+"start": 30.0,
+"end": 30.38
+},
+{
+"text": "the",
+"start": 30.38,
+"end": 30.6
+},
+{
+"text": "ship,",
+"start": 30.6,
+"end": 30.86
+},
+{
+"text": "the",
+"start": 31.2,
+"end": 31.3
+},
+{
+"text": "trip",
+"start": 31.3,
+"end": 31.44
+},
+{
+"text": "lasted",
+"start": 31.44,
+"end": 31.84
+},
+{
+"text": "just",
+"start": 31.84,
+"end": 32.12
+},
+{
+"text": "a",
+"start": 32.12,
+"end": 32.3
+},
+{
+"text": "few",
+"start": 32.3,
+"end": 32.4
+},
+{
+"text": "minutes.",
+"start": 32.4,
+"end": 32.8
+},
+{
+"text": "On",
+"start": 33.22,
+"end": 33.3
+},
+{
+"text": "Earth,",
+"start": 33.3,
+"end": 33.54
+},
+{
+"text": "years",
+"start": 33.88,
+"end": 33.88
+},
+{
+"text": "went",
+"start": 33.88,
+"end": 34.12
+},
+{
+"text": "by.",
+"start": 34.12,
+"end": 34.72
+},
+{
+"text": "You",
+"start": 36.12,
+"end": 36.26
+},
+{
+"text": "come",
+"start": 36.26,
+"end": 36.44
+},
+{
+"text": "back",
+"start": 36.44,
+"end": 36.7
+},
+{
+"text": "home,",
+"start": 36.7,
+"end": 37.04
+},
+{
+"text": "and",
+"start": 37.38,
+"end": 37.5
+},
+{
+"text": "Dr.",
+"start": 37.5,
+"end": 37.74
+},
+{
+"text": "Teo",
+"start": 37.94,
+"end": 38.04
+},
+{
+"text": "has",
+"start": 38.04,
+"end": 38.3
+},
+{
+"text": "white",
+"start": 38.3,
+"end": 38.54
+},
+{
+"text": "hair.",
+"start": 38.54,
+"end": 38.84
+},
+{
+"text": "You",
+"start": 40.28,
+"end": 40.54
+},
+{
+"text": "traveled",
+"start": 40.54,
+"end": 40.84
+},
+{
+"text": "to",
+"start": 40.84,
+"end": 41.04
+},
+{
+"text": "the",
+"start": 41.04,
+"end": 41.2
+},
+{
+"text": "future,",
+"start": 41.2,
+"end": 41.62
+},
+{
+"text": "and",
+"start": 42.72,
+"end": 42.86
+},
+{
+"text": "there's",
+"start": 42.86,
+"end": 43.08
+},
+{
+"text": "no",
+"start": 43.08,
+"end": 43.22
+},
+{
+"text": "ticket",
+"start": 43.22,
+"end": 43.46
+},
+{
+"text": "back.",
+"start": 43.46,
+"end": 43.76
+}
+]
