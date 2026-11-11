@@ -40,7 +40,7 @@ const S01 = ({ t, t0, t1 }: ShotProps) => (
     <directionalLight position={[-5, 3, 6]} intensity={2.4} color="#fff1dc" />
     <Stars />
     <PlanetaMarte t={t} r={2.2} />
-    <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 0, 0], 9.5, 6.5, 0.4, 0.2, 34)} />
+    <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 0, 0], 10.5, 8.8, 0.4, 0.2, 34)} />
   </>
 );
 const O01 = ({ t }: ShotProps) => (
@@ -71,8 +71,8 @@ const S02 = ({ t, t0, t1 }: ShotProps) => {
   return (
     <>
       <BaseLancamento />
-      <Foguete t={t} position={[0, 0.12, -1]} />
-      <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 1.5, 3], 6.4, 5.6, 0.5, 0.1)} />
+      <Foguete t={t} position={[0, 0.12, -3]} />
+      <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 3.4, 1.0], 11.5, 11.0, -0.3, -0.4)} />
       <Character pose={pose} face={face} look={IARA} />
     </>
   );
@@ -80,12 +80,12 @@ const S02 = ({ t, t0, t1 }: ShotProps) => {
 
 // 3. "*foguete.*" — grua: a câmera sobe pelo foguete da base até o nariz.
 const S03 = ({ t, t0, t1 }: ShotProps) => {
-  const y = 1.5 + 6.5 * seg(t, t0, t1 + 0.2);
+  const k = seg(t, t0, t1 + 0.2);
   return (
     <>
       <BaseLancamento />
       <Foguete t={t} position={[0, 0.12, -1]} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t, [1.2 * Math.sin(t * 0.6), y - 0.8, 7.5], [0, y, -1], 36]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 4.8, -1], 12.5, 11.8, 0.8, -3.2 + 3.6 * k, 34)} />
     </>
   );
 };
@@ -99,7 +99,7 @@ const S04 = ({ t, t0, t1 }: ShotProps) => {
     <>
       <BaseLancamento />
       <Foguete t={t} position={[0, 0.12, -1]} porta={1} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t, [3.2, 1.9, z + 4.0], [0, 1.3, z], 34]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t, [7.5, 3.6, z + 9.0], [0, 3.8, (z - 1) / 2], 36]]} />
       <Character pose={pose} face={face} look={ASTRO} />
     </>
   );
@@ -115,8 +115,8 @@ const S05 = ({ t, t0, t1 }: ShotProps) => {
     <>
       <BaseLancamento />
       <Foguete t={t} position={[0, y, -1]} porta={1 - fecha} chama={seg(t, ign, ign + 0.25)} />
-      <Fumaca t={t} from={ign} position={[0, 0, -1]} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t, [0.6, 2.2 + sobe * 0.85, 13], [0, 4.4 + sobe, -1], 36]]} />
+      <Fumaca t={t} from={ign} position={[0, 0, -1]} n={12} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t, [0.8, 3.2 + sobe * 0.9, 15], [0, 4.6 + sobe, -1], 40]]} />
     </>
   );
 };
@@ -130,10 +130,10 @@ const S06 = ({ t, t0, t1 }: ShotProps) => {
       <directionalLight position={[-5, 4, 6]} intensity={2.2} color="#fff1dc" />
       <Stars />
       <StarStreaks t={t} speed={30} n={120} />
-      <Earth t={t} position={[0, -6 - 6 * k, -8]} r={4} />
-      <PlanetaMarte t={t} position={[0, 26 - 4 * k, -30]} r={3 + 2 * k} />
-      <Foguete t={t} position={[0, -4.5, 0]} chama={1} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t, [3.5 * Math.sin(t * 0.8), 0.5, 14], [0, 0.8, 0], 36]]} />
+      <Earth t={t} position={[0, -8.2 - 1.5 * k, -4]} r={1.4 - 0.4 * k} />
+      <PlanetaMarte t={t} position={[0, 8.6, -4]} r={0.9 + 0.5 * k} />
+      <Foguete t={t} position={[0, -4.6, 0]} chama={1} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t, [3.0 * Math.sin(t * 0.8), 0.3, 15], [0, 0.2, 0], 40]]} />
     </>
   );
 };
@@ -150,7 +150,7 @@ const S07 = ({ t, t0, t1 }: ShotProps) => {
       <Foguete t={t} position={[0, 0, 0]} porta={porta} />
       <PoeiraMarte t={t} at={t0 - 0.6} position={[0, 0, 0]} raio={3} />
       {porta > 0.3 && <Character pose={pose} face={face} look={ASTRO} />}
-      <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 2.2, 1], 7.0, 6.0, 0.4, 0.1)} />
+      <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 4.6, 0.5], 11.5, 10.5, 0.4, -1.2, 34)} />
     </>
   );
 };
@@ -167,7 +167,7 @@ const S08 = ({ t, t0, t1 }: ShotProps) => {
     <>
       <SoloMarte t={t} />
       <Foguete t={t} position={[0, 0, 0]} porta={1} />
-      <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, y + 1.1, z], 6.4, 5.8, -0.5, 0.2)} />
+      <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 2.6 + 0.6 * y, z * 0.5], 11.0, 10.0, -0.5, -0.4, 36)} />
       <Character pose={pose} face={face} look={ASTRO} />
     </>
   );
@@ -181,7 +181,6 @@ const S09 = ({ t, t0, t1 }: ShotProps) => {
   return (
     <>
       <SoloMarte t={t} />
-      <Foguete t={t} position={[4.5, 0, -8]} porta={1} />
       <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, y + 1.1, 3], 6.2, 5.6, 0.6, -1.6)} />
       <Character pose={pose} face={face} look={ASTRO} />
       <Sparkles t={t} from={t0} n={10} radius={1.3} center={[0, y + 1.3, 3]} />
@@ -246,9 +245,9 @@ const S13 = ({ t, t0, t1 }: ShotProps) => {
   return (
     <>
       <SoloMarte t={t} />
-      <NuvemCO2 t={t} from={W(9, 'ar')} centro={[0, 1.4, 0]} />
+      <NuvemCO2 t={t} from={W(9, 'ar')} centro={[0, 1.4, 0]} raio={1.15} />
       <FloatSign t={t} at={ga} text="95% CO2" position={[0, 3.35, 0]} w={2.3} h={0.62} />
-      <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 1.7, 0], 6.6, 5.8, 0.9, 0.2)} />
+      <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 1.8, 0], 7.6, 7.0, 0.8, 0.2)} />
       <Character pose={pose} face={face} look={ASTRO} />
     </>
   );
@@ -276,7 +275,7 @@ const S15 = ({ t, t0, t1 }: ShotProps) => {
   const n24 = W(11, '24');
   const n37 = W(11, '37');
   const k = seg(t, t0, t1, (x) => x);
-  const sol: V3 = [-14 + 28 * k, 6 + 10 * Math.sin(k * Math.PI), -40];
+  const sol: V3 = [-7 + 14 * k, 10 + 6 * Math.sin(k * Math.PI), -40];
   const txt = t >= n37 - 0.05 ? '24H 37MIN' : '24 HORAS';
   const pose = track(t, P({ hy: -0.4, hp: -0.3 }), [{ at: n24, v: { hy: 0.4, hp: -0.3 } }, { at: n37, v: { hy: 0, hp: 0, rsx: 2.6, rsz: 0.2, rel: 0 } }]);
   const face = faceAt(t, [{ at: t0, f: 'lookUp' }, { at: n37, f: 'surprised' }], 12);
@@ -344,8 +343,8 @@ const S19 = ({ t, t0, t1 }: ShotProps) => {
   return (
     <>
       <SoloMarte t={t} terraNoCeu />
-      <BaseMarte t={t} position={[0, 0, -2.6]} antena={t > li ? 1 : 0} />
-      <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 1.5, 1.6], 6.2, 5.4, 0.5, 0.2)} />
+      <group scale={0.75}><BaseMarte t={t} position={[-0.65, 0, -3.6]} antena={t > li ? 1 : 0} /></group>
+      <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 1.6, 0.6], 8.6, 8.2, 0.2, 0.2)} />
       <Character pose={pose} face={face} look={ASTRO} right={<Radio position={[0, -0.25, 0.1]} />} />
     </>
   );
@@ -364,8 +363,8 @@ const S20 = ({ t, t0, t1 }: ShotProps) => {
       <PlanetaMarte t={t} position={[0, -5.2, 0]} r={2} />
       <Earth t={t} position={[0, 5.4, -1]} r={1.6} />
       <Sinal t={t} from={W(16, 'mensagem') - 0.3} at={t1 + 1.2} de={de} para={para} />
-      <FloatSign t={t} at={n20} text="ATÉ 20 MINUTOS" position={[0, 0.2, 1]} w={2.4} h={0.55} />
-      <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 0.2, 0], 13.5, 12.5, 0.4, 0.0, 36)} />
+      <FloatSign t={t} at={n20} text="ATÉ 20 MINUTOS" position={[0, -1.2, 3]} w={4.6} h={1.05} />
+      <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 0.2, 0], 16.5, 15.5, 0.4, 0.0, 36)} />
     </>
   );
 };
@@ -377,7 +376,7 @@ const S21 = ({ t, t0, t1 }: ShotProps) => {
   const face = faceAt(t, [{ at: t0, f: 'worried' }, { at: ch, f: 'bigSmile' }], 16);
   return (
     <>
-      <BaseLancamento />
+      <BaseLancamento torre={false} />
       <Sinal t={t} from={t0 - 0.6} at={ch} de={[0, 8, -6]} para={[0.3, 2.4, 3]} />
       <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 1.5, 3], 6.0, 5.4, -0.5, 0.2)} />
       <Character pose={pose} face={face} look={IARA} right={<Radio position={[0, -0.25, 0.1]} />} />
@@ -394,7 +393,7 @@ const S22 = ({ t, t0, t1 }: ShotProps) => {
   return (
     <>
       <SoloMarte t={t} />
-      <Foguete t={t} position={[0, 0, -5]} porta={1} />
+      <Foguete t={t} position={[-3.6, 0, -20]} porta={1} />
       <Cam t={t} t0={t0} t1={t1} keys={segue(t, t0, t1, [0, 1.4, 0], 6.0, 5.2, 0.8, 0.15)} />
       <Character pose={pose} face={face} look={ASTRO} right={t > pa - 0.3 ? <Passagem position={[0, -0.45, 0.2]} rotation={[0.3, 0, 0]} scale={1.6} /> : undefined} />
     </>

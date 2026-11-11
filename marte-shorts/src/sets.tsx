@@ -22,9 +22,9 @@ export const Cam = ({ t, t0, t1, keys }: { t: number; t0: number; t1: number; ke
     const pos = lerp3(a[1], b[1], k);
     const tgt = lerp3(a[2], b[2], k);
     const fov = (a[3] ?? 32) + ((b[3] ?? 32) - (a[3] ?? 32)) * k;
-    const creep = 1 - 0.05 * Math.max(0, t - t0);
+    const creep = 1 - 0.015 * Math.max(0, t - t0); // aproximação automática bem leve: nunca corta o personagem
     const xin = clamp01((t - (t1 - 0.3)) / 0.5);
-    const f = DIST * creep * (1 - 0.14 * xin * xin) * (1 + 0.07 * Math.pow(1 - clamp01((t - t0) / 0.4), 2));
+    const f = DIST * creep * (1 - 0.04 * xin * xin) * (1 + 0.07 * Math.pow(1 - clamp01((t - t0) / 0.4), 2));
     camera.position.set(tgt[0] + (pos[0] - tgt[0]) * f, tgt[1] + (pos[1] - tgt[1]) * f, tgt[2] + (pos[2] - tgt[2]) * f);
     camera.lookAt(tgt[0], tgt[1], tgt[2]);
     const roll = (a[4] ?? 0) + ((b[4] ?? 0) - (a[4] ?? 0)) * k;

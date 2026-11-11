@@ -112,8 +112,8 @@ export const Fumaca = ({ t, from, position = [0, 0, 0] as V3, cor = '#f2ede6', n
     <group position={position}>
       {Array.from({ length: n }, (_, i) => {
         const a = (i / n) * Math.PI * 2 + rand(i) * 0.4;
-        const r = 0.8 + k * (2.5 + rand(i * 3) * 2.5);
-        const s = (0.6 + rand(i * 5) * 0.7) * (0.4 + k * 1.2);
+        const r = 0.8 + k * (1.6 + rand(i * 3) * 1.4);
+        const s = (0.5 + rand(i * 5) * 0.5) * (0.4 + k * 0.9);
         return (
           <mesh key={i} position={[Math.cos(a) * r, 0.4 + rand(i * 7) * 0.8 * k, Math.sin(a) * r]} scale={s}>
             <sphereGeometry args={[0.8, 12, 10]} />
@@ -126,7 +126,7 @@ export const Fumaca = ({ t, from, position = [0, 0, 0] as V3, cor = '#f2ede6', n
 };
 
 // ---------- Base de lançamento na Terra (manhã, céu azul, grama, torre) ----------
-export const BaseLancamento = () => (
+export const BaseLancamento = ({ torre = true }: { torre?: boolean }) => (
   <group>
     <Ceu bg="#8fd0ff" near={30} far={90} />
     <hemisphereLight args={['#ffffff', '#5a7a3a', 1.1]} />
@@ -145,22 +145,22 @@ export const BaseLancamento = () => (
       <meshBasicMaterial color="#ffd23a" />
     </mesh>
     {/* torre de serviço (treliça) atrás à esquerda */}
-    <group position={[-3.2, 0, -1.8]}>
+    <group position={[-3.2, 0, -1.8]} visible={torre}>
       {[-0.5, 0.5].map((x) =>
         [-0.5, 0.5].map((z) => (
-          <mesh key={`${x}${z}`} position={[x, 5.5, z]} castShadow>
-            <boxGeometry args={[0.15, 11, 0.15]} />
+          <mesh key={`${x}${z}`} position={[x, 3.5, z]} castShadow>
+            <boxGeometry args={[0.15, 7, 0.15]} />
             <meshStandardMaterial color="#e2402f" />
           </mesh>
         )),
       )}
-      {Array.from({ length: 11 }, (_, i) => (
+      {Array.from({ length: 7 }, (_, i) => (
         <mesh key={i} position={[0, 0.5 + i, 0]}>
           <boxGeometry args={[1.15, 0.1, 1.15]} />
           <meshStandardMaterial color="#c9352a" />
         </mesh>
       ))}
-      <mesh position={[1.2, 6.6, 0.6]} rotation={[0, 0, 0]}>
+      <mesh position={[1.2, 5.6, 0.6]} rotation={[0, 0, 0]}>
         <boxGeometry args={[1.5, 0.15, 0.4]} />
         <meshStandardMaterial color="#9aa2ad" />
       </mesh>

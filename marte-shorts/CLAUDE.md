@@ -244,6 +244,9 @@ que monta cenário + câmera + personagens + objetos. Dissolve de 6 quadros entr
 > Vídeos sem legenda, sem música e sem efeitos, a não ser que ele peça.
 > **Enquadramento:** personagem sempre CENTRALIZADO (x = 0) e de corpo inteiro; a câmera se move sem cortar cabeça nem pés
 > e ACOMPANHA quem está em cena quadro a quadro, inclusive a nave quando ela voa (use `corpo(t, t0, t1, alvo, ...)` em `src/shots.tsx`). Objetos de informação ficam acima da cabeça, também centralizados.
+> **NUNCA CORTAR NADA:** o personagem fica sempre inteiro e com folga no quadro (a câmera não chega perto demais para ele não sair da tela),
+> e TUDO o que a cena mostra (foguete, planeta, placa, base, torre, fumaça, objetos) aparece inteiro, nunca pela metade nem escondido atrás de alguém.
+> Antes de renderizar, confira o primeiro, o do meio e o último quadro de CADA cena.
 > **Cenas novas a cada vídeo:** não repita os cenários dos vídeos anteriores; crie lugares e objetos novos para cada tema (ex.: `src/marte.tsx`).
 
 Quando o usuário pedir vídeos "no estilo E se...?", "cabeça-esfera" ou "como o episódio dos ossos de aço",
