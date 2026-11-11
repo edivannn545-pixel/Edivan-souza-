@@ -9,7 +9,8 @@ import { abrirNavegador } from './navegador.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const id = process.argv[2] ?? 'Elenco';
-const out = path.join(root, 'out', id === 'Elenco' ? 'elenco.png' : 'elenco-esferas.png');
+const nomes = { Elenco: 'elenco.png', ElencoEsferas: 'elenco-esferas.png', Cenarios: 'cenarios.png' };
+const out = path.join(root, 'out', nomes[id] ?? `${id}.png`);
 fs.mkdirSync(path.dirname(out), { recursive: true });
 const serveUrl = await bundle({ entryPoint: path.join(root, 'src', 'index.ts') });
 const probe = await selectComposition({ serveUrl, id, browserExecutable: process.env.CHROME_PATH || null });

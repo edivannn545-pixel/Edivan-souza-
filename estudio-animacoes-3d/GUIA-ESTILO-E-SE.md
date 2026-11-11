@@ -51,6 +51,22 @@ raioX(look, { cor: '#ff7a2a' })                                             // c
 Use sempre no cenário `GradeNeon` (fundo azul-marinho, chão de grade neon, partículas).
 Corte direto da pose real para a mesma pose no raio-X: é o "corte de ideia" do estilo.
 
+## 2b. Cenários (`src/cenarios.tsx`)
+
+| Cenário | Opções | Bom para |
+|---|---|---|
+| `RuaBairro` | `hora: 'dia' \| 'tarde' \| 'noite'`, `faixa`, `carro` | gancho, volta ao começo, perigo na rua |
+| `CorredorEscola` | `parede`, `faixa` | rival, amigos, recreio |
+| `Enfermaria` | — | exames, balança, raio-X de verdade |
+| `Quarto` | `noite`, `cama` | acordar, dormir, "5 dias atrás" |
+| `Quadra` | `t` (torcida pula), `piso`, `parede` | jogos, competição, torcida |
+| `Telhados` | — | drama ao pôr do sol, resgate |
+| `Parque` | `hora` | passeio, lago, conversa |
+| `Piscina` (historia.tsx) | `submerso`, `bg` | água, afundar, salvar |
+| `GradeNeon` (historia.tsx) | `cor`, `bg` | raio-X, ciência, números |
+
+Peças soltas: `Casa`, `Arvore`, `Carro`, `Torcida`. Vitrine: `node tools/elenco.mjs Cenarios` → `out/cenarios.png`.
+
 ## 3. Câmera (`<Cam keys={[[tempo, posição, alvo, fov, giro]]} />`)
 
 O ritmo vem de **cortar entre tamanhos de plano**, com a câmera se movendo pouco dentro de cada plano.

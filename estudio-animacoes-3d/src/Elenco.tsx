@@ -1,6 +1,7 @@
 import { ThreeCanvas } from '@remotion/three';
 import { useThree } from '@react-three/fiber';
-import { useLayoutEffect } from 'react';
+import { JSX, useLayoutEffect } from 'react';
+import { CorredorEscola, Enfermaria, Parque, Quadra, Quarto, RuaBairro, Telhados } from './cenarios';
 import { AbsoluteFill } from 'remotion';
 import * as THREE from 'three';
 import { Character, REST } from './Character';
@@ -136,3 +137,45 @@ export const ElencoEsferas = () => {
     </AbsoluteFill>
   );
 };
+
+// Vitrine dos cenários do estilo "E se...?": node tools/elenco.mjs Cenarios → out/cenarios.png
+const CamP = ({ pos, alvo }: { pos: [number, number, number]; alvo: [number, number, number] }) => {
+  const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
+  useLayoutEffect(() => {
+    camera.position.set(...pos);
+    camera.lookAt(...alvo);
+    camera.fov = 52;
+    camera.updateProjectionMatrix();
+  }, [camera, pos, alvo]);
+  return null;
+};
+const PAINEIS: { nome: string; uso: string; C: () => JSX.Element; pos?: [number, number, number]; alvo?: [number, number, number] }[] = [
+  { nome: 'RuaBairro', uso: "hora='dia'", C: () => <RuaBairro /> },
+  { nome: 'RuaBairro', uso: "hora='tarde'", C: () => <RuaBairro hora="tarde" /> },
+  { nome: 'CorredorEscola', uso: 'armários, sala 7', C: () => <CorredorEscola /> },
+  { nome: 'Enfermaria', uso: 'maca, remédios', C: () => <Enfermaria /> },
+  { nome: 'Quarto', uso: 'noite', C: () => <Quarto noite /> },
+  { nome: 'Quadra', uso: 'torcida, gol', C: () => <Quadra />, pos: [0, 3.2, 7.5], alvo: [0, 1.6, -3] },
+  { nome: 'Telhados', uso: 'pôr do sol', C: () => <Telhados /> },
+  { nome: 'Parque', uso: 'lago, banco', C: () => <Parque />, pos: [0, 3.0, 7], alvo: [0, 1.2, -3] },
+];
+export const Cenarios = () => (
+  <AbsoluteFill style={{ background: PAGE, padding: '36px 40px', display: 'flex', flexDirection: 'column', gap: 18 }}>
+    <div style={{ fontFamily: 'Arial Black, sans-serif', fontWeight: 900, fontSize: 64, color: '#141414', lineHeight: 1 }}>
+      Os <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontWeight: 400 }}>cenários.</span>
+    </div>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 450px)', gap: 16 }}>
+      {PAINEIS.map((p, i) => (
+        <div key={i}>
+          <ThreeCanvas width={450} height={720} shadows gl={{ toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05, antialias: true }} camera={{ fov: 52, near: 0.05, far: 200 }}>
+            <CamP pos={p.pos ?? [0.3, 2.4, 7.2]} alvo={p.alvo ?? [0, 1.4, -2]} />
+            <p.C />
+            <Character pose={{ ...REST, z: 0.6, ry: 0.15 }} face={{ f: 'happy', blink: 0, o: [] }} look={ESFERAS.nino.look} />
+          </ThreeCanvas>
+          <div style={{ fontFamily: 'Arial, sans-serif', fontWeight: 800, fontSize: 24, color: '#1c1c1c', textAlign: 'center', marginTop: 6 }}>{p.nome}</div>
+          <div style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 18, color: '#c2302e', textAlign: 'center' }}>{p.uso}</div>
+        </div>
+      ))}
+    </div>
+  </AbsoluteFill>
+);

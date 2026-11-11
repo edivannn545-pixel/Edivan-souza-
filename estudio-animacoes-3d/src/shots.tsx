@@ -5,7 +5,8 @@ import { AGUA_Y, Arco, Balanca, BlocoConcreto, Bolhas, Calcada, FUNDO_Y, GradeNe
 import { Capitulo, Numero, Onoma, Selo, TelaFinal, Titulo, Vinheta } from './hud';
 import { ESFERAS, raioX } from './personagens';
 import { Clipboard, Puff } from './props';
-import { Cam, Room, Street } from './sets';
+import { Cam } from './sets';
+import { CorredorEscola, Enfermaria, RuaBairro } from './cenarios';
 import { W } from './timeline';
 
 // ============================================================================
@@ -74,7 +75,7 @@ const S01 = ({ t, t0, t1 }: ShotProps) => {
   const skX = Math.min(x, -3 + (trava - t0) * 3.2);
   return (
     <>
-      <Street placa="SORVETES" bg="#f6b98a" />
+      <RuaBairro />
       <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-2.4, 0.7, 6.4], [-1, 1.0, 0], 32], [t1, [0.2, 0.8, 6.0], [0.5, 1.1, 0], 32]]} />
       <Calcada t={t} position={[1.15, 0, 0.1]} rotation={[0, Math.PI / 2, 0]} />
       <Skate position={[skX, 0, 0]} rotation={[0, Math.PI / 2, 0]} roda={skX * 6} />
@@ -91,7 +92,7 @@ const S02 = ({ t, t0, t1 }: ShotProps) => {
   const face = faceAt(t, [{ at: t0, f: 'shocked' }, { at: W(0, 'calcada'), f: 'nervous', o: ['sweat'] }], 2);
   return (
     <>
-      <Street placa="SORVETES" bg="#f6b98a" />
+      <RuaBairro />
       <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.6, 1.2, 4.6], [1.7, 0.5, 0], 32], [t1, [0.8, 1.1, 4.2], [1.8, 0.5, 0], 32]]} />
       <Calcada t={t} position={[1.15, 0, 0.1]} rotation={[0, Math.PI / 2, 0]} />
       <Giro p={[0.55, 0.05, 0]} r={[0, 0, -1.25]}>
@@ -112,7 +113,7 @@ const S03 = ({ t, t0, t1 }: ShotProps) => {
   const face = faceAt(t, [{ at: t0, f: 'dizzy' }, { at: q, f: 'shocked' }, { at: W(1, 'calcada'), f: 'smug', o: ['sparkle'] }], 3);
   return (
     <>
-      <Street placa="SORVETES" bg="#f6b98a" />
+      <RuaBairro />
       <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.2, 1.4, 5.2], [0.3, 0.9, 0], 32], [t1, [0.0, 1.35, 4.5], [0.1, 1.0, 0], 32]]} />
       <Calcada t={t} at={q} position={[0.7, 0, -0.6]} />
       <Character pose={pose} face={face} look={NINO} />
@@ -130,7 +131,7 @@ const S04 = ({ t, t0, t1 }: ShotProps) => {
   const face = faceAt(t, [{ at: t0, f: 'curious' }, { at: W(2, 'aco'), f: 'starstruck', o: ['sparkle'] }], 4);
   return (
     <>
-      <Street placa="SORVETES" bg="#f6b98a" />
+      <RuaBairro />
       <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0, 1.3, 6.4], [0, 1.0, 0], 32], [t1, [0, 1.35, 5.2], [0, 1.05, 0], 32]]} />
       <Calcada t={t} at={t0 - 2} position={[0.8, 0, -0.8]} />
       <Character pose={pose} face={face} look={NINO} />
@@ -231,7 +232,7 @@ const S10 = ({ t, t0, t1 }: ShotProps) => {
   const pose = track(t, P({ x: 0, ry: -0.2, lsz: 0.15, rsz: 0.15 }), [{ at: W(7, 'rival'), v: { hy: -0.25, hr: 0.12, lsx: 0.9, rsx: 0.9, lel: 1.6, rel: 1.6 } }]);
   return (
     <>
-      <Room placa="ESCOLA" parede="#3a6aa6" balcao={false} />
+      <CorredorEscola />
       <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.5, 1.6, 4.0], [0, 1.4, 0], 32], [t1, [0.3, 1.65, 3.3], [0, 1.45, 0], 32]]} />
       <Character pose={pose} face={faceAt(t, [{ at: t0, f: 'smug' }, { at: W(7, 'rival'), f: 'confident' }], 9)} look={BRUNO} />
     </>
@@ -242,7 +243,7 @@ const S11 = ({ t, t0, t1 }: ShotProps) => {
   const kick = track(t, P({ x: -0.7, ry: Math.PI / 2, lsz: 0.4, rsz: 0.4 }), [{ at: can, v: { walk: 0.5, stride: 1.7, lean: -0.25, lsz: 1.0, rsz: 1.0 }, lead: 0, dur: 4 }]);
   return (
     <>
-      <Room placa="ESCOLA" parede="#3a6aa6" balcao={false} />
+      <CorredorEscola />
       <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-0.1, 1.2, 5.8], [-0.1, 0.9, 0], 32], [t1, [-0.1, 1.1, 5.3], [-0.1, 0.85, 0], 32]]} />
       <Character pose={kick} face={faceAt(t, [{ at: t0, f: 'furious' }], 10)} look={BRUNO} />
       <Character pose={P({ x: 0.55, ry: -Math.PI / 2, lsz: 0.2, rsz: 0.2, hy: 0.4 })} face={faceAt(t, [{ at: t0, f: 'deadpan' }], 11)} look={NINO} />
@@ -257,7 +258,7 @@ const S12 = ({ t, t0, t1 }: ShotProps) => {
   const x = -0.4 + Math.sin((t - t0) * 2) * 0.5;
   return (
     <>
-      <Room placa="ESCOLA" parede="#3a6aa6" balcao={false} />
+      <CorredorEscola />
       <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0, 1.5, 6.2], [0, 1.0, 0], 32], [t1, [0.2, 1.5, 5.6], [0, 1.0, 0], 32]]} />
       <Character pose={P({ x, y: hop, ry: 0.4, rtap: 1, lsx: 0.4, rsx: 1.2, rel: 1.4, lsz: 0.9, hp: 0.2 })} face={faceAt(t, [{ at: t0, f: 'panic', o: ['tears'] }], 12)} look={BRUNO} />
       <Character pose={P({ x: 1.2, z: -1.2, ry: -0.4, lsz: 0.15, rsz: 0.15, pockets: 0 })} face={faceAt(t, [{ at: t0, f: 'deadpan' }, { at: W(8, 'ele'), f: 'smug', o: ['sparkle'] }], 13)} look={NINO} />
@@ -281,7 +282,7 @@ const S14 = ({ t, t0, t1 }: ShotProps) => {
   const n = W(10, 'noventa');
   return (
     <>
-      <Room placa="ENFERMARIA" parede="#cfe6ee" balcao={false} piso={['#f4f1ea', '#d8d2c4']} />
+      <Enfermaria />
       <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.6, 1.6, 5.4], [0.2, 1.3, 0], 32], [t1, [0.4, 1.7, 4.6], [0.2, 1.4, 0], 32]]} />
       <Balanca t={t} from={t0 + 0.2} at={n} valor={90} position={[-0.3, 0, 0]} />
       <Character pose={P({ x: -0.3, y: 0.12, z: 0.1, lsz: 0.2, rsz: 0.2, hp: 0.25 })} face={faceAt(t, [{ at: t0, f: 'unsure' }, { at: n, f: 'shocked', o: ['sweat'] }], 15)} look={NINO} />
@@ -494,7 +495,7 @@ const S29 = ({ t, t0, t1 }: ShotProps) => {
   const skX = Math.min(x, -2.6 + (trava - t0) * 2.4);
   return (
     <>
-      <Street placa="SORVETES" bg="#f6b98a" />
+      <RuaBairro />
       <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.2, 1.3, 6.2], [-0.6, 0.9, 0], 32], [t1, [2.6, 1.6, 5.4], [2.8, 0.5, 0], 32]]} />
       <Calcada t={t} position={[1.15, 0, 0.1]} rotation={[0, Math.PI / 2, 0]} at={trava + 0.4} />
       <Skate position={[skX, 0, 0]} rotation={[0, Math.PI / 2, 0]} roda={skX * 6} />
@@ -509,7 +510,7 @@ const O29 = ({ t }: ShotProps) => <Capitulo t={t} at={W(22, 0)} texto="DIAS DEPO
 // 23 "E você, o que faria com ossos de *aço*?"  — PERGUNTA FINAL
 const S30 = ({ t, t0, t1 }: ShotProps) => (
   <>
-    <Street placa="SORVETES" bg="#f6b98a" />
+    <RuaBairro />
     <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0, 1.3, 5.4], [0, 1.05, 0], 32], [t1, [0, 1.35, 4.7], [0, 1.1, 0], 32]]} />
     <Character pose={P({ x: -0.5, ry: 0.15, rsz: 1.1, rel: 0.2 })} face={faceAt(t, [{ at: t0, f: 'bigSmile' }, { at: W(23, 'aco'), f: 'wink' }], 38)} look={NINO} />
     <Character pose={P({ x: 0.55, z: -0.3, ry: -0.2, lsz: 2.7, lel: 0.3 })} face={faceAt(t, [{ at: t0, f: 'happy' }], 39)} look={LARA} />
