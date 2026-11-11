@@ -1,5 +1,6 @@
 import { Composition } from 'remotion';
 import { Cenarios, Elenco, ElencoEsferas } from './Elenco';
+import { Capa } from './Capa';
 import { Film } from './Film';
 import { END, FPS } from './timeline';
 import { VOZ } from './voz';
@@ -19,6 +20,8 @@ export const Root = () => (
     <Composition id="Elenco" component={Elenco} durationInFrames={1} fps={FPS} width={1920} height={1760} />
     {/* Elenco do estilo "E se...?" (node tools/elenco.mjs ElencoEsferas) */}
     <Composition id="ElencoEsferas" component={ElencoEsferas} durationInFrames={1} fps={FPS} width={1920} height={1500} />
+    {/* Capa do Short (npx remotion still src/index.ts Capa out/capa.png) */}
+    <Composition id="Capa" component={Capa} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     {/* Vitrine dos cenários (node tools/elenco.mjs Cenarios) */}
     <Composition id="Cenarios" component={Cenarios} durationInFrames={1} fps={FPS} width={1920} height={1820} />
   </>
