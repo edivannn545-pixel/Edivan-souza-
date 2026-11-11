@@ -18,12 +18,30 @@ import { W } from './timeline';
 export type ShotProps = { t: number; t0: number; t1: number };
 export type Shot = { from: number; name: string; C: (p: ShotProps) => JSX.Element; O?: (p: ShotProps) => JSX.Element; trans?: 'corte' | 'dissolve' | 'flash' | 'preto'; semLegenda?: boolean };
 
-// Efeitos sonoros opcionais: arquivos em public/sfx/ (ex.: { at: W(0, 'canela'), file: 'toc.mp3', vol: 0.8 }).
+// Efeitos sonoros opcionais: arquivos em public/sfx/ (ex.: { at: W(0, 'canela'), file: 'toc.mp3', vol: 1 }).
 // Gerados no ElevenLabs (flow "Ossos de aço — música e efeitos"). Um efeito por onomatopeia, na mesma palavra.
 export const SFX: { at: number; file: string; vol: number }[] = [
   { at: 0.05, file: 'skate.mp3', vol: 0.55 },
-  { at: W(0, 'canela') - 0.03, file: 'toc.mp3', vol: 0.8 },
+  { at: W(0, 'canela') - 0.03, file: 'toc.mp3', vol: 1 },
+  { at: W(1, 'quebra') - 0.03, file: 'crack.mp3', vol: 0.8 },
+  { at: W(2, 0) - 0.15, file: 'whoosh.mp3', vol: 0.6 }, // flash do título
+  { at: W(3, 'concreto') - 0.03, file: 'crack.mp3', vol: 0.7 },
+  { at: W(4, 'quatro') - 0.05, file: 'pop.mp3', vol: 0.5 },
+  { at: W(5, 'dez') - 0.05, file: 'pop.mp3', vol: 0.5 },
+  { at: W(6, 'quarenta') - 0.03, file: 'tum.mp3', vol: 0.85 },
+  { at: W(7, 'canela') - 0.03, file: 'teim.mp3', vol: 1 },
+  { at: W(9, 0) - 0.15, file: 'whoosh.mp3', vol: 0.55 }, // flash do "Só que..."
+  { at: W(9, 'trinta') - 0.05, file: 'pop.mp3', vol: 0.5 },
+  { at: W(11, 0), file: 'agua.mp3', vol: 0.6 },
+  { at: W(16, 'ou') - 0.05, file: 'pop.mp3', vol: 0.45 },
   { at: W(18, 0) - 0.12, file: 'splash.mp3', vol: 0.75 },
+  { at: W(18, 'pedra') - 0.03, file: 'tum.mp3', vol: 0.8 },
+  { at: W(18, 'anda'), file: 'agua.mp3', vol: 0.5 },
+  { at: W(19, 0), file: 'agua.mp3', vol: 0.5 },
+  { at: W(20, 0), file: 'splash.mp3', vol: 0.45 },
+  { at: W(22, 'cai') + 0.25, file: 'skate.mp3', vol: 0.5 },
+  { at: W(23, 0) - 0.1, file: 'whoosh.mp3', vol: 0.5 },
+  { at: W(24, 0) - 0.05, file: 'ding.mp3', vol: 0.9 }, // tela final
 ];
 
 const P = (o: Partial<Pose> = {}): Pose => ({ ...REST, ...o });
@@ -421,7 +439,7 @@ const S25 = ({ t, t0, t1 }: ShotProps) => {
   return (
     <>
       <Piscina t={t} submerso />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [2.0, -2.2, -1.2], [0, -1.1, -4.2], 36], [t1, [1.8, -2.25, -1.4], [0, -0.9, -4.2], 36]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [2.2, -2.2, -0.6], [0, -1.0, -4.2], 38], [t1, [2.0, -2.25, -0.8], [0, -0.85, -4.2], 38]]} />
       <Character pose={pose} face={faceAt(t, [{ at: t0, f: 'confident' }, { at: e, f: 'furious' }], 30)} look={NINO} />
       <Character pose={P({ z: -4.15, y: -1.75 + subir * 0.7 + (t < e ? 0 : 0), lsz: 1.8, rsz: 1.8, ry: 0.2 })} face={faceAt(t, [{ at: t0, f: 'scared' }, { at: e, f: 'surprised' }], 31)} look={LARA} />
       <Bolhas t={t} centro={[0, -0.6, -4.2]} raio={0.6} altura={1} n={12} />
@@ -433,7 +451,7 @@ const S25 = ({ t, t0, t1 }: ShotProps) => {
 const S26 = ({ t, t0, t1 }: ShotProps) => (
   <>
     <Piscina t={t} />
-    <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.3, 0.5, -1.4], [0.1, 0.1, -4.2], 30], [t1, [0.3, 0.55, -1.8], [0.1, 0.15, -4.2], 30]]} />
+    <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.3, 0.6, -0.4], [0.1, 0.15, -4.2], 30], [t1, [0.3, 0.6, -0.9], [0.1, 0.2, -4.2], 30]]} />
     <Character pose={P({ x: 0.1, z: -4.2, y: -1.3, lsz: 1.0, rsz: 1.0 })} face={faceAt(t, [{ at: t0, f: 'shocked' }, { at: W(20, 'respira') + 0.2, f: 'laugh' }], 32)} look={LARA} />
     <Splash t={t} at={t0} position={[0.1, AGUA_Y, -4.2]} forca={0.6} />
   </>
@@ -446,7 +464,7 @@ const S27 = ({ t, t0, t1 }: ShotProps) => {
   return (
     <>
       <Piscina t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [4.6, 1.4, 3.0], [2.3, 0.6, 0.6], 32], [t1, [4.3, 1.6, 2.6], [2.5, 1.0, 0.6], 32]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [6.0, 1.6, 4.4], [2.3, 0.3, 0.6], 32], [t1, [5.6, 1.8, 4.0], [2.5, 0.8, 0.6], 32]]} />
       <Character pose={P({ x, y, z: 0.6, ry: Math.PI / 2, lsx: 2.2 - k, rsx: 2.4 - k, walk: k * 6, stride: 0.6 })} face={faceAt(t, [{ at: t0, f: 'tired' }, { at: W(20, 'escada'), f: 'content' }], 33)} look={NINO} />
     </>
   );
