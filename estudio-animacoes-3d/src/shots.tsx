@@ -19,7 +19,12 @@ export type ShotProps = { t: number; t0: number; t1: number };
 export type Shot = { from: number; name: string; C: (p: ShotProps) => JSX.Element; O?: (p: ShotProps) => JSX.Element; trans?: 'corte' | 'dissolve' | 'flash' | 'preto'; semLegenda?: boolean };
 
 // Efeitos sonoros opcionais: arquivos em public/sfx/ (ex.: { at: W(0, 'canela'), file: 'toc.mp3', vol: 0.8 }).
-export const SFX: { at: number; file: string; vol: number }[] = [];
+// Gerados no ElevenLabs (flow "Ossos de aço — música e efeitos"). Um efeito por onomatopeia, na mesma palavra.
+export const SFX: { at: number; file: string; vol: number }[] = [
+  { at: 0.05, file: 'skate.mp3', vol: 0.55 },
+  { at: W(0, 'canela') - 0.03, file: 'toc.mp3', vol: 0.8 },
+  { at: W(18, 0) - 0.12, file: 'splash.mp3', vol: 0.75 },
+];
 
 const P = (o: Partial<Pose> = {}): Pose => ({ ...REST, ...o });
 const NINO = ESFERAS.nino.look;
