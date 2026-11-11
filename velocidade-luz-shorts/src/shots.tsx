@@ -20,13 +20,14 @@ export type Shot = { from: number; name: string; C: (p: ShotProps) => JSX.Elemen
 const P = (o: Partial<Pose> = {}): Pose => ({ ...REST, ...o });
 const drift = (t: number, s = 0): V3 => [0.06 * Math.sin(t * 0.7 + s), 0.08 * Math.sin(t * 0.9 + s), 0];
 const FLOAT = { lsz: 0.7, rsz: 0.7, lel: 0.5, rel: 0.5 };
-// Câmera de corpo inteiro, sempre centralizada no personagem (x = 0): aproxima devagar sem cortar cabeça nem pés.
-// y = altura do alvo; d0 → d1 = distância no começo e no fim da tomada; lado = leve órbita lateral.
-const corpo = (t0: number, t1: number, y = 1.25, d0 = 5.8, d1 = 5.2, lado = 0.3): CamKey[] => [
-  [t0, [lado, y + 0.25, d0], [0, y, 0], 32],
-  [t1, [-lado * 0.5, y + 0.2, d1], [0, y, 0], 32],
-];
-
+// Câmera que ACOMPANHA o personagem: mira sempre nele (centralizado), corpo inteiro, aproxima devagar
+// de d0 até d1 e gira um pouco em volta dele (lado = quanto gira, em radianos). Segue o alvo quadro a quadro.
+const corpo = (t: number, t0: number, t1: number, alvo: V3 = [0, 1.25, 0], d0 = 5.8, d1 = 5.2, lado = 0.3, fov = 32): CamKey[] => {
+  const k = seg(t, t0, t1);
+  const d = d0 + (d1 - d0) * k;
+  const a = lado * (0.5 - k);
+  return [[t, [alvo[0] + Math.sin(a) * d, alvo[1] + 0.25, alvo[2] + Math.cos(a) * d], alvo, fov]];
+};
 // 1. "What if you traveled at the speed of *light?*"
 const S01 = ({ t, t0, t1 }: ShotProps) => {
   const li = W(0, 'light');
@@ -37,7 +38,7 @@ const S01 = ({ t, t0, t1 }: ShotProps) => {
     <>
       <Space glowPos={[0, 4, -10]} glow="#9fd0ff" />
       <StarStreaks t={t} speed={speed} n={170} />
-      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 0, 5.6, 5.0, 0.2)} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t, t0, t1, [0, drift(t)[1], 0], 5.6, 5.0, 0.4)} />
       <Floating pose={pose} face={face} position={[0, drift(t)[1], 0]} rotation={[0.1, 0, 0.04 * Math.sin(t)]} />
     </>
   );
@@ -56,7 +57,7 @@ const S02 = ({ t, t0, t1 }: ShotProps) => {
       <Lab t={t} />
       <Ship t={0} position={[0, 1.05, -3.8]} rotation={[0, 0, 0]} scale={1.5} />
       <Ready t={t} at={fi} position={[0, 2.75, 0.1]} />
-      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.35)} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t, t0, t1, [0, 1.35, 0])} />
       <Character pose={pose} face={face} look={IARA} />
     </>
   );
@@ -72,7 +73,7 @@ const S03 = ({ t, t0, t1 }: ShotProps) => {
       <Ship t={t} position={[0, 1.05, -1.2]} rotation={[0, 0.25 * Math.sin(t * 0.3), 0]} scale={1.5} />
       <FloatSign t={t} at={fa} text="FASTEST SHIP" position={[0, 2.9, -1.2]} w={2.6} h={0.6} />
       <Sparkles t={t} from={wo} n={10} radius={2.0} center={[0, 1.3, -1]} size={0.3} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.6, 1.8, 8.4], [0, 1.6, -1.2], 34], [t1, [1.6, 1.9, 8.0], [0, 1.6, -1.2], 34]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t, t0, t1, [0, 1.3, -1.2], 8.4, 7.6, 0.6, 34)} />
     </>
   );
 };
@@ -87,7 +88,7 @@ const S04 = ({ t, t0, t1 }: ShotProps) => {
     <>
       <Lab t={t} />
       <Ship t={0} position={[0, 1.05, -3.8]} scale={1.5} />
-      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1)} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t, t0, t1)} />
       <Character pose={pose} face={face} look={IARA} />
     </>
   );
@@ -102,7 +103,7 @@ const S05 = ({ t, t0, t1 }: ShotProps) => {
     <>
       <Lab t={t} />
       <Ship t={0} position={[0, 1.05, -3.8]} scale={1.5} />
-      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.2, 5.4, 4.9, 0.15)} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t, t0, t1, [0, 1.2, 0], 5.4, 4.9, 0.15)} />
       <Character pose={pose} face={face} look={NINO} />
     </>
   );
@@ -157,15 +158,16 @@ const S09 = ({ t, t0, t1 }: ShotProps) => {
   const mo = W(6, 'moon');
   const one = W(6, 'one');
   const k = seg(t, t0 + 0.2, one);
+  const shipPos: V3 = [0.1 + 0.3 * Math.sin(k * 3), -1.6 + 4.2 * k, -1];
   return (
     <>
       <Space glowPos={[-4, 3, 4]} glow="#ffffff" />
       <Earth t={t} position={[0, -3.6, -2]} r={1.7} />
       <Moon t={t} position={[0.2, 3.4, -2]} r={0.8} />
-      <Ship t={t} position={[0.1 + 0.3 * Math.sin(k * 3), -1.6 + 4.2 * k, -1]} rotation={[0, 0.4, Math.PI / 2]} scale={0.35} />
+      <Ship t={t} position={shipPos} rotation={[0, 0.4, Math.PI / 2]} scale={0.35} />
       <FloatSign t={t} at={mo} text="MOON" position={[0.2, 4.6, -2]} w={1.3} h={0.42} />
       <FloatSign t={t} at={one} text="1.3 SECONDS" position={[0, 0.2, 0]} w={2.2} h={0.5} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.4, 0, 11.5], [0, 0.2, -1.5], 34], [t1, [-0.4, 0.2, 10.5], [0, 0.4, -1.5], 34]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t, t0, t1, [0, shipPos[1] * 0.7, -1], 9.0, 8.0, 0.25, 34)} />
     </>
   );
 };
@@ -178,9 +180,9 @@ const S10 = ({ t, t0, t1 }: ShotProps) => {
     <>
       <Space glowPos={[0, 2, -14]} glow="#ffb23a" />
       <Sun t={t} position={[0, 2.5, -22]} r={5.5} />
-      <Ship t={t} position={[0.2, -0.5, -1 - 4 * seg(t, t0, t1 + 0.5)]} rotation={[0, Math.PI / 2, 0.1]} scale={0.6} />
-      <LedCounter t={t} from={su} at={ei} value={8} suffix=" MIN" position={[0, -2.2, 0]} scale={0.6} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.4, 0.2, 5.5], [0, 0.6, -6], 36], [t1, [0.2, 0.4, 4.6], [0, 0.8, -8], 36]]} />
+      <Ship t={t} position={[0, -0.3, -1 - 4 * seg(t, t0, t1 + 0.5)]} rotation={[0, Math.PI / 2, 0.1]} scale={0.6} />
+      <LedCounter t={t} from={su} at={ei} value={8} suffix=" MIN" position={[0, -0.95, 0.4 - 4 * seg(t, t0, t1 + 0.5)]} scale={0.4} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t, [0.3 * Math.sin(t), 0.35, 3.4 - 4 * seg(t, t0, t1 + 0.5)], [0, -0.15, -1 - 4 * seg(t, t0, t1 + 0.5)], 36]]} />
     </>
   );
 };
@@ -195,7 +197,7 @@ const S11 = ({ t, t0, t1 }: ShotProps) => {
       <Space glowPos={[0, 2, -10]} glow="#9fd0ff" />
       <Cockpit />
       <Earth t={t} position={[1, 1.4, -12]} r={1.4} />
-      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.2, 5.4, 4.9)} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t, t0, t1, [0, 1.2, 0], 5.4, 4.9)} />
       <Character pose={pose} face={face} look={ASTRO} />
     </>
   );
@@ -212,7 +214,7 @@ const S12 = ({ t, t0, t1 }: ShotProps) => {
         <StarStreaks t={t} speed={sp} n={180} />
       </group>
       <Ship t={t * 3} position={[0, 0, 0]} rotation={[0.15, -0.3, 0]} scale={1} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [1.0, 1.0, 6.5], [0, 0, 0], 34], [t1, [0.6, 0.7, 5.0], [0, 0, 0], 34]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t, t0, t1, [0, 0, 0], 6.5, 5.5, 0.7, 34)} />
     </>
   );
 };
@@ -228,7 +230,7 @@ const S13 = ({ t, t0, t1 }: ShotProps) => {
       <Space glowPos={[0, 2, -10]} glow="#9fd0ff" />
       <Cockpit />
       <Clock time={clk} position={[0, 3.05, -0.6]} scale={0.9} />
-      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.6, 6.0, 5.5)} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t, t0, t1, [0, 1.6, 0], 6.0, 5.5)} />
       <Character pose={pose} face={face} look={ASTRO} />
     </>
   );
@@ -246,7 +248,7 @@ const S14 = ({ t, t0, t1 }: ShotProps) => {
       <Cockpit />
       <Clock time={clk} position={[0, 3.05, -0.6]} scale={0.9} />
       <FloatSign t={t} at={mi} text="5 MINUTES" position={[0, 3.9, -0.6]} w={1.6} h={0.42} />
-      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.8, 6.6, 6.0)} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t, t0, t1, [0, 1.8, 0], 6.6, 6.0)} />
       <Character pose={pose} face={face} look={ASTRO} />
     </>
   );
@@ -262,7 +264,7 @@ const S15 = ({ t, t0, t1 }: ShotProps) => {
     <>
       <Lab t={t} />
       <Calendar t={t} from={t0} at={ye} pages={pages} position={[0, 3.25, -0.4]} scale={0.85} />
-      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.75, 6.6, 6.0)} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t, t0, t1, [0, 1.75, 0], 6.6, 6.0)} />
       <Character pose={pose} face={face} look={IARA} />
     </>
   );
@@ -279,7 +281,7 @@ const S16 = ({ t, t0, t1 }: ShotProps) => {
       <Lab t={t} />
       <Ship t={t} position={[0, 1.05 + 3 * (1 - land), -2.6]} scale={1.5} />
       {t > ho - 0.3 && <Character pose={pose} face={face} look={ASTRO} />}
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.2, 2.2, 8.2], [0, 1.9, -1], 34], [t1, [-0.1, 1.6, 6.4], [0, 1.3, 0], 34]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t, t0, t1, [0, 1.25 + 2.2 * (1 - land), 0.8 - 2.6 * (1 - land)], 7.6, 6.0, 0.35, 34)} />
     </>
   );
 };
@@ -292,7 +294,7 @@ const S17 = ({ t, t0, t1 }: ShotProps) => {
   return (
     <>
       <Lab t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.25, 5.6, 5.0, 0.15)} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t, t0, t1, [0, 1.25, 0], 5.6, 5.0, 0.15)} />
       <Character pose={pose} face={face} look={IARA_IDOSA} />
       <Sparkles t={t} from={wh} n={8} radius={0.7} center={[0, 2.4, 0]} size={0.16} />
     </>
@@ -308,7 +310,7 @@ const S18 = ({ t, t0, t1 }: ShotProps) => {
     <>
       <Lab t={t} />
       <Character pose={P({ x: 0.55, z: -1.0, ry: -0.5 })} face={{ f: 'content', blink: 0, o: [] }} look={IARA_IDOSA} />
-      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.25, 6.4, 5.8, 0.2)} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t, t0, t1, [0, 1.25, 0], 6.4, 5.8, 0.2)} />
       <Character pose={P({ ...pose, x: -0.5, ry: 0.3 })} face={face} look={ASTRO} />
     </>
   );
@@ -323,7 +325,7 @@ const S19 = ({ t, t0, t1 }: ShotProps) => {
     <>
       <Lab t={t} />
       <BreakingSign t={t} appear={t0 + 0.15} at={bk} text="TICKET BACK" position={[0, 3.0, 0]} w={2.0} h={0.55} fg="#ffd23a" />
-      <Cam t={t} t0={t0} t1={t1} keys={corpo(t0, t1, 1.6, 6.0, 5.6, 0.15)} />
+      <Cam t={t} t0={t0} t1={t1} keys={corpo(t, t0, t1, [0, 1.6, 0], 6.0, 5.6, 0.15)} />
       <Character pose={pose} face={face} look={ASTRO} />
     </>
   );

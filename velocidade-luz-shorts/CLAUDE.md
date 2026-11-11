@@ -243,7 +243,7 @@ que monta cenário + câmera + personagens + objetos. Dissolve de 6 quadros entr
 > e, quando a história pedir, **Dra. Iara idosa** (`IARA_IDOSA` em `src/luz.tsx`) — até o usuário pedir para mudar.
 > Vídeos sem legenda, sem música e sem efeitos, a não ser que ele peça.
 > **Enquadramento:** personagem sempre CENTRALIZADO (x = 0) e de corpo inteiro; a câmera se move sem cortar cabeça nem pés
-> (use `corpo(t0, t1, ...)` em `src/shots.tsx`). Objetos de informação ficam acima da cabeça, também centralizados.
+> e ACOMPANHA quem está em cena quadro a quadro, inclusive a nave quando ela voa (use `corpo(t, t0, t1, alvo, ...)` em `src/shots.tsx`). Objetos de informação ficam acima da cabeça, também centralizados.
 
 Quando o usuário pedir vídeos "no estilo E se...?", "cabeça-esfera" ou "como o episódio dos ossos de aço",
 siga **GUIA-ESTILO-E-SE.md**. Resumo do que muda em relação às PARTES 2 e 3:
