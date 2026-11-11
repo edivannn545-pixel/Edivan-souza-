@@ -8,6 +8,8 @@ import { cobbleTex, crateTex, plasterTex, tileTex, windowsTex } from './textures
 // ---------- Câmera ----------
 // Nunca para: segue as chaves, avança ~5%/s, acelera para dentro do corte e chega no plano seguinte já em movimento.
 // fov é multiplicado por 1.6 porque no vertical 9:16 o fov do three é vertical.
+// Afasta todas as câmeras um pouco (o elenco cabeça-esfera tem cabeça maior). 1 = distância original.
+export const DIST = 1.22;
 export type CamKey = [number, V3, V3, number?, number?]; // tempo, posição, alvo, fov, giro (inclinação holandesa, em radianos)
 export const Cam = ({ t, t0, t1, keys }: { t: number; t0: number; t1: number; keys: CamKey[] }) => {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
@@ -22,7 +24,7 @@ export const Cam = ({ t, t0, t1, keys }: { t: number; t0: number; t1: number; ke
     const fov = (a[3] ?? 32) + ((b[3] ?? 32) - (a[3] ?? 32)) * k;
     const creep = 1 - 0.05 * Math.max(0, t - t0);
     const xin = clamp01((t - (t1 - 0.3)) / 0.5);
-    const f = creep * (1 - 0.14 * xin * xin) * (1 + 0.07 * Math.pow(1 - clamp01((t - t0) / 0.4), 2));
+    const f = DIST * creep * (1 - 0.14 * xin * xin) * (1 + 0.07 * Math.pow(1 - clamp01((t - t0) / 0.4), 2));
     camera.position.set(tgt[0] + (pos[0] - tgt[0]) * f, tgt[1] + (pos[1] - tgt[1]) * f, tgt[2] + (pos[2] - tgt[2]) * f);
     camera.lookAt(tgt[0], tgt[1], tgt[2]);
     const roll = (a[4] ?? 0) + ((b[4] ?? 0) - (a[4] ?? 0)) * k;

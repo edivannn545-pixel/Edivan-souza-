@@ -331,7 +331,7 @@ const S18 = ({ t, t0, t1 }: ShotProps) => {
   return (
     <>
       <Piscina t={t} />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.3, 0.3, -1.6], [0.1, 0.2, -4.2], 30], [t1, [0.25, 0.25, -2.2], [0.1, 0.2, -4.2], 30]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.3, 0.45, -0.5], [0.1, 0.15, -4.2], 30], [t1, [0.25, 0.45, -0.9], [0.1, 0.15, -4.2], 30]]} />
       <Character pose={P({ x: 0.1, z: -4.2, y: -1.6 + f * 0.04, lsz: 2.5 + f * 0.3, rsz: 2.5 - f * 0.3, lel: 0.5, rel: 0.5, hp: -0.15 })} face={faceAt(t, [{ at: t0, f: 'panic', o: ['sweat3'] }], 22)} look={LARA} />
       <Splash t={t} at={t0 + 0.05} position={[0.1, AGUA_Y, -4.2]} forca={0.5} />
     </>
@@ -360,7 +360,7 @@ const S19 = ({ t, t0, t1 }: ShotProps) => {
 const S20 = ({ t, t0, t1 }: ShotProps) => (
   <>
     <Piscina t={t} />
-    <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.2, 1.7, 3.8], [0, 1.55, 1.2], 32], [t1, [0.15, 1.65, 3.2], [0, 1.6, 1.2], 32]]} />
+    <Cam t={t} t0={t0} t1={t1} keys={[[t0, [0.2, 1.6, 5.0], [0, 1.35, 1.2], 32], [t1, [0.15, 1.6, 4.5], [0, 1.4, 1.2], 32]]} />
     <Character pose={P({ z: 1.2, ry: 0.15, hp: 0.25, lsz: 0.15, rsz: 0.15 })} face={faceAt(t, [{ at: t0, f: 'worried', o: ['sweat'] }, { at: W(15, 'afunda'), f: 'scared', o: ['sweat3'] }], 24)} look={NINO} />
   </>
 );
@@ -370,7 +370,7 @@ const O20 = () => <Vinheta forca={0.6} />;
 const S21 = ({ t, t0, t1 }: ShotProps) => (
   <>
     <Piscina t={t} />
-    <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.3, 3.1, 4.6], [0.1, 0.0, -4.2], 30], [t1, [-1.1, 2.9, 4.0], [0.1, 0.0, -4.2], 30]]} />
+    <Cam t={t} t0={t0} t1={t1} keys={[[t0, [-1.9, 3.7, 5.8], [0.1, 0.0, -4.2], 30], [t1, [-1.7, 3.5, 5.3], [0.1, 0.0, -4.2], 30]]} />
     <Character pose={P({ x: -0.1, z: 1.9, ry: Math.PI, lsz: 0.2, rsz: 0.2 })} face={faceAt(t, [{ at: t0, f: 'worried' }], 25)} look={NINO} />
     <Character pose={P({ x: 0.1, z: -4.2, y: -1.65, lsz: 2.6, rsz: 2.4 })} face={faceAt(t, [{ at: t0, f: 'panic' }], 26)} look={LARA} />
   </>
@@ -408,7 +408,7 @@ const S23 = ({ t, t0, t1 }: ShotProps) => {
   return (
     <>
       <Piscina t={t} submerso />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [1.6, -1.2, 1.0], [0, -1.3, -1.4], 32], [t1, [1.7, -1.7, 0.9], [0, -1.6, -1.4], 32]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [1.6, -1.1, 0.6], [0, -1.1, -1.4], 42], [t1, [1.7, -1.5, 0.5], [0, -1.35, -1.4], 42]]} />
       <Character pose={P({ z: -1.4, y, ry: 0.4, lsz: 2.4, rsz: 2.4, squash: t >= pedra ? 0.3 * Math.max(0, 1 - (t - pedra) / 0.3) : 0 })} face={faceAt(t, [{ at: t0, f: 'surprised' }, { at: pedra, f: 'confident' }], 28)} look={NINO} />
       <Bolhas t={t} centro={[0, y + 1.8, -1.4]} raio={0.6} altura={2.2} n={20} />
       <Puff t={t} at={pedra} n={9} position={[0, FUNDO_Y + 0.05, -1.4]} color="#d8f3ff" size={0.4} />
@@ -422,7 +422,7 @@ const S24 = ({ t, t0, t1 }: ShotProps) => {
   return (
     <>
       <Piscina t={t} submerso />
-      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [2.2, -1.25, -1.6], [0, -1.3, -1.6], 40], [t1, [2.2, -1.25, -1.6 - (t1 - t0) * 0.9], [0, -1.3, -1.6 - (t1 - t0) * 0.9], 40]]} />
+      <Cam t={t} t0={t0} t1={t1} keys={[[t0, [2.2, -1.25, -1.6], [0, -1.2, -1.6], 48], [t1, [2.2, -1.25, -1.6 - (t1 - t0) * 0.9], [0, -1.2, -1.6 - (t1 - t0) * 0.9], 48]]} />
       <Character pose={P({ z, y: FUNDO_Y, ry: Math.PI, walk: d / 0.24, stride: 1, lean: 0.25, lsz: 0.3, rsz: 0.3 })} face={faceAt(t, [{ at: t0, f: 'confident' }], 29)} look={NINO} />
       <Bolhas t={t} centro={[0, FUNDO_Y + 1.9, z]} raio={0.3} altura={2} n={8} />
     </>

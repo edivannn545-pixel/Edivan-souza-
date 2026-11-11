@@ -17,7 +17,7 @@ export const ESTILO = {
   fonte: '"Arial Black", "Inter Display", Inter, sans-serif',
   palavrasPorLegenda: 3,
   legendaBaixo: 600, // distância da legenda até a borda de baixo (px)
-  canal: 'NOME DO CANAL', // troque pelo nome do seu canal (aparece na tela final)
+  canal: '', // nome do canal na tela final (vazio = não mostra)
 };
 
 const contorno = (px: number, cor = '#15121a'): CSSProperties => ({ WebkitTextStroke: `${px}px ${cor}`, paintOrder: 'stroke fill' });
@@ -140,8 +140,8 @@ export const TelaFinal = ({ t, t0, cores = ['#ff6a3d', '#a98bff'], fundo = ['#2a
   const c = pop(t, t0 + 0.55);
   return (
     <AbsoluteFill style={{ background: `linear-gradient(180deg, ${fundo[0]} 0%, ${fundo[1]} 100%)`, alignItems: 'center' }}>
-      <div style={{ marginTop: 300, fontFamily: ESTILO.fonte, fontWeight: 900, fontSize: 92, color: '#fff', ...contorno(10), transform: `scale(${a})` }}>{ESTILO.canal}</div>
-      <div style={{ marginTop: 120, transform: `scale(${b})`, position: 'relative', padding: '34px 70px', borderRadius: 40, background: '#fff', fontFamily: ESTILO.fonte, fontWeight: 900, fontSize: 76, color: '#15121a' }}>
+      {ESTILO.canal && <div style={{ marginTop: 300, fontFamily: ESTILO.fonte, fontWeight: 900, fontSize: 92, color: '#fff', ...contorno(10), transform: `scale(${a})` }}>{ESTILO.canal}</div>}
+      <div style={{ marginTop: ESTILO.canal ? 120 : 420, transform: `scale(${b})`, position: 'relative', padding: '34px 70px', borderRadius: 40, background: '#fff', fontFamily: ESTILO.fonte, fontWeight: 900, fontSize: 76, color: '#15121a' }}>
         <span style={{ color: ESTILO.destaque, marginRight: 18 }}>●●</span>COMENTA AÍ
         <div style={{ position: 'absolute', left: 90, bottom: -48, width: 0, height: 0, borderLeft: '30px solid transparent', borderRight: '30px solid transparent', borderTop: '52px solid #fff', transform: 'skewX(-25deg)' }} />
       </div>
